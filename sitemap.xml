@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://sugayoiya.github.io/posts/9826.html</loc>
+    
+    <lastmod>2023-07-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://sugayoiya.github.io/posts/41603.html</loc>
     
     <lastmod>2023-07-21</lastmod>
@@ -99,6 +108,20 @@
   
   <url>
     <loc>https://sugayoiya.github.io/tags/interceptor/</loc>
+    <lastmod>2023-07-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/tags/Spring/</loc>
+    <lastmod>2023-07-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/tags/Spring-Ioc/</loc>
     <lastmod>2023-07-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
