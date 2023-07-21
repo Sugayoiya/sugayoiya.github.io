@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://sugayoiya.github.io/posts/41603.html</loc>
+    
+    <lastmod>2023-07-21</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://sugayoiya.github.io/posts/59835.html</loc>
     
     <lastmod>2023-07-21</lastmod>
@@ -14,15 +23,6 @@
     <loc>https://sugayoiya.github.io/posts/31562.html</loc>
     
     <lastmod>2023-07-20</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/posts/41603.html</loc>
-    
-    <lastmod>2023-07-19</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -135,14 +135,14 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/Java/</loc>
+    <loc>https://sugayoiya.github.io/categories/Hexo/Fluid/</loc>
     <lastmod>2023-07-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/Hexo/Fluid/</loc>
+    <loc>https://sugayoiya.github.io/categories/Java/</loc>
     <lastmod>2023-07-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
