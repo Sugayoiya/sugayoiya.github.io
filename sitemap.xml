@@ -152,6 +152,13 @@
   </url>
   
   <url>
+    <loc>https://sugayoiya.github.io/tags/bean/</loc>
+    <lastmod>2023-07-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://sugayoiya.github.io/tags/Mybatis/</loc>
     <lastmod>2023-07-25</lastmod>
     <changefreq>weekly</changefreq>
@@ -166,7 +173,14 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/tags/bean/</loc>
+    <loc>https://sugayoiya.github.io/tags/Spring-Ioc/</loc>
+    <lastmod>2023-07-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/tags/Nas/</loc>
     <lastmod>2023-07-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -181,20 +195,6 @@
   
   <url>
     <loc>https://sugayoiya.github.io/tags/interceptor/</loc>
-    <lastmod>2023-07-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/tags/Nas/</loc>
-    <lastmod>2023-07-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/tags/Spring-Ioc/</loc>
     <lastmod>2023-07-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -245,6 +245,13 @@
   </url>
   
   <url>
+    <loc>https://sugayoiya.github.io/categories/Java/Mybatis/</loc>
+    <lastmod>2023-07-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://sugayoiya.github.io/categories/Hexo/Fluid/</loc>
     <lastmod>2023-07-25</lastmod>
     <changefreq>weekly</changefreq>
@@ -252,7 +259,7 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/Java/Mybatis/</loc>
+    <loc>https://sugayoiya.github.io/categories/Nas/</loc>
     <lastmod>2023-07-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
