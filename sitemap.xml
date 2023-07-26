@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://sugayoiya.github.io/posts/55978.html</loc>
+    
+    <lastmod>2023-07-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://sugayoiya.github.io/posts/29247.html</loc>
     
     <lastmod>2023-07-26</lastmod>
@@ -174,6 +183,13 @@
   </url>
   
   <url>
+    <loc>https://sugayoiya.github.io/tags/Spring-Ioc/</loc>
+    <lastmod>2023-07-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://sugayoiya.github.io/tags/BlockingQueue/</loc>
     <lastmod>2023-07-26</lastmod>
     <changefreq>weekly</changefreq>
@@ -216,7 +232,28 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/tags/Spring-Ioc/</loc>
+    <loc>https://sugayoiya.github.io/tags/Collection/</loc>
+    <lastmod>2023-07-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/tags/List/</loc>
+    <lastmod>2023-07-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/tags/Set/</loc>
+    <lastmod>2023-07-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/tags/Queue/</loc>
     <lastmod>2023-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -231,20 +268,6 @@
   
   <url>
     <loc>https://sugayoiya.github.io/tags/Nas/</loc>
-    <lastmod>2023-07-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/tags/filter/</loc>
-    <lastmod>2023-07-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/tags/interceptor/</loc>
     <lastmod>2023-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -271,6 +294,20 @@
     <priority>0.2</priority>
   </url>
   
+  <url>
+    <loc>https://sugayoiya.github.io/tags/filter/</loc>
+    <lastmod>2023-07-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/tags/interceptor/</loc>
+    <lastmod>2023-07-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
 
   
   <url>
@@ -282,6 +319,13 @@
   
   <url>
     <loc>https://sugayoiya.github.io/categories/Java/AQS/</loc>
+    <lastmod>2023-07-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/categories/Java/Spring/</loc>
     <lastmod>2023-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -302,14 +346,14 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/Java/Spring/</loc>
+    <loc>https://sugayoiya.github.io/categories/Java/Mybatis/</loc>
     <lastmod>2023-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/Java/Mybatis/</loc>
+    <loc>https://sugayoiya.github.io/categories/Java/Collection/</loc>
     <lastmod>2023-07-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
