@@ -1,0 +1,867 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="AQS 原理分析">
+  
+    <meta name="description" content="AQS (Abstract Queued Synchronization)，它是 Java 中 java.util.concurrent 包下的一种基础框架，用于实现各种同步机制，特别是用于多线程编程中的同步操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AQS 原理分析">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/13119.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="AQS (Abstract Queued Synchronization)，它是 Java 中 java.util.concurrent 包下的一种基础框架，用于实现各种同步机制，特别是用于多线程编程中的同步操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sugayoiya.github.io/img/post/87952141_p7.jpeg">
+<meta property="article:published_time" content="2021-08-30T13:33:40.000Z">
+<meta property="article:modified_time" content="2023-07-26T04:26:31.804Z">
+<meta property="article:author" content="Sugayoiya">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="AQS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sugayoiya.github.io/img/post/87952141_p7.jpeg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>AQS 原理分析 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post/87952141_p4.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="AQS 原理分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-30 21:33" pubdate>
+          2021年8月30日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          69 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AQS 原理分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>AQS</strong> (<em>Abstract Queued Synchronization</em>)，它是 Java 中 <code>java.util.concurrent</code> 包下的一种基础框架，用于实现各种同步机制，特别是用于多线程编程中的同步操作</p>
+<span id="more"></span>
+
+<p><em>AQS</em> 提供了一种基于 <em>FIFO</em>（先进先出）队列的抽象同步器，可以方便地实现各种同步工具，比如锁、信号量、倒计时器等。在 Java 中，<code>ReentrantLock</code>、<code>CountDownLatch</code>、<code>Semaphore</code>等都是使用 <em>AQS</em> 实现的</p>
+<p><em>AQS</em> 的核心思想是使用一个等待队列来管理线程的竞争和等待状态。当线程试图获取锁或资源时，如果资源已经被占用，线程将被放入等待队列中，进入等待状态。当资源释放时，AQS会自动唤醒等待队列中的第一个线程，使其重新尝试获取资源</p>
+<h3 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h3><h4 id="线程的创建方式"><a href="#线程的创建方式" class="headerlink" title="线程的创建方式"></a>线程的创建方式</h4><ol>
+<li><strong>继承 Thread 类</strong></li>
+</ol>
+<p>这是最常见的创建线程的方式。你可以创建一个继承自Thread类的子类，并重写其run()方法来定义线程要执行的任务。然后通过调用子类的start()方法来启动线程</p>
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyThread</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Thread</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// 线程要执行的任务</span><br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// 启动线程</span><br><span class="hljs-type">MyThread</span> <span class="hljs-variable">myThread</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MyThread</span>();<br>myThread.start();<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>实现 Runnable 接口</strong></li>
+</ol>
+<p>这是另一种常见的创建线程的方式，它更加灵活，因为Java是单继承的，如果已经继承了其他类，就无法再继承Thread类了。通过实现Runnable接口，你可以在同一个类中实现多个任务，同时也可以共享数据</p>
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyRunnable</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Runnable</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">run</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// 线程要执行的任务</span><br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// 启动线程</span><br><span class="hljs-type">Thread</span> <span class="hljs-variable">thread</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyRunnable</span>());<br>thread.start();<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><strong>实现 Callable 接口</strong></li>
+</ol>
+<p>Callable接口与Runnable接口类似，但是它可以返回计算结果，并且可以抛出异常。通过FutureTask类可以包装Callable，使其成为一个Runnable。与Runnable不同，Callable在执行时可以返回一个值</p>
+   <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyCallable</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Callable</span>&lt;Integer&gt; &#123;<br>    <span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">call</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// 线程要执行的任务，并返回一个结果</span><br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">// 启动线程</span><br><span class="hljs-type">ExecutorService</span> <span class="hljs-variable">executorService</span> <span class="hljs-operator">=</span> Executors.newSingleThreadExecutor();<br>Future&lt;Integer&gt; future = executorService.submit(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyCallable</span>());<br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><strong>使用 Executor 框架：</strong></li>
+</ol>
+<p>Java 提供了 Executor 框架，它是一种更高级别的线程管理方式，通过线程池来管理线程的创建和回收，从而提高性能并避免频繁地创建和销毁线程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">ExecutorService</span> <span class="hljs-variable">executorService</span> <span class="hljs-operator">=</span> Executors.newFixedThreadPool(<span class="hljs-number">5</span>);<br><br><span class="hljs-comment">// 提交任务给线程池</span><br>executorService.execute(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyRunnable</span>());<br>Future&lt;Integer&gt; future = executorService.submit(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyCallable</span>());<br></code></pre></td></tr></table></figure>
+
+<h4 id="LockSupport-的使用"><a href="#LockSupport-的使用" class="headerlink" title="LockSupport 的使用"></a>LockSupport 的使用</h4><p><code>LockSupport</code> 是 Java 中的一个工具类，用于线程的阻塞和唤醒。它提供了与 Java 对象监视器（<em><strong>synchronized</strong></em> 关键字）相似的功能，但是更加灵活和强大。<code>LockSupport</code> 可以在任意位置对线程进行阻塞和唤醒，而不需要依赖于特定的对象锁</p>
+<p><code>LockSupport</code> 的主要方法包括：</p>
+<ol>
+<li><p><code>park()</code>: 当前线程阻塞，直到被其他线程调用<code>unpark()</code>方法唤醒，或者被中断<code>Thread.interrupt()</code></p>
+</li>
+<li><p><code>park(Object blocker)</code>: 可以传入一个<code>blocker</code>对象，用于标识阻塞的原因，便于调试和监控</p>
+</li>
+<li><p><code>unpark(Thread thread)</code>: <strong>唤醒指定的线程</strong>，如果该线程之前没有被阻塞，那么下一次调用 <code>park()</code> 方法时，它将不会被阻塞</p>
+</li>
+</ol>
+<p><code>LockSupport</code> 的使用示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.util.concurrent.locks.LockSupport;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LockSupportExample</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">Thread</span> <span class="hljs-variable">thread</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(() -&gt; &#123;<br>            System.out.println(<span class="hljs-string">&quot;Thread starts.&quot;</span>);<br>            <span class="hljs-comment">// 阻塞当前线程</span><br>            LockSupport.park();<br>            System.out.println(<span class="hljs-string">&quot;Thread is awakened.&quot;</span>);<br>        &#125;);<br><br>        thread.start();<br><br>        <span class="hljs-keyword">try</span> &#123;<br>            <span class="hljs-comment">// 等待一段时间</span><br>            Thread.sleep(<span class="hljs-number">2000</span>);<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br><br>        <span class="hljs-comment">// 唤醒线程</span><br>        LockSupport.unpark(thread);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在上面的例子中，我们创建了一个新的线程，并在其中使用 <code>LockSupport.park()</code> 阻塞该线程。然后在主线程中经过一段时间后，使用 <code>LockSupport.unpark(thread)</code> 唤醒被阻塞的线程。</p>
+<p>需要注意的是，<code>LockSupport</code> 不是基于锁的机制，它没有像 <strong><code>synchronized</code></strong> 那样的锁定和释放过程，而是直接对线程进行阻塞和唤醒。因此，在使用 <code>LockSupport</code> 时要特别小心，避免造成死锁等问题。通常，<code>LockSupport</code> 用于高级并发工具的实现，比如 <code>ReentrantLock</code> 和 <code>ThreadPoolExecutor</code> 等</p>
+<h4 id="ReentrantLock-的使用"><a href="#ReentrantLock-的使用" class="headerlink" title="ReentrantLock 的使用"></a>ReentrantLock 的使用</h4><p><code>ReentrantLock </code> 是Java中 <code>java.util.concurrent.locks</code> 包下的一个可重入锁实现，它提供了与 <code>synchronized </code> 关键字类似的功能，但更加灵活和强大</p>
+<p>以下是 <code>ReentrantLock</code> 的一些主要方法和用法：</p>
+<ol>
+<li><p><strong>创建ReentrantLock对象：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">ReentrantLock</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReentrantLock</span>();<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>获取锁：</strong><br><code>ReentrantLock </code>使用 <code>lock()</code> 方法获取锁，如果锁已经被其他线程占用，则当前线程会被阻塞，直到获取到锁</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">lock.lock();<br><span class="hljs-comment">// 临界区代码</span><br>lock.unlock();<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>释放锁：</strong><br>使用 <code>unlock()</code> 方法释放锁。注意，为确保正确释放锁，应在 <code>finally</code> 块中使用 <code>unlock()</code>方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java">lock.lock();<br><span class="hljs-keyword">try</span> &#123;<br>    <span class="hljs-comment">// 临界区代码</span><br>&#125; <span class="hljs-keyword">finally</span> &#123;<br>    lock.unlock();<br>&#125;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>可中断获取锁：</strong><br><code>ReentrantLock </code>提供了 <code>lockInterruptibly()</code>方法，该方法允许线程在获取锁的过程中被中断</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">lock.lockInterruptibly();<br><span class="hljs-comment">// 临界区代码</span><br>lock.unlock();<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>尝试获取锁：</strong><br><code>tryLock() </code>方法尝试获取锁，如果锁可用，则获取锁并返回 <code>true</code>，如果锁被其他线程占用，则立即返回 <code>false</code>，而不会阻塞当前线程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">if</span> (lock.tryLock()) &#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        <span class="hljs-comment">// 临界区代码</span><br>    &#125; <span class="hljs-keyword">finally</span> &#123;<br>        lock.unlock();<br>    &#125;<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-comment">// 锁获取失败，执行备用方案</span><br>&#125;<br></code></pre></td></tr></table></figure>
+</li>
+<li><p><strong>获取等待的线程数：</strong><br><code>getQueueLength()</code> 方法可以获取当前等待获取锁的线程数量。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">int</span> <span class="hljs-variable">waitingThreads</span> <span class="hljs-operator">=</span> lock.getQueueLength();<br></code></pre></td></tr></table></figure></li>
+</ol>
+<p><code>ReentrantLock</code> 提供了更多的方法和特性，如公平锁和条件等待，使得它更加灵活和适用于复杂的多线程场景。在使用 <code>ReentrantLock</code>时，需要注意遵循获取锁和释放锁的正确顺序，以避免死锁和竞态条件。同时，要确保在获取锁后一定要释放锁，以防止资源泄漏</p>
+<p>一个简单的<code>ReentrantLock</code>的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> java.util.concurrent.locks.ReentrantLock;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ReentrantLockExample</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">MAX_COUNT</span> <span class="hljs-operator">=</span> <span class="hljs-number">5</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">ReentrantLock</span> <span class="hljs-variable">lock</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReentrantLock</span>();<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">Runnable</span> <span class="hljs-variable">task</span> <span class="hljs-operator">=</span> () -&gt; &#123;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; MAX_COUNT; i++) &#123;<br>                performTask();<br>            &#125;<br>        &#125;;<br><br>        <span class="hljs-type">Thread</span> <span class="hljs-variable">thread1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(task);<br>        <span class="hljs-type">Thread</span> <span class="hljs-variable">thread2</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(task);<br><br>        thread1.start();<br>        thread2.start();<br><br>        <span class="hljs-keyword">try</span> &#123;<br>            thread1.join();<br>            thread2.join();<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br><br>        System.out.println(<span class="hljs-string">&quot;Final count: &quot;</span> + count);<br>    &#125;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">performTask</span><span class="hljs-params">()</span> &#123;<br>        lock.lock();<br>        <span class="hljs-keyword">try</span> &#123;<br>            count++;<br>            System.out.println(<span class="hljs-string">&quot;Current count: &quot;</span> + count);<br>        &#125; <span class="hljs-keyword">finally</span> &#123;<br>            lock.unlock();<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这个例子中，我们有一个全局变量 <code>count</code>，两个线程通过调用 <code>performTask</code>方法来递增这个计数器。<code>performTask</code> 方法首先通过 <code>lock.lock()</code>获取锁，然后递增 <code>count</code>并输出当前的计数值，最后通过<code>lock.unlock()</code>释放锁</p>
+<p>由于<code>ReentrantLock</code>是可重入的，这意味着同一个线程可以多次获取该锁而不会被阻塞。在上面的例子中，两个线程都会交替执行 <code>performTask</code> 方法（并不是严格的交替），每次递增计数器，而不会出现竞争条件。最后输出的<code>count</code>值应该是<code>MAX_COUNT * 2</code>，因为两个线程各自递增了5次</p>
+<h4 id="模版方法设计模式"><a href="#模版方法设计模式" class="headerlink" title="模版方法设计模式"></a>模版方法设计模式</h4><p>模板方法（<em>Template Method</em>）是一种行为型设计模式，它定义了一个算法的骨架，将一些步骤的具体实现延迟到子类中。这样，子类可以在不改变算法结构的情况下重新定义某些步骤的实现。模板方法模式遵循”开闭原则”，允许在不修改算法结构的情况下修改算法的具体实现</p>
+<p>核心思想：</p>
+<ol>
+<li>定义一个抽象类，该抽象类包含一个模板方法，这个模板方法是一个算法的骨架，它由一系列的步骤组成，其中某些步骤的实现可以在子类中进行重定义</li>
+<li>模板方法中的某些步骤可以是抽象方法，由子类负责具体实现</li>
+<li>模板方法中的某些步骤可以是具体方法，已经有默认实现，子类可以选择是否覆盖这些方法</li>
+<li>子类继承抽象类，并实现其中的抽象方法，从而提供特定的实现细节</li>
+</ol>
+<p>通过模板方法模式，将通用算法的结构和步骤定义在抽象类中，而具体实现交给子类完成，这样可以避免代码重复，并且保持算法的一致性。下面通过一个简单的例子来说明模板方法模式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CaffeineBeverage</span> &#123;<br>    <span class="hljs-comment">// 模板方法，定义了算法的骨架</span><br>    <span class="hljs-keyword">final</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">prepareRecipe</span><span class="hljs-params">()</span> &#123;<br>        boilWater();<br>        brew();<br>        pourInCup();<br>        addCondiments();<br>    &#125;<br><br>    <span class="hljs-comment">// 具体步骤由子类实现</span><br>    <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">brew</span><span class="hljs-params">()</span>;<br><br>    <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addCondiments</span><span class="hljs-params">()</span>;<br><br>    <span class="hljs-comment">// 公共的方法</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">boilWater</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;Boiling water&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">pourInCup</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;Pouring into cup&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Tea</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">CaffeineBeverage</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">brew</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;Steeping the tea&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">addCondiments</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;Adding lemon&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Coffee</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">CaffeineBeverage</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">brew</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;Dripping coffee through filter&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">addCondiments</span><span class="hljs-params">()</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;Adding sugar and milk&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TemplateMethodExample</span> &#123;<br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> &#123;<br>        <span class="hljs-type">CaffeineBeverage</span> <span class="hljs-variable">tea</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Tea</span>();<br>        <span class="hljs-type">CaffeineBeverage</span> <span class="hljs-variable">coffee</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Coffee</span>();<br><br>        System.out.println(<span class="hljs-string">&quot;Making tea...&quot;</span>);<br>        tea.prepareRecipe();<br><br>        System.out.println(<span class="hljs-string">&quot;\nMaking coffee...&quot;</span>);<br>        coffee.prepareRecipe();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>CaffeineBeverage </code> 是一个抽象类，它定义了 <code>prepareRecipe</code> 作为模板方法，其中包含了煮水、冲泡、倒入杯子和加入调料等步骤。<code>brew  </code>和 <code>addCondiments</code> 是抽象方法，由具体的子类来实现。<code>boilWater  </code>和 <code>pourInCup </code>是具体方法，它们已经有默认实现，但也可以在子类中进行重定义</p>
+<p><code>Tea  </code>和 <code>Coffee</code> 是具体的子类，它们继承了 <code>CaffeineBeverage</code>，并实现了其中的抽象方法。通过运行 <code>main</code> 方法，我们可以看到茶和咖啡的制作过程，它们都遵循了 <code>CaffeineBeverage</code> 定义的算法结构，但具体步骤有所不同</p>
+<h3 id="AQS-结构"><a href="#AQS-结构" class="headerlink" title="AQS 结构"></a>AQS 结构</h3><p>AQS 内部属性包括：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 头结点，直接把它当做「当前持有锁的线程节点」可能是最好理解的</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">transient</span> <span class="hljs-keyword">volatile</span> Node head;<br><br><span class="hljs-comment">// 阻塞的尾节点，每个新的节点进来，都插入到最后，也就形成了一个链表</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">transient</span> <span class="hljs-keyword">volatile</span> Node tail;<br><br><span class="hljs-comment">// 最重要的，代表当前锁的状态，0代表没有被占用，大于 0 代表有线程持有当前锁</span><br><span class="hljs-comment">// 这个值可以大于 1，是因为锁可以重入，每次重入都加上 1</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-type">int</span> state;<br><br><span class="hljs-comment">// 代表当前持有独占锁的线程，举个最重要的使用例子，因为锁可以重入</span><br><span class="hljs-comment">// reentrantLock.lock()可以嵌套调用多次，所以每次用这个来判断当前线程是否已经拥有了锁</span><br><span class="hljs-comment">// if (currentThread == getExclusiveOwnerThread()) &#123;state++&#125;</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">transient</span> Thread exclusiveOwnerThread; <span class="hljs-comment">// 继承自AbstractOwnableSynchronizer</span><br></code></pre></td></tr></table></figure>
+
+<p><em>AbstractQueuedSynchronizer</em> 的等待队列示意如下所示，之后分析过程中所说的 queue，也就是阻塞队列<strong>不包含 head</strong></p>
+<p><img src="/aqs-0.png" srcset="/img/loading.gif" lazyload alt="aqs"></p>
+<p>等待队列中每个线程被包装成一个 Node 实例，数据结构是链表：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Node</span> &#123;<br>    <span class="hljs-comment">// 标识节点当前在共享模式下</span><br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Node</span> <span class="hljs-variable">SHARED</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Node</span>();<br>    <span class="hljs-comment">// 标识节点当前在独占模式下</span><br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Node</span> <span class="hljs-variable">EXCLUSIVE</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br><br>    <span class="hljs-comment">// ======== 下面的几个int常量是给waitStatus用的 ===========</span><br>    <span class="hljs-comment">// 代码此线程取消了争抢这个锁</span><br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">CANCELLED</span> <span class="hljs-operator">=</span>  <span class="hljs-number">1</span>;<br>    <span class="hljs-comment">/** waitStatus value to indicate successor&#x27;s thread needs unparking */</span><br>    <span class="hljs-comment">// 官方的描述是，其表示当前node的后继节点对应的线程需要被唤醒</span><br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">SIGNAL</span>    <span class="hljs-operator">=</span> -<span class="hljs-number">1</span>;<br>  <br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">CONDITION</span> <span class="hljs-operator">=</span> -<span class="hljs-number">2</span>;<br>    <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">PROPAGATE</span> <span class="hljs-operator">=</span> -<span class="hljs-number">3</span>;<br><br>    <span class="hljs-comment">// 取值为上面的1、-1、-2、-3，或者0</span><br>    <span class="hljs-comment">// 这么理解，暂时只需要知道如果这个值 大于0 代表此线程取消了等待，</span><br>    <span class="hljs-comment">// 比如：半天抢不到锁，不抢了，ReentrantLock是可以指定timeouot取消的</span><br>    <span class="hljs-keyword">volatile</span> <span class="hljs-type">int</span> waitStatus;<br>    <span class="hljs-comment">// 前驱节点的引用</span><br>    <span class="hljs-keyword">volatile</span> Node prev;<br>    <span class="hljs-comment">// 后继节点的引用</span><br>    <span class="hljs-keyword">volatile</span> Node next;<br>    <span class="hljs-comment">// 这个就是线程本尊</span><br>    <span class="hljs-keyword">volatile</span> Thread thread;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><em>AQS</em> 内部提供了几个重要的方法，用于子类实现具体的同步逻辑，包括：</p>
+<ol>
+<li><p><strong><code>getState()</code>：</strong> 获取同步状态。</p>
+</li>
+<li><p><strong><code>setState(int newState)</code>：</strong> 设置同步状态。</p>
+</li>
+<li><p><strong><code>compareAndSetState(int expect, int update)</code>：</strong> 原子性地更新同步状态。</p>
+</li>
+<li><p><strong><code>acquire(int arg)</code>：</strong> 获取同步状态，如果资源被占用，则将当前线程入队等待。</p>
+</li>
+<li><p><strong><code>release(int arg)</code>：</strong> 释放同步状态，同时唤醒等待队列中的一个线程。</p>
+</li>
+<li><p><strong><code>tryAcquire(int arg)</code>：</strong> 尝试获取同步状态，如果成功返回true，否则返回false。</p>
+</li>
+<li><p><strong><code>tryRelease(int arg)</code>：</strong> 尝试释放同步状态，如果成功返回true，否则返回false。</p>
+</li>
+</ol>
+<p>Java中的并发工具类如ReentrantLock、Semaphore、CountDownLatch等都是通过继承AQS并重写其中的方法来实现不同的同步策略</p>
+<p>AQS提供了强大的基础支持，使得开发者可以更方便地实现高效的多线程同步工具，避免了手动实现复杂的同步机制，同时也提高了并发性能和可维护性</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Java/AQS/" class="category-chain-item">AQS</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+        <a href="/tags/AQS/" class="print-no-link">#AQS</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AQS 原理分析</div>
+      <div>https://sugayoiya.github.io/posts/13119.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/52833.html" title="家庭 Nas 打造全自动追剧流程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">家庭 Nas 打造全自动追剧流程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/7067.html" title="Async 原理">
+                        <span class="hidden-mobile">Async 原理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
