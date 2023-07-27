@@ -192,6 +192,13 @@
   </url>
   
   <url>
+    <loc>https://sugayoiya.github.io/tags/BlockingQueue/</loc>
+    <lastmod>2023-07-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://sugayoiya.github.io/tags/blog/</loc>
     <lastmod>2023-07-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -241,7 +248,7 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/tags/BlockingQueue/</loc>
+    <loc>https://sugayoiya.github.io/tags/Spring-Ioc/</loc>
     <lastmod>2023-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -262,14 +269,7 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/tags/Mybatis/</loc>
-    <lastmod>2023-07-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/tags/Spring-Ioc/</loc>
+    <loc>https://sugayoiya.github.io/tags/bean/</loc>
     <lastmod>2023-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -283,7 +283,7 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/tags/bean/</loc>
+    <loc>https://sugayoiya.github.io/tags/Mybatis/</loc>
     <lastmod>2023-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -355,6 +355,13 @@
   </url>
   
   <url>
+    <loc>https://sugayoiya.github.io/categories/Java/BlockingQueue/</loc>
+    <lastmod>2023-07-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://sugayoiya.github.io/categories/Hexo/</loc>
     <lastmod>2023-07-27</lastmod>
     <changefreq>weekly</changefreq>
@@ -363,13 +370,6 @@
   
   <url>
     <loc>https://sugayoiya.github.io/categories/Java/Collection/</loc>
-    <lastmod>2023-07-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/categories/Java/BlockingQueue/</loc>
     <lastmod>2023-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
