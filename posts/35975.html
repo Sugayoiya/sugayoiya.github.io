@@ -14,18 +14,18 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="Sugayoiya">
-  <meta name="keywords" content="Mysql 事务">
+  <meta name="keywords" content="MySQL 事务">
   
     <meta name="description" content="事务（Transaction）是数据库管理系统（DBMS）中的一个重要概念，用于确保数据库中数据的一致性、可靠性和完整性。它是由一系列数据库操作组成的逻辑单位，这些操作要么全部执行成功，要么全部不执行，不允许部分执行。如果事务中的任何操作失败，整个事务将回滚（Rollback）到最初的状态，就像没有执行过一样，保持数据的一致性">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mysql 事务">
+<meta property="og:title" content="MySQL 事务">
 <meta property="og:url" content="https://sugayoiya.github.io/posts/35975.html">
 <meta property="og:site_name" content="東方プロジェクト">
 <meta property="og:description" content="事务（Transaction）是数据库管理系统（DBMS）中的一个重要概念，用于确保数据库中数据的一致性、可靠性和完整性。它是由一系列数据库操作组成的逻辑单位，这些操作要么全部执行成功，要么全部不执行，不允许部分执行。如果事务中的任何操作失败，整个事务将回滚（Rollback）到最初的状态，就像没有执行过一样，保持数据的一致性">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://sugayoiya.github.io/img/post/(100922072)-Day22%E8%9F%B9%E3%81%A1%E3%81%B3w_p0.jpg">
 <meta property="article:published_time" content="2021-10-25T12:53:35.000Z">
-<meta property="article:modified_time" content="2023-07-29T15:16:09.518Z">
+<meta property="article:modified_time" content="2023-07-29T17:14:27.685Z">
 <meta property="article:author" content="Sugayoiya">
 <meta property="article:tag" content="Mysql">
 <meta property="article:tag" content="Transaction">
@@ -36,7 +36,7 @@
     <meta name="referrer" content="no-referrer-when-downgrade">
   
   
-  <title>Mysql 事务 - 東方プロジェクト</title>
+  <title>MySQL 事务 - 東方プロジェクト</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -231,7 +231,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Mysql 事务"></span>
+            <span id="subtitle" data-typed-text="MySQL 事务"></span>
           
         </div>
 
@@ -310,7 +310,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Mysql 事务</h1>
+            <h1 id="seo-header">MySQL 事务</h1>
             
             
               <div class="markdown-body">
@@ -457,7 +457,7 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>;<br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">200</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">300</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
 
 <p>那么 <code>id=1</code> 的记录此时的版本链就如下图所示：</p>
-<p><img src="/mysql-concurrency-control-1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/posts/35975/mysql-concurrency-control-1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <h6 id="ReadView"><a href="#ReadView" class="headerlink" title="ReadView"></a>ReadView</h6><p>对于使用 <code>Read Uncommitted</code> 隔离级别的事务来说，只需要读取版本链上最新版本的记录即可；对于使用 <code>Serializable</code> 隔离级别的事务来说，<code>InnoDB</code> 使用加锁的方式来访问记录。而 <code>Read Committed</code> 和 <code>Repeatable Read</code> 隔离级别来说，都需要读取已经提交的事务所修改的记录，也就是说如果版本链中某个版本的修改没有提交，那么该版本的记录时不能被读取的。所以需要确定在 <code>Read Committed</code> 和 <code>Repeatable Read</code> 隔离级别下，版本链中哪个版本是能被当前事务读取的。于是 <code>ReadView</code> 的概念被提出以解决这个问题</p>
 <p><code>ReadView</code> 相当于某个时刻表记录的一个快照，在这个快照中我们能获取到与当前记录相关的事务中，哪些事务是已提交的<strong>稳定事务</strong>，哪些是<strong>正在活跃的事务</strong>，哪些是<strong>生成快照之后才开启的事务</strong>。由此我们就能根据<strong>可见性比较算法</strong>判断出版本链中能被读取的最新版本记录</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReadView</span> &#123;</span><br>  <span class="hljs-comment">/* ... */</span><br>private:<br>  <span class="hljs-type">trx_id_t</span> m_low_limit_id;      <span class="hljs-comment">/* 大于等于这个 ID 的事务均不可见 */</span><br><br>  <span class="hljs-type">trx_id_t</span> m_up_limit_id;       <span class="hljs-comment">/* 小于这个 ID 的事务均可见 */</span><br><br>  <span class="hljs-type">trx_id_t</span> m_creator_trx_id;    <span class="hljs-comment">/* 创建该 Read View 的事务ID */</span><br><br>  <span class="hljs-type">trx_id_t</span> m_low_limit_no;      <span class="hljs-comment">/* 事务 Number, 小于该 Number 的 Undo Logs 均可以被 Purge */</span><br><br>  <span class="hljs-type">ids_t</span> m_ids;                  <span class="hljs-comment">/* 创建 Read View 时的活跃事务列表 */</span><br><br>  m_closed;                     <span class="hljs-comment">/* 标记 Read View 是否 close */</span><br>&#125;<br></code></pre></td></tr></table></figure>
@@ -475,7 +475,7 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 开启Transaction <span class="hljs-number">10</span><br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">200</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">300</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
 
 <p>此时该事务尚未提交，<code>id</code>为2的记录版本链如下图所示：</p>
-<p><img src="/mysql-concurrency-control-2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/posts/35975/mysql-concurrency-control-2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>然后我们开启一个事务对<code>id</code>为2的记录进行查询：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>;<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> book <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
 
@@ -491,7 +491,7 @@
 
 
 <p>此时<code>id</code>为2的记录版本链如下图所示：</p>
-<p><img src="/mysql-concurrency-control-3.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/posts/35975/mysql-concurrency-control-3.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>然后我们回到刚才的查询事务中再次查询<code>id</code>为2的记录：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>;<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> book <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 此时Transaction <span class="hljs-number">10</span> 未提交<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> book <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 此时Transaction <span class="hljs-number">10</span> 已提交<br></code></pre></td></tr></table></figure>
 
@@ -540,27 +540,27 @@
 <p>当前读不仅会对当前记录加<strong>行记录锁</strong>，还会对查询范围空间的数据加<strong>间隙锁</strong>（<code>GAP LOCK</code>），因此可以<strong>阻止幻读</strong>问题的出现</p>
 <h5 id="快照读是如何避免幻读的？"><a href="#快照读是如何避免幻读的？" class="headerlink" title="快照读是如何避免幻读的？"></a>快照读是如何避免幻读的？</h5><p>可重复读隔离级是由 MVCC（多版本并发控制）实现的，实现的方式是开始事务后（执行 begin 语句后），在执行第一个查询语句后，会创建一个 Read View，<strong>后续的查询语句利用这个 Read View，通过这个 Read View 就可以在 undo log 版本链找到事务开始时的数据，所以事务过程中每次查询的数据都是一样的</strong>，即使中途有其他事务插入了新纪录，是查询不出来这条数据的，所以就很好了避免幻读问题。</p>
 <p>做个实验，数据库表 t_stu 如下，其中 id 为主键。</p>
-<p><img src="/7f9df142b3594daeaaca495abb7133f5.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/posts/35975/7f9df142b3594daeaaca495abb7133f5.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>然后在可重复读隔离级别下，有两个事务的执行顺序如下：</p>
-<p><img src="/e576e047dccc47d5a59636ea342750b8.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"></p>
+<p><img src="/posts/35975/e576e047dccc47d5a59636ea342750b8.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"></p>
 <p>从这个实验结果可以看到，即使事务 B 中途插入了一条记录，事务 A 前后两次查询的结果集都是一样的，并没有出现所谓的幻读现象。</p>
 <h5 id="当前读是如何避免幻读的？"><a href="#当前读是如何避免幻读的？" class="headerlink" title="当前读是如何避免幻读的？"></a>当前读是如何避免幻读的？</h5><p>MySQL 里除了普通查询是快照读，其他都是<strong>当前读</strong>，比如 update、insert、delete，这些语句执行前都会查询最新版本的数据，然后再做进一步的操作。</p>
 <p>这很好理解，假设你要 update 一个记录，另一个事务已经 delete 这条记录并且提交事务了，这样不是会产生冲突吗，所以 update 的时候肯定要知道最新的数据。</p>
 <p>另外，<code>select ... for update</code> 这种查询语句是当前读，每次执行的时候都是读取最新的数据。</p>
 <p>接下来，我们假设<code>select ... for update</code>当前读是不会加锁的（实际上是会加锁的），在做一遍实验。</p>
-<p><img src="/1f872ff92b644b5f81cee2dd9188b199.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/posts/35975/1f872ff92b644b5f81cee2dd9188b199.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>这时候，事务 B 插入的记录，就会被事务 A 的第二条查询语句查询到（因为是当前读），这样就会出现前后两次查询的结果集合不一样，这就出现了幻读</p>
 <p>所以，<strong>Innodb 引擎为了解决「可重复读」隔离级别使用「当前读」而造成的幻读问题，就引出了间隙锁</strong></p>
 <p>假设，表中有一个范围 id 为（3，5）间隙锁，那么其他事务就无法插入 id &#x3D; 4 这条记录了，这样就有效的防止幻读现象的发生。</p>
 <p><img src="/gap%E9%94%81.drawio.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>举个具体例子，场景如下：</p>
-<p><img src="/3af285a8e70f4d4198318057eb955520.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/posts/35975/3af285a8e70f4d4198318057eb955520.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>事务 A 执行了这面这条锁定读语句后，就在对表中的记录加上 id 范围为 (2, +∞] 的 <strong>next-key lock</strong>（next-key lock 是间隙锁+记录锁的组合）</p>
 <p>然后，事务 B 在执行插入语句的时候，判断到插入的位置被事务 A 加了 next-key lock，于是事物 B 会生成一个插入意向锁，同时进入等待状态，直到事务 A 提交了事务。这就避免了由于事务 B 插入新记录而导致事务 A 发生幻读的现象</p>
 <h5 id="幻读被完全解决了吗？"><a href="#幻读被完全解决了吗？" class="headerlink" title="幻读被完全解决了吗？"></a>幻读被完全解决了吗？</h5><p><strong>可重复读隔离级别下虽然很大程度上避免了幻读，但是还是没有能完全解决幻读</strong>。</p>
 <p>我举例一个可重复读隔离级别发生幻读现象的场景。</p>
 <h6 id="第一个发生幻读现象的场景"><a href="#第一个发生幻读现象的场景" class="headerlink" title="第一个发生幻读现象的场景"></a>第一个发生幻读现象的场景</h6><p>还是以这张表作为例子：</p>
-<p><img src="/7f9df142b3594daeaaca495abb7133f5-20230309222119359.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/posts/35975/7f9df142b3594daeaaca495abb7133f5-20230309222119359.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>事务 A 执行查询 id &#x3D; 5 的记录，此时表中是没有该记录的，所以查询不出来。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql"># 事务 A<br>mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">begin</span>;<br>Query OK, <span class="hljs-number">0</span> <span class="hljs-keyword">rows</span> affected (<span class="hljs-number">0.00</span> sec)<br><br>mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> t_stu <span class="hljs-keyword">where</span> id <span class="hljs-operator">=</span> <span class="hljs-number">5</span>;<br><span class="hljs-keyword">Empty</span> <span class="hljs-keyword">set</span> (<span class="hljs-number">0.01</span> sec)<br></code></pre></td></tr></table></figure>
 
@@ -645,7 +645,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Mysql 事务</div>
+      <div>MySQL 事务</div>
       <div>https://sugayoiya.github.io/posts/35975.html</div>
     </div>
     <div class="license-meta">
