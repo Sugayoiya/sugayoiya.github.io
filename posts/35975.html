@@ -1,0 +1,1044 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="MySQL 事务">
+  
+    <meta name="description" content="事务（Transaction）是数据库管理系统（DBMS）中的一个重要概念，用于确保数据库中数据的一致性、可靠性和完整性。它是由一系列数据库操作组成的逻辑单位，这些操作要么全部执行成功，要么全部不执行，不允许部分执行。如果事务中的任何操作失败，整个事务将回滚（Rollback）到最初的状态，就像没有执行过一样，保持数据的一致性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL 事务">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/35975.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="事务（Transaction）是数据库管理系统（DBMS）中的一个重要概念，用于确保数据库中数据的一致性、可靠性和完整性。它是由一系列数据库操作组成的逻辑单位，这些操作要么全部执行成功，要么全部不执行，不允许部分执行。如果事务中的任何操作失败，整个事务将回滚（Rollback）到最初的状态，就像没有执行过一样，保持数据的一致性">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sugayoiya.github.io/img/post/(100922072)-Day22%E8%9F%B9%E3%81%A1%E3%81%B3w_p0.jpg">
+<meta property="article:published_time" content="2021-10-25T12:53:35.000Z">
+<meta property="article:modified_time" content="2023-07-29T17:14:27.000Z">
+<meta property="article:author" content="Sugayoiya">
+<meta property="article:tag" content="Mysql">
+<meta property="article:tag" content="Transaction">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sugayoiya.github.io/img/post/(100922072)-Day22%E8%9F%B9%E3%81%A1%E3%81%B3w_p0.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>MySQL 事务 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>妖怪の山</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>紅魔館</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>雾之湖</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>人間の里</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>永遠亭</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post/(100922072)-Day22%E8%9F%B9%E3%81%A1%E3%81%B3w_p3.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="MySQL 事务"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-10-25 20:53" pubdate>
+          2021年10月25日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          12k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MySQL 事务</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>事务</strong>（Transaction）是数据库管理系统（DBMS）中的一个重要概念，用于确保数据库中数据的一致性、可靠性和完整性。它是由一系列数据库操作组成的逻辑单位，这些操作要么全部执行成功，要么全部不执行，不允许部分执行。如果事务中的任何操作失败，整个事务将回滚（Rollback）到最初的状态，就像没有执行过一样，保持数据的一致性</p>
+<span id="more"></span>
+
+<h4 id="事务的特性"><a href="#事务的特性" class="headerlink" title="事务的特性"></a>事务的特性</h4><p>事务通常有以下四个标准特性，通常称为 <strong>ACID</strong> 特性：</p>
+<ol>
+<li><p><strong>原子性（Atomicity）</strong>：事务是原子的，要么全部执行，要么全部不执行。如果事务中的任何操作失败，整个事务将被回滚，保持数据库的一致性</p>
+<blockquote>
+<p>就好比买一件商品，购买成功时，则给商家付了钱，商品到手；购买失败时，则商品在商家手中，消费者的钱也没花出去</p>
+</blockquote>
+</li>
+<li><p><strong>一致性（Consistency）</strong>：事务开始之前和结束之后，数据库的状态应该保持一致。这意味着事务的执行不会破坏数据库的完整性约束，如唯一性、外键约束等</p>
+<blockquote>
+<p>比如，用户 A 和用户 B 在银行分别有 800 元和 600 元，总共 1400 元，用户 A 给用户 B 转账 200 元，分为两个步骤，从 A 的账户扣除 200 元和对 B 的账户增加 200 元。一致性就是要求上述步骤操作后，最后的结果是用户 A 还有 600 元，用户 B 有 800 元，总共 1400 元，而不会出现用户 A 扣除了 200 元，但用户 B 未增加的情况（该情况，用户 A 和 B 均为 600 元，总共 1200 元）</p>
+</blockquote>
+</li>
+<li><p><strong>隔离性（Isolation）</strong>：数据库允许多个并发事务同时对其数据进行读写和修改的能力，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致，因为多个事务同时使用相同的数据时，不会相互干扰，每个事务都有一个完整的数据空间，对其他并发事务是隔离的</p>
+<blockquote>
+<p>也就是说，消费者购买商品这个事务，是不影响其他消费者购买的</p>
+</blockquote>
+</li>
+<li><p><strong>持久性（Durability）</strong>：一旦事务提交成功，其所做的修改将永久保存在数据库中，即使发生系统故障或崩溃，也不会丢失提交的数据</p>
+</li>
+</ol>
+<blockquote>
+<p><strong>先写在前面</strong></p>
+<p> InnoDB 引擎通过什么技术来保证事务的这四个特性的呢？</p>
+<ul>
+<li>持久性是通过 redo log （重做日志）来保证的</li>
+<li>原子性是通过 undo log（回滚日志） 来保证的</li>
+<li>隔离性是通过 MVCC（多版本并发控制） 或锁机制来保证的</li>
+<li>一致性则是通过持久性 + 原子性 + 隔离性来保证</li>
+</ul>
+</blockquote>
+<h4 id="并发事务"><a href="#并发事务" class="headerlink" title="并发事务"></a>并发事务</h4><p>MySQL 服务端是允许多个客户端连接的，这意味着 MySQL 会出现同时处理多个事务的情况</p>
+<p>那么<strong>在同时处理多个事务的时候，就可能出现脏读（dirty read）、不可重复读（non-repeatable read）、幻读（phantom read）的问题</strong></p>
+<p><strong>脏读</strong>：脏读指的是读到了其他事务未提交的数据，未提交意味着这些数据可能会回滚，也就是可能最终不会存到数据库中，也就是不存在的数据。读到了并一定最终存在的数据，这就是脏读</p>
+<p><strong>不可重复读</strong>：对比可重复读，不可重复读指的是在同一事务内，不同的时刻读到的同一批数据可能是不一样的，可能会受到其他事务的影响，比如其他事务改了这批数据并提交了。通常针对数据更新操作</p>
+<p><strong>幻读</strong>：幻读是针对数据插入操作来说的。假设事务A对某些行的内容作了更改，但是还未提交，此时事务B插入了与事务A更改前的记录相同的记录行，并且在事务A提交之前先提交了，而这时，在事务A中查询，会发现好像刚刚的更改对于某些数据未起作用，让用户感觉感觉出现了幻觉，这就叫幻读</p>
+<blockquote>
+<p><strong>可重复读</strong>：可重复读指的是在一个事务内，最开始读到的数据和事务结束前的任意时刻读到的同一批数据都是一致的</p>
+</blockquote>
+<h4 id="事务隔离级别"><a href="#事务隔离级别" class="headerlink" title="事务隔离级别"></a>事务隔离级别</h4><p>事务的隔离级别是数据库管理系统中用于<strong>控制多个并发事务之间相互影响程度</strong>的一种机制。由于数据库系统常常有多个用户同时访问和修改数据，为了保证事务的隔离性和数据的一致性，引入了不同的隔离级别。数据库管理系统通常支持以下四个标准的隔离级别：</p>
+<ol>
+<li><p><strong>读未提交（Read Uncommitted）</strong>：这是最低的隔离级别。在该级别下，一个事务可以读取到另一个事务尚未提交的修改。这可能导致脏读（<em>Dirty Read</em>），即读取到未经确认的数据，可能是无效的数据</p>
+</li>
+<li><p><strong>读提交（Read Committed）</strong>：在该级别下，一个事务只能读取到已经提交的数据。这避免了脏读，但可能会导致不可重复读（<em>Non-repeatable Read</em>）。不可重复读指的是，在同一个事务中，由于其他事务的修改，同一数据行的值可能会发生变化</p>
+</li>
+<li><p><strong>可重复读（Repeatable Read）</strong>：在该级别下，一个事务在执行期间多次读取同一数据，将看到一致的结果。其他事务修改数据时，不会影响当前事务的读取结果。但是，仍然可能发生幻读（<em>Phantom Read</em>）。幻读指的是在同一个事务中，由于其他事务插入新数据，导致之前的查询结果发生变化</p>
+</li>
+<li><p><strong>串行化（Serializable）</strong>：这是最高的隔离级别。在该级别下，所有事务按照顺序逐个执行，相当于将并发执行转换为串行执行。这样可以避免脏读、不可重复读和幻读，但并发性能会受到极大影响，通常只在特殊情况下使用</p>
+</li>
+</ol>
+<p>需要注意的是，隔离级别越高，事务的隔离性越好，但并发性能也会降低。因此，在选择隔离级别时，需要根据具体应用场景的要求进行权衡</p>
+<p><strong>不同的事务隔离级别下会有不同的现象</strong></p>
+<table>
+<thead>
+<tr>
+<th>事务隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>读未提交</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>不可重复读</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>可重复读</td>
+<td>否</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>串行化</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+</tbody></table>
+<p><strong>MySQL InnoDB 引擎的默认隔离级别虽然是「可重复读」，但是它很大程度上避免幻读现象</strong>，解决的方案有两种：</p>
+<ul>
+<li>针对<strong>快照读</strong>（普通 select 语句），是<strong>通过 MVCC 方式解决了幻读</strong>，因为可重复读隔离级别下，事务执行过程中看到的数据，一直跟这个事务启动时看到的数据是一致的，即使中途有其他事务插入了一条数据，是查询不出来这条数据的，所以就很好了避免幻读问题</li>
+<li>针对<strong>当前读</strong>（select … for update 等语句），是<strong>通过 next-key lock（记录锁+间隙锁）方式解决了幻读</strong>，因为当执行 select … for update 语句的时候，会加上 next-key lock，如果有其他事务在 next-key lock 锁范围内插入了一条记录，那么这个插入语句就会被阻塞，无法成功插入，所以就很好了避免幻读问题</li>
+</ul>
+<h4 id="并发事务控制"><a href="#并发事务控制" class="headerlink" title="并发事务控制"></a>并发事务控制</h4><ul>
+<li><strong>读-读</strong>：即并发事务相继读取同一记录</li>
+<li><strong>写-写</strong>：即并发事务相继对同一记录做出修改</li>
+<li><strong>写-读</strong>或<strong>读-写</strong>：即两个并发事务对同一记录分别进行读操作和写操作</li>
+</ul>
+<h5 id="读-读"><a href="#读-读" class="headerlink" title="读-读"></a>读-读</h5><p>因为读取记录并不会对记录造成任何影响，所以同个事务并发读取同一记录也就不存在任何安全问题，所以允许这种操作。</p>
+<h5 id="写-写"><a href="#写-写" class="headerlink" title="写-写"></a>写-写</h5><p>如果允许并发事务都读取同一记录，并相继基于旧值对这一记录做出修改，那么就会出现前一个事务所做的修改被后面事务的修改覆盖，即出现<strong>提交覆盖</strong>的问题。</p>
+<p>另外一种情况，并发事务相继对同一记录做出修改，其中一个事务提交之后之后另一个事务发生回滚，这样就会出现已提交的修改因为回滚而丢失的问题，即<strong>回滚覆盖</strong>问题。</p>
+<p>这两种问题都造成丢失更新，其中回滚覆盖称为<strong>第一类丢失更新</strong>问题，提交覆盖称为<strong>第二类丢失更新</strong>问题</p>
+<h5 id="写-读或读-写"><a href="#写-读或读-写" class="headerlink" title="写-读或读-写"></a><strong>写-读</strong>或<strong>读-写</strong></h5><p>这种情况较为复杂，也最容易出现问题</p>
+<p>如果一个事务读取了另一个事务尚未提交的修改记录，那么就出现了<strong>脏读</strong>的问题；</p>
+<p>如果我们加以控制使得一个事务只能读取其他已提交事务的修改的数据，那么这个事务在另一事物提交修改前后读取到的数据是不一样的，这就意味着发生了<strong>不可重复读</strong>；</p>
+<p>如果一个事务根据一些条件查询到一些记录，之后另一事物向表中插入了一些记录，原先的事务以相同条件再次查询时发现得到的结果跟第一次查询得到的结果不一致，这就意味着发生了<strong>幻读</strong>。</p>
+<h4 id="传统隔离级别的实现"><a href="#传统隔离级别的实现" class="headerlink" title="传统隔离级别的实现"></a>传统隔离级别的实现</h4><p><strong>锁</strong> 控制方式下会通过锁来显示控制共享资源而不是通过调度手段，MySQL 中主要是通过 <strong>读写锁</strong> 来实现并发控制。</p>
+<ul>
+<li>共享锁（<code>Shared Locks</code>）：简称 <strong>S锁</strong>，事务对一条记录进行读操作时，需要先获取该记录的共享锁</li>
+<li>排他锁（<code>Exclusive Locks</code>）：简称 <strong>X锁</strong>，事务对一条记录进行写操作时，需要先获取该记录的排他锁</li>
+</ul>
+<p>读写锁可以做到读读并行，但是无法做到写读、写写并行。另外，根据根据锁粒度的不同，又被分为 <strong>表级锁 (table-level locking)</strong> 和 <strong>行级锁 (row-level locking)</strong> 。InnoDB 不光支持表级锁，还支持行级锁，默认为行级锁。行级锁的粒度更小，仅对相关的记录上锁即可（对一行或者多行记录加锁），所以对于并发写入操作来说， InnoDB 的性能更高。不论是表级锁还是行级锁，都存在共享锁（Share Lock，S 锁）和排他锁（Exclusive Lock，X 锁）这两类</p>
+<p>在<strong>基于锁</strong>的实现方式下，四种隔离级别的区别就在于加锁方式的区别：</p>
+<ul>
+<li><strong>读未提交</strong>：读操作不加锁，读读，读写，写读并行；写操作加<code>X锁</code>且直到事务提交后才释放</li>
+<li><strong>读已提交</strong>：读操作加<code>S锁</code>，写操作加<code>X锁</code>且直到事务提交后才释放；读操作不会阻塞其他事务读或写，写操作会阻塞其他事务写和读，因此可以防止脏读问题</li>
+<li><strong>可重复读</strong>：读操作加<code>S锁</code>且直到事务提交后才释放，写操作加<code>X锁</code>且直到事务提交后才释放；读操作不会阻塞其他事务读但会阻塞其他事务写，写操作会阻塞其他事务读和写，因此可以防止脏读、不可重复读</li>
+<li><strong>串行化</strong>：读操作和写操作都加<code>X锁</code>且直到事务提交后才释放，粒度为表锁，也就是严格串行</li>
+</ul>
+<blockquote>
+<p><strong>值得注意的点</strong></p>
+<ul>
+<li>如果锁获取之后直到事务提交后才释放，这种锁称为<strong>长锁</strong>；如果锁在操作完成之后就被释放，这种锁称为<strong>短锁</strong>。例如，在读已提交隔离级别下，读操作所加<code>S锁</code>为短锁，写操作所加<code>X锁</code>为长锁。</li>
+<li>对于可重复读和串行化隔离级别，读操作所加<code>S锁</code>和写操作所加<code>X锁</code>均为长锁，即事务获取锁之后直到事务提交后才能释放，这种把获取锁和释放锁分为两个不同的阶段的协议称为<strong>两阶段锁</strong>协议（<code>2-phase locking</code>）。两阶段锁协议规定在加锁阶段，一个事务可以获得锁但是不能释放锁；而在解锁阶段事务只可以释放锁，并不能获得新的锁。两阶段锁协议能够保证事务串行化执行，解决事务并发问题，但也会导致死锁发生的概率大大提升</li>
+</ul>
+</blockquote>
+<h4 id="MySQL-innodb隔离级别的实现"><a href="#MySQL-innodb隔离级别的实现" class="headerlink" title="MySQL innodb隔离级别的实现"></a>MySQL innodb隔离级别的实现</h4><p>不同数据库对于 <code>SQL</code> 标准中规定的隔离级别支持是不一样的，数据库引擎实现隔离级别的方式虽然都在尽可能地贴近标准的隔离级别规范，但和标准的预期还是有些不一样的地方。</p>
+<p>MySQL（<strong>innodb</strong>）支持的4种隔离级别，与标准的各级隔离级别允许出现的问题有些出入，比如<code>MySQL</code>在可重复读隔离级别下可以防止幻读的问题出现，但也会出现提交覆盖的问题</p>
+<p>相对于传统隔离级别基于锁的实现方式，<code>MySQL</code> 是通过<code>MVCC</code>（多版本并发控制）来实现读-写并发控制，又是通过两阶段锁来实现写-写并发控制的。<code>MVCC</code>是一种无锁方案，用以解决事务<strong>读-写</strong>并发的问题，能够极大提升<strong>读-写</strong>并发操作的性能</p>
+<h5 id="MVCC的实现原理"><a href="#MVCC的实现原理" class="headerlink" title="MVCC的实现原理"></a>MVCC的实现原理</h5><p>为了方便描述，首先我们创建一个表 <code>book</code>，就三个字段，分别是主键 <code>book_id</code>, 名称 <code>book_name</code>, 库存 <code>stock</code>。然后向表中插入一些数据：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> book <span class="hljs-keyword">VALUES</span>(<span class="hljs-number">1</span>, <span class="hljs-string">&#x27;数据结构&#x27;</span>, <span class="hljs-number">100</span>);<br><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> book <span class="hljs-keyword">VALUES</span>(<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;C++指南&#x27;</span>, <span class="hljs-number">100</span>);<br><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> book <span class="hljs-keyword">VALUES</span>(<span class="hljs-number">3</span>, <span class="hljs-string">&#x27;精通Java&#x27;</span>, <span class="hljs-number">100</span>);<br></code></pre></td></tr></table></figure>
+
+<h6 id="版本链"><a href="#版本链" class="headerlink" title="版本链"></a>版本链</h6><p>对于使用 <code>InnoDB</code> 存储引擎的表，其聚簇索引记录中包含了两个重要的隐藏列：</p>
+<ul>
+<li>事务ID（<code>DB_TRX_ID</code>）：每当事务对聚簇索引中的记录进行修改时，都会把当前事务的事务id记录到 <code>DB_TRX_ID</code> 中</li>
+<li>回滚指针（<code>DB_ROLL_PTR</code>）：每当事务对聚簇索引中的记录进行修改时，都会把该记录的旧版本记录到 <code>undo</code> 日志中，通过 <code>DB_ROLL_PTR</code> 这个指针可以用来获取该记录旧版本的信息</li>
+</ul>
+<p>如果在一个事务中多次对记录进行修改，则每次修改都会生成 <code>undo</code> 日志，并且这些 <code>undo</code> 日志通过 <code>DB_ROLL_PTR</code> 指针串联成一个版本链，版本链的头结点是该记录最新的值，尾结点是事务开始时的初始值</p>
+<p>例如，我们在表 <code>book</code> 中做以下修改：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>;<br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">200</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">300</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
+
+<p>那么 <code>id=1</code> 的记录此时的版本链就如下图所示：</p>
+<p><img src="/posts/35975/mysql-concurrency-control-1.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h6 id="ReadView"><a href="#ReadView" class="headerlink" title="ReadView"></a>ReadView</h6><p>对于使用 <code>Read Uncommitted</code> 隔离级别的事务来说，只需要读取版本链上最新版本的记录即可；对于使用 <code>Serializable</code> 隔离级别的事务来说，<code>InnoDB</code> 使用加锁的方式来访问记录。而 <code>Read Committed</code> 和 <code>Repeatable Read</code> 隔离级别来说，都需要读取已经提交的事务所修改的记录，也就是说如果版本链中某个版本的修改没有提交，那么该版本的记录时不能被读取的。所以需要确定在 <code>Read Committed</code> 和 <code>Repeatable Read</code> 隔离级别下，版本链中哪个版本是能被当前事务读取的。于是 <code>ReadView</code> 的概念被提出以解决这个问题</p>
+<p><code>ReadView</code> 相当于某个时刻表记录的一个快照，在这个快照中我们能获取到与当前记录相关的事务中，哪些事务是已提交的<strong>稳定事务</strong>，哪些是<strong>正在活跃的事务</strong>，哪些是<strong>生成快照之后才开启的事务</strong>。由此我们就能根据<strong>可见性比较算法</strong>判断出版本链中能被读取的最新版本记录</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReadView</span> &#123;</span><br>  <span class="hljs-comment">/* ... */</span><br>private:<br>  <span class="hljs-type">trx_id_t</span> m_low_limit_id;      <span class="hljs-comment">/* 大于等于这个 ID 的事务均不可见 */</span><br><br>  <span class="hljs-type">trx_id_t</span> m_up_limit_id;       <span class="hljs-comment">/* 小于这个 ID 的事务均可见 */</span><br><br>  <span class="hljs-type">trx_id_t</span> m_creator_trx_id;    <span class="hljs-comment">/* 创建该 Read View 的事务ID */</span><br><br>  <span class="hljs-type">trx_id_t</span> m_low_limit_no;      <span class="hljs-comment">/* 事务 Number, 小于该 Number 的 Undo Logs 均可以被 Purge */</span><br><br>  <span class="hljs-type">ids_t</span> m_ids;                  <span class="hljs-comment">/* 创建 Read View 时的活跃事务列表 */</span><br><br>  m_closed;                     <span class="hljs-comment">/* 标记 Read View 是否 close */</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>可见性比较算法</strong>是基于事务ID的比较算法。首先我们需要知道的一个事实是：<strong>事务 <code>id</code> 是递增分配的</strong>。从 <code>ReadView</code> 中我们能获取到生成快照时刻系统中活跃的事务中最小和最大的事务 <code>id</code>（最大的事务<code>id</code>实际上是系统中将要分配给下一个事务的 <code>id</code> 值），这样我们就得到了一个活跃事务 <code>id</code> 的范围，我们可称之为 <code>ACTIVE_TRX_ID_RANGE</code>。那么小于这个范围的事务id对应的事务都是已提交的稳定事务，大于这个范围的事务都是在快照生成之后才开启的事务，而在 <code>ACTIVE_TRX_ID_RANGE</code> 范围内的事务中除了正在活跃的事务，也都是已提交的稳定事务</p>
+<p>有了以上信息之后，我们顺着版本链从头结点开始查找最新的可被读取的版本记录：</p>
+<p>1、首先判断版本记录的 <code>DB_TRX_ID</code> 字段与生成 <code>ReadView</code> 的事务对应的事务ID是否相等。如果相等，那就说明该版本的记录是在当前事务中生成的，自然也就能够被当前事务读取；否则进行第2步</p>
+<p>2、如果版本记录的 <code>DB_TRX_ID</code> 字段小于范围 <code>ACTIVE_TRX_ID_RANGE</code>，表明该版本记录是已提交事务修改的记录，即对当前事务可见；否则进行下一步</p>
+<p>3、如果版本记录的 <code>DB_TRX_ID</code> 字段位于范围 <code>ACTIVE_TRX_ID_RANGE</code> 内，如果该事务ID对应的不是活跃事务，表明该版本记录是已提交事务修改的记录，即对当前事务可见；如果该事务ID对应的是活跃事务，那么对当前事务不可见，则读取版本链中下一个版本记录，重复以上步骤，直到找到对当前事务可见的版本</p>
+<p>如果某个版本记录经过以上步骤判断确定其对当前事务可见，则查询结果返回此版本记录；否则读取下一个版本记录继续按照上述步骤进行判断，直到版本链的尾结点。如果遍历完版本链没有找到对当前事务可见的版本，则查询结果为空</p>
+<p>在 <code>MySQL</code> 中，<code>Read Committed</code> 和 <code>Repeatable Read</code> 隔离级别下的区别就是它们<strong>生成 <code>ReadView</code> 的时机不同</strong></p>
+<h5 id="MVCC实现不同隔离级别"><a href="#MVCC实现不同隔离级别" class="headerlink" title="MVCC实现不同隔离级别"></a>MVCC实现不同隔离级别</h5><p>之前说到 <code>ReadView</code> 的机制只在 <code>Read Committed</code> 和 <code>Repeatable Read</code> 隔离级别下生效，所以只有这两种隔离级别才有 <strong>MVCC</strong>。<br>在 <code>Read Committed</code> 隔离级别下，每次读取数据时都会生成 <code>ReadView</code>；而在 <code>Repeatable Read</code> 隔离级别下只会在事务首次读取数据时生成 <code>ReadView</code>，之后的读操作都会沿用此 <code>ReadView</code>。</p>
+<p>下面我们通过例子来看看 <code>Read Committed</code> 和 <code>Repeatable Read</code> 隔离级别下 <strong>MVCC</strong> 的不同表现。我们继续以表 <code>book</code> 为例进行演示。</p>
+<h6 id="Read-Committed-隔离级别分析"><a href="#Read-Committed-隔离级别分析" class="headerlink" title="Read Committed 隔离级别分析"></a>Read Committed 隔离级别分析</h6><p>假设在 <code>Read Committed</code> 隔离级别下，有如下事务在执行，事务 <code>id</code> 为10：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 开启Transaction <span class="hljs-number">10</span><br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">200</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">300</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
+
+<p>此时该事务尚未提交，<code>id</code>为2的记录版本链如下图所示：</p>
+<p><img src="/posts/35975/mysql-concurrency-control-2.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>然后我们开启一个事务对<code>id</code>为2的记录进行查询：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>;<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> book <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
+
+<p>当执行 <code>SELECT</code> 语句时会生成一个 <code>ReadView</code>，该 <code>ReadView</code> 中的 <code>ACTIVE_TRX_ID_RANGE</code> 为 <code>[10, 11)</code>，当前事务ID <code>creator_trx_id</code> 为<code>0</code>（因为事务中当执行写操作时才会分配一个单独的事务 <code>id</code>，否则事务<code>id</code>为<code>0</code>）。按照我们之前所述 <code>ReadView</code> 的工作原理，我们查询到的版本记录为</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-code">+----------+</span>-----------<span class="hljs-code">+-------+</span><br><span class="hljs-section">| book_id  | book_name | stock |</span><br><span class="hljs-section">+----------+-----------+-------+</span><br><span class="hljs-section">| 2        | C++指南    |  100  |</span><br><span class="hljs-section">+----------+-----------+-------+</span><br></code></pre></td></tr></table></figure>
+
+<p>然后我们将事务<code>id</code>为10的事务提交：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 开启Transaction <span class="hljs-number">10</span><br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">200</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">300</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br><br><span class="hljs-keyword">COMMIT</span>;<br></code></pre></td></tr></table></figure>
+
+<p>同时开启执行另一事务<code>id</code>为<code>11</code>的事务，但不提交：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 开启Transaction <span class="hljs-number">11</span><br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">400</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>此时<code>id</code>为2的记录版本链如下图所示：</p>
+<p><img src="/posts/35975/mysql-concurrency-control-3.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>然后我们回到刚才的查询事务中再次查询<code>id</code>为2的记录：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>;<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> book <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 此时Transaction <span class="hljs-number">10</span> 未提交<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> book <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 此时Transaction <span class="hljs-number">10</span> 已提交<br></code></pre></td></tr></table></figure>
+
+
+
+<p>当第二次执行 <code>SELECT</code> 语句时会再次生成一个 <code>ReadView</code>，该 <code>ReadView</code> 中的 <code>ACTIVE_TRX_ID_RANGE</code> 为<code>[11, 12)</code>，当前事务ID <code>creator_trx_id</code> 依然为<code>0</code>。按照 <code>ReadView</code> 的工作原理进行分析，我们查询到的版本记录为</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-code">+----------+</span>-----------<span class="hljs-code">+-------+</span><br><span class="hljs-section">| book_id  | book_name | stock |</span><br><span class="hljs-section">+----------+-----------+-------+</span><br><span class="hljs-section">| 2        | C++指南    | 300   |</span><br><span class="hljs-section">+----------+-----------+-------+</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>从上述分析可以发现，因为每次执行查询语句都会生成新的 <code>ReadView</code>，所以在 <code>Read Committed</code> 隔离级别下的事务读取到的是查询时刻表中已提交事务修改之后的数据。</p>
+<h6 id="Repeatable-Read隔离级别分析"><a href="#Repeatable-Read隔离级别分析" class="headerlink" title="Repeatable Read隔离级别分析"></a>Repeatable Read隔离级别分析</h6><p>我们在 <code>Repeatable Read</code> 隔离级别下重复上面的事务操作：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 开启Transaction <span class="hljs-number">20</span><br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">200</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">300</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
+
+<p>此时该事务尚未提交，然后我们开启一个事务对<code>id</code>为2的记录进行查询：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>;<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> book <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
+
+<p>当事务第一次执行 <code>SELECT</code> 语句时会生成一个 <code>ReadView</code>，该 <code>ReadView</code> 中的 <code>ACTIVE_TRX_ID_RANGE</code> 为 <code>[10, 11)</code> ，当前事务ID <code>creator_trx_id</code> 为<code>0</code>。根据 <code>ReadView</code> 的工作原理，我们查询到的版本记录为</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-code">+----------+</span>-----------<span class="hljs-code">+-------+</span><br><span class="hljs-section">| book_id  | book_name | stock |</span><br><span class="hljs-section">+----------+-----------+-------+</span><br><span class="hljs-section">| 2        | C++指南    |  100  |</span><br><span class="hljs-section">+----------+-----------+-------+</span><br></code></pre></td></tr></table></figure>
+
+<p>然后我们将事务 <code>id</code> 为20的事务提交：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 开启Transaction <span class="hljs-number">20</span><br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">200</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">300</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br><br><span class="hljs-keyword">COMMIT</span>;<br></code></pre></td></tr></table></figure>
+
+<p>同时开启执行另一事务<code>id</code>为21的事务，但不提交：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 开启Transaction <span class="hljs-number">21</span><br><br><span class="hljs-keyword">UPDATE</span> book <span class="hljs-keyword">SET</span> stock <span class="hljs-operator">=</span> <span class="hljs-number">400</span> <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>然后我们回到刚才的查询事务中再次查询<code>id</code>为2的记录：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">BEGIN</span>;<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> book <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 此时Transaction <span class="hljs-number">10</span> 未提交<br><br><span class="hljs-keyword">SELECT</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">FROM</span> book <span class="hljs-keyword">WHERE</span> id <span class="hljs-operator">=</span> <span class="hljs-number">2</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 此时Transaction <span class="hljs-number">10</span> 已提交<br></code></pre></td></tr></table></figure>
+
+
+
+<p>当第二次执行 <code>SELECT</code> 语句时不会生成新的 <code>ReadView</code>，依然会使用第一次查询时生成 <code>ReadView</code>。因此我们查询到的版本记录跟第一次查询到的结果是一样的：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-code">+----------+</span>-----------<span class="hljs-code">+-------+</span><br><span class="hljs-section">| book_id  | book_name | stock |</span><br><span class="hljs-section">+----------+-----------+-------+</span><br><span class="hljs-section">| 2        | C++指南    |  100  |</span><br><span class="hljs-section">+----------+-----------+-------+</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p>从上述分析可以发现，因为在 <code>Repeatable Read</code> 隔离级别下的事务只会在第一次执行查询时生成 <code>ReadView</code>，该事务中后续的查询操作都会沿用这个 <code>ReadView</code>，因此此隔离级别下一个事务中多次执行同样的查询，其结果都是一样的，这样就实现了可重复读。</p>
+<h5 id="快照读和当前读"><a href="#快照读和当前读" class="headerlink" title="快照读和当前读"></a>快照读和当前读</h5><h6 id="快照读"><a href="#快照读" class="headerlink" title="快照读"></a>快照读</h6><p>在 <code>Read Committed</code> 和 <code>Repeatable Read</code> 隔离级别下，普通的 <code>SELECT</code> 查询都是读取 <code>MVCC</code> 版本链中的一个版本，相当于读取一个快照，因此称为<strong>快照读</strong>。这种读取方式不会加锁，因此读操作时非阻塞的，因此也叫<strong>非阻塞读</strong>。</p>
+<p>在标准的 <code>Repeatable Read</code> 隔离级别下读操作会加 <code>S锁</code>，直到事务结束，因此可以阻止其他事务的写操作；但在 <code>MySQL</code> 的 <code>Repeatable Read</code> 隔离级别下读操作没有加锁，不会阻止其他事务对相同记录的写操作，因此在后续进行写操作时就有可能写入基于版本链中的旧数据计算得到的结果，这就导致了提交覆盖的问题。想要避免此问题，就需要另外加锁来实现。</p>
+<h6 id="当前读"><a href="#当前读" class="headerlink" title="当前读"></a>当前读</h6><p>之前提到 <code>MySQL</code> 有两种锁定读的方式：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">SELECT</span> ... LOCK <span class="hljs-keyword">IN</span> SHARE MODE; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 读取时对记录加S锁，直到事务结束<br><br><span class="hljs-keyword">SELECT</span> ... <span class="hljs-keyword">FOR</span> <span class="hljs-keyword">UPDATE</span>; <span class="hljs-operator">/</span><span class="hljs-operator">/</span> 读取时对记录加X锁，直到事务结束<br></code></pre></td></tr></table></figure>
+
+<p>这种读取方式读取的是记录的当前最新版本，称为<strong>当前读</strong>。另外对于<code>INSERT</code>、<code>DELETE</code>、<code>UPDATE</code>操作，也是需要先读取记录，获取记录的<code>X锁</code>，这个过程也是一个当前读。由于需要对记录进行加锁，会阻塞其他事务的写操作，因此也叫<strong>加锁读</strong>或<strong>阻塞读</strong>。</p>
+<p>当前读不仅会对当前记录加<strong>行记录锁</strong>，还会对查询范围空间的数据加<strong>间隙锁</strong>（<code>GAP LOCK</code>），因此可以<strong>阻止幻读</strong>问题的出现</p>
+<h5 id="快照读是如何避免幻读的？"><a href="#快照读是如何避免幻读的？" class="headerlink" title="快照读是如何避免幻读的？"></a>快照读是如何避免幻读的？</h5><p>可重复读隔离级是由 MVCC（多版本并发控制）实现的，实现的方式是开始事务后（执行 begin 语句后），在执行第一个查询语句后，会创建一个 Read View，<strong>后续的查询语句利用这个 Read View，通过这个 Read View 就可以在 undo log 版本链找到事务开始时的数据，所以事务过程中每次查询的数据都是一样的</strong>，即使中途有其他事务插入了新纪录，是查询不出来这条数据的，所以就很好了避免幻读问题。</p>
+<p>做个实验，数据库表 t_stu 如下，其中 id 为主键。</p>
+<p><img src="/posts/35975/7f9df142b3594daeaaca495abb7133f5.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>然后在可重复读隔离级别下，有两个事务的执行顺序如下：</p>
+<p><img src="/posts/35975/e576e047dccc47d5a59636ea342750b8.png" srcset="/img/loading.gif" lazyload alt="在这里插入图片描述"></p>
+<p>从这个实验结果可以看到，即使事务 B 中途插入了一条记录，事务 A 前后两次查询的结果集都是一样的，并没有出现所谓的幻读现象。</p>
+<h5 id="当前读是如何避免幻读的？"><a href="#当前读是如何避免幻读的？" class="headerlink" title="当前读是如何避免幻读的？"></a>当前读是如何避免幻读的？</h5><p>MySQL 里除了普通查询是快照读，其他都是<strong>当前读</strong>，比如 update、insert、delete，这些语句执行前都会查询最新版本的数据，然后再做进一步的操作。</p>
+<p>这很好理解，假设你要 update 一个记录，另一个事务已经 delete 这条记录并且提交事务了，这样不是会产生冲突吗，所以 update 的时候肯定要知道最新的数据。</p>
+<p>另外，<code>select ... for update</code> 这种查询语句是当前读，每次执行的时候都是读取最新的数据。</p>
+<p>接下来，我们假设<code>select ... for update</code>当前读是不会加锁的（实际上是会加锁的），在做一遍实验。</p>
+<p><img src="/posts/35975/1f872ff92b644b5f81cee2dd9188b199.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>这时候，事务 B 插入的记录，就会被事务 A 的第二条查询语句查询到（因为是当前读），这样就会出现前后两次查询的结果集合不一样，这就出现了幻读</p>
+<p>所以，<strong>Innodb 引擎为了解决「可重复读」隔离级别使用「当前读」而造成的幻读问题，就引出了间隙锁</strong></p>
+<p>假设，表中有一个范围 id 为（3，5）间隙锁，那么其他事务就无法插入 id &#x3D; 4 这条记录了，这样就有效的防止幻读现象的发生。</p>
+<p><img src="/gap%E9%94%81.drawio.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>举个具体例子，场景如下：</p>
+<p><img src="/posts/35975/3af285a8e70f4d4198318057eb955520.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>事务 A 执行了这面这条锁定读语句后，就在对表中的记录加上 id 范围为 (2, +∞] 的 <strong>next-key lock</strong>（next-key lock 是间隙锁+记录锁的组合）</p>
+<p>然后，事务 B 在执行插入语句的时候，判断到插入的位置被事务 A 加了 next-key lock，于是事物 B 会生成一个插入意向锁，同时进入等待状态，直到事务 A 提交了事务。这就避免了由于事务 B 插入新记录而导致事务 A 发生幻读的现象</p>
+<h5 id="幻读被完全解决了吗？"><a href="#幻读被完全解决了吗？" class="headerlink" title="幻读被完全解决了吗？"></a>幻读被完全解决了吗？</h5><p><strong>可重复读隔离级别下虽然很大程度上避免了幻读，但是还是没有能完全解决幻读</strong>。</p>
+<p>我举例一个可重复读隔离级别发生幻读现象的场景。</p>
+<h6 id="第一个发生幻读现象的场景"><a href="#第一个发生幻读现象的场景" class="headerlink" title="第一个发生幻读现象的场景"></a>第一个发生幻读现象的场景</h6><p>还是以这张表作为例子：</p>
+<p><img src="/posts/35975/7f9df142b3594daeaaca495abb7133f5-20230309222119359.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>事务 A 执行查询 id &#x3D; 5 的记录，此时表中是没有该记录的，所以查询不出来。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sql"># 事务 A<br>mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">begin</span>;<br>Query OK, <span class="hljs-number">0</span> <span class="hljs-keyword">rows</span> affected (<span class="hljs-number">0.00</span> sec)<br><br>mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> t_stu <span class="hljs-keyword">where</span> id <span class="hljs-operator">=</span> <span class="hljs-number">5</span>;<br><span class="hljs-keyword">Empty</span> <span class="hljs-keyword">set</span> (<span class="hljs-number">0.01</span> sec)<br></code></pre></td></tr></table></figure>
+
+<p>然后事务 B 插入一条 id &#x3D; 5 的记录，并且提交了事务。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sql"># 事务 B<br>mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">begin</span>;<br>Query OK, <span class="hljs-number">0</span> <span class="hljs-keyword">rows</span> affected (<span class="hljs-number">0.00</span> sec)<br><br>mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> t_stu <span class="hljs-keyword">values</span>(<span class="hljs-number">5</span>, <span class="hljs-string">&#x27;小美&#x27;</span>, <span class="hljs-number">18</span>);<br>Query OK, <span class="hljs-number">1</span> <span class="hljs-type">row</span> affected (<span class="hljs-number">0.00</span> sec)<br><br>mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">commit</span>;<br>Query OK, <span class="hljs-number">0</span> <span class="hljs-keyword">rows</span> affected (<span class="hljs-number">0.00</span> sec)<br></code></pre></td></tr></table></figure>
+
+<p>此时，<strong>事务 A 更新 id &#x3D; 5 这条记录，对没错，事务 A 看不到 id &#x3D; 5 这条记录，但是他去更新了这条记录，这场景确实很违和，然后再次查询 id &#x3D; 5 的记录，事务 A 就能看到事务 B 插入的纪录了，幻读就是发生在这种违和的场景</strong>。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sql"># 事务 A<br>mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">update</span> t_stu <span class="hljs-keyword">set</span> name <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;小林coding&#x27;</span> <span class="hljs-keyword">where</span> id <span class="hljs-operator">=</span> <span class="hljs-number">5</span>;<br>Query OK, <span class="hljs-number">1</span> <span class="hljs-type">row</span> affected (<span class="hljs-number">0.01</span> sec)<br><span class="hljs-keyword">Rows</span> matched: <span class="hljs-number">1</span>  Changed: <span class="hljs-number">1</span>  Warnings: <span class="hljs-number">0</span><br><br>mysql<span class="hljs-operator">&gt;</span> <span class="hljs-keyword">select</span> <span class="hljs-operator">*</span> <span class="hljs-keyword">from</span> t_stu <span class="hljs-keyword">where</span> id <span class="hljs-operator">=</span> <span class="hljs-number">5</span>;<br><span class="hljs-operator">+</span><span class="hljs-comment">----+--------------+------+</span><br><span class="hljs-operator">|</span> id <span class="hljs-operator">|</span> name         <span class="hljs-operator">|</span> age  <span class="hljs-operator">|</span><br><span class="hljs-operator">+</span><span class="hljs-comment">----+--------------+------+</span><br><span class="hljs-operator">|</span>  <span class="hljs-number">5</span> <span class="hljs-operator">|</span> 小林coding   <span class="hljs-operator">|</span>   <span class="hljs-number">18</span> <span class="hljs-operator">|</span><br><span class="hljs-operator">+</span><span class="hljs-comment">----+--------------+------+</span><br><span class="hljs-number">1</span> <span class="hljs-type">row</span> <span class="hljs-keyword">in</span> <span class="hljs-keyword">set</span> (<span class="hljs-number">0.00</span> sec)<br></code></pre></td></tr></table></figure>
+
+<p>整个发生幻读的时序图如下：</p>
+<p><img src="/%E5%B9%BB%E8%AF%BB%E5%8F%91%E7%94%9F.drawio.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在可重复读隔离级别下，事务 A 第一次执行普通的 select 语句时生成了一个 ReadView，之后事务 B 向表中新插入了一条 id &#x3D; 5 的记录并提交。接着，事务 A 对 id &#x3D; 5 这条记录进行了更新操作，在这个时刻，这条新记录的 trx_id 隐藏列的值就变成了事务 A 的事务 id，之后事务 A 再使用普通 select 语句去查询这条记录时就可以看到这条记录了，于是就发生了幻读。</p>
+<p>因为这种特殊现象的存在，所以我们认为 <strong>MySQL Innodb 中的 MVCC 并不能完全避免幻读现象</strong>。</p>
+<h6 id="第二个发生幻读现象的场景"><a href="#第二个发生幻读现象的场景" class="headerlink" title="第二个发生幻读现象的场景"></a>第二个发生幻读现象的场景</h6><p>除了上面这一种场景会发生幻读现象之外，还有下面这个场景也会发生幻读现象。</p>
+<ul>
+<li>T1 时刻：事务 A 先执行「快照读语句」：select * from t_test where id &gt; 100 得到了 3 条记录。</li>
+<li>T2 时刻：事务 B 往插入一个 id&#x3D; 200 的记录并提交；</li>
+<li>T3 时刻：事务 A 再执行「当前读语句」 select * from t_test where id &gt; 100 for update 就会得到 4 条记录，此时也发生了幻读现象。</li>
+</ul>
+<p><strong>要避免这类特殊场景下发生幻读的现象的话，就是尽量在开启事务之后，马上执行 select … for update 这类当前读的语句</strong>，因为它会对记录加 next-key lock，从而避免其他事务插入一条新记录</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p><strong>MySQL</strong> <strong>InnoDB</strong> 引擎的<strong>可重复读</strong>隔离级别（默认隔离级），根据不同的查询方式，分别提出了避免幻读的方案：</p>
+<ul>
+<li>针对<strong>快照读</strong>（普通 select 语句），是通过 MVCC 方式解决了幻读</li>
+<li>针对<strong>当前读</strong>（select … for update 等语句），是通过 next-key lock（记录锁+间隙锁）方式解决了幻读</li>
+</ul>
+<p>我举例了两个发生幻读场景的例子。</p>
+<p>第一个例子：对于快照读， MVCC 并不能完全避免幻读现象。因为当事务 A 更新了一条事务 B 插入的记录，那么事务 A 前后两次查询的记录条目就不一样了，所以就发生幻读</p>
+<p>第二个例子：对于当前读，如果事务开启后，并没有执行当前读，而是先快照读，然后这期间如果其他事务插入了一条记录，那么事务后续使用当前读进行查询的时候，就会发现两次查询的记录条目就不一样了，所以就发生幻读</p>
+<p>所以，<strong>MySQL 可重复读隔离级别并没有彻底解决幻读，只是很大程度上避免了幻读现象的发生</strong></p>
+<p>要避免这类特殊场景下发生幻读的现象的话，就是尽量在开启事务之后，马上执行 select … for update 这类当前读的语句，因为它会对记录加 next-key lock，从而避免其他事务插入一条新记录</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Mysql/" class="category-chain-item">Mysql</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Mysql/Transaction/" class="category-chain-item">Transaction</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Mysql/" class="print-no-link">#Mysql</a>
+      
+        <a href="/tags/Transaction/" class="print-no-link">#Transaction</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MySQL 事务</div>
+      <div>https://sugayoiya.github.io/posts/35975.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年10月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/27273.html" title="Redis 基础">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Redis 基础</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/64800.html" title="MySQL 基础">
+                        <span class="hidden-mobile">MySQL 基础</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

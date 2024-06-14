@@ -1,0 +1,1260 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="Redis 基础">
+  
+    <meta name="description" content="Redis（Remote Dictionary Server）是一个使用ANSI C编写的开源、支持网络、基于内存、分布式、可选持久性的键值对存储数据库。它也被称为数据结构服务器，支持多种数据结构，如字符串（Strings）、哈希（Hashes）、列表（Lists）、集合（Sets）、有序集合（Sorted Sets）等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis 基础">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/27273.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="Redis（Remote Dictionary Server）是一个使用ANSI C编写的开源、支持网络、基于内存、分布式、可选持久性的键值对存储数据库。它也被称为数据结构服务器，支持多种数据结构，如字符串（Strings）、哈希（Hashes）、列表（Lists）、集合（Sets）、有序集合（Sorted Sets）等">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sugayoiya.github.io/img/post/(87951954)UcyUu_p5.jpg">
+<meta property="article:published_time" content="2021-11-05T11:44:12.000Z">
+<meta property="article:modified_time" content="2023-08-01T11:09:58.000Z">
+<meta property="article:author" content="Sugayoiya">
+<meta property="article:tag" content="Redis">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sugayoiya.github.io/img/post/(87951954)UcyUu_p5.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Redis 基础 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>妖怪の山</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>紅魔館</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>雾之湖</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>人間の里</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>永遠亭</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post/(87951954)UcyUu_p4.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Redis 基础"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-11-05 19:44" pubdate>
+          2021年11月5日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          18k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Redis 基础</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>Redis</strong>（<em>Remote Dictionary Server</em>）是一个使用ANSI C编写的开源、支持网络、基于内存、分布式、可选持久性的键值对存储数据库。它也被称为<strong>数据结构服务器</strong>，支持多种数据结构，如字符串（Strings）、哈希（Hashes）、列表（Lists）、集合（Sets）、有序集合（Sorted Sets）等</p>
+<span id="more"></span>
+
+<p>Redis主要用于缓存、会话存储、实时分析、消息队列等场景，以及在需要快速读写访问的应用中</p>
+<p>除此之外，Redis 还支持<strong>事务 、持久化、Lua 脚本、多种集群方案（主从复制模式、哨兵模式、切片机群模式）、发布&#x2F;订阅模式，内存淘汰机制、过期删除机制</strong>等等</p>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>Redis 提供了丰富的数据类型，常见的有五种：<strong>String（字符串），Hash（哈希），List（列表），Set（集合）、Zset（有序集合）。</strong>之后又支持了四种数据类型： <strong>BitMap（2.2 版新增）、HyperLogLog（2.8 版新增）、GEO（3.2 版新增）、Stream（5.0 版新增）</strong></p>
+<h4 id="String"><a href="#String" class="headerlink" title="String"></a>String</h4><p>String 是其中一种最基本的数据类型之一，它是一个二进制安全的字符串，可以包含任意数据，例如文本、整数、浮点数等。Redis 的 String 类型非常灵活，可以用于多种用途</p>
+<p>String 类型的主要特点和操作：</p>
+<ol>
+<li><p>存储任意数据：String 类型可以存储任意的二进制数据，不仅仅限于文本，这使得它在缓存和存储数据方面非常有用</p>
+</li>
+<li><p>原子性操作：Redis 提供了一系列原子性操作，可以对 String 类型进行操作，如设置值、获取值、增加值、减少值等</p>
+</li>
+<li><p>设置和获取值：使用 SET 命令可以设置 String 类型的值，使用 GET 命令可以获取 String 类型的值</p>
+</li>
+<li><p>自增和自减：使用 INCR 和 DECR 命令可以对存储的整数值进行自增和自减操作</p>
+</li>
+<li><p>设置过期时间：可以为 String 类型设置过期时间，即在一定时间后自动删除</p>
+</li>
+<li><p>批量操作：Redis 支持批量操作多个 String 类型的数据，以提高性能和减少网络开销</p>
+</li>
+<li><p>计算长度：使用 STRLEN 命令可以计算存储在 String 类型中的字符串的长度</p>
+</li>
+<li><p>位操作：Redis 还支持对存储在 String 类型中的二进制数据进行位操作，如AND、OR、XOR等</p>
+</li>
+</ol>
+<p>String 类型是 Redis 最常用的数据类型之一，它的简单和高效使得它成为了在缓存、计数器、会话存储等方面的理想选择。由于 String 类型的值是二进制安全的，因此它可以用于存储各种形式的数据，并在需要的时候通过 GET、SET 等命令进行操作。需要根据具体应用场景来选择合适的数据类型，String 类型适用于大多数简单的键值对存储需求</p>
+<h5 id="内部实现"><a href="#内部实现" class="headerlink" title="内部实现"></a>内部实现</h5><p>String 类型的底层的数据结构实现主要是 int 和 SDS（简单动态字符串）</p>
+<p>SDS 和我们认识的 C 字符串不太一样，之所以没有使用 C 语言的字符串表示，因为 SDS 相比于 C 的原生字符串：</p>
+<ul>
+<li><strong>SDS 不仅可以保存文本数据，还可以保存二进制数据</strong>。因为 <code>SDS</code> 使用 <code>len</code> 属性的值而不是空字符来判断字符串是否结束，并且 SDS 的所有 API 都会以处理二进制的方式来处理 SDS 存放在 <code>buf[]</code> 数组里的数据。所以 SDS 不光能存放文本数据，而且能保存图片、音频、视频、压缩文件这样的二进制数据</li>
+<li>**SDS 获取字符串长度的时间复杂度是 O(1)**。因为 C 语言的字符串并不记录自身长度，所以获取长度的复杂度为 O(n)；而 SDS 结构里用 <code>len</code> 属性记录了字符串长度，所以复杂度为 <code>O(1)</code></li>
+<li><strong>Redis 的 SDS API 是安全的，拼接字符串不会造成缓冲区溢出</strong>。因为 SDS 在拼接字符串之前会检查 SDS 空间是否满足要求，如果空间不够会自动扩容，所以不会导致缓冲区溢出的问题</li>
+</ul>
+<p>字符串对象的内部编码（<em>encoding</em>）有 3 种 ：<strong>int、raw和 embstr</strong></p>
+<p><img src="/posts/27273/string.png" srcset="/img/loading.gif" lazyload alt="string"></p>
+<p>如果一个字符串对象保存的是整数值，并且这个整数值可以用<code>long</code>类型来表示，那么字符串对象会将整数值保存在字符串对象结构的<code>ptr</code>属性里面（将<code>void*</code>转换成 long），并将字符串对象的编码设置为<code>int</code></p>
+<p><img src="/posts/27273/int.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>如果字符串对象保存的是一个字符串，并且这个字符申的长度小于等于 32 字节（redis 2.+版本），那么字符串对象将使用一个简单动态字符串（SDS）来保存这个字符串，并将对象的编码设置为<code>embstr</code>， <code>embstr</code>编码是专门用于保存短字符串的一种优化编码方式：</p>
+<p><img src="/posts/27273/embstr.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>如果字符串对象保存的是一个字符串，并且这个字符串的长度大于 32 字节（redis 2.+版本），那么字符串对象将使用一个简单动态字符串（SDS）来保存这个字符串，并将对象的编码设置为<code>raw</code>：</p>
+<p><img src="/posts/27273/raw.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>注意，embstr 编码和 raw 编码的边界在 redis 不同版本中是不一样的：</p>
+<ul>
+<li>redis 2.+ 是 32 字节</li>
+<li>redis 3.0-4.0 是 39 字节</li>
+<li>redis 5.0 是 44 字节</li>
+</ul>
+<p>可以看到<code>embstr</code>和<code>raw</code>编码都会使用<code>SDS</code>来保存值，但不同之处在于<code>embstr</code>会通过一次内存分配函数来分配一块连续的内存空间来保存<code>redisObject</code>和<code>SDS</code>，而<code>raw</code>编码会通过调用两次内存分配函数来分别分配两块空间来保存<code>redisObject</code>和<code>SDS</code>。Redis这样做会有很多好处：</p>
+<ul>
+<li><code>embstr</code>编码将创建字符串对象所需的内存分配次数从 <code>raw</code> 编码的两次降低为一次；</li>
+<li>释放 <code>embstr</code>编码的字符串对象同样只需要调用一次内存释放函数；</li>
+<li>因为<code>embstr</code>编码的字符串对象的所有数据都保存在一块连续的内存里面可以更好的利用 CPU 缓存提升性能。</li>
+</ul>
+<p>但是 embstr 也有缺点的：</p>
+<ul>
+<li>如果字符串的长度增加需要重新分配内存时，整个redisObject和sds都需要重新分配空间，所以<strong>embstr编码的字符串对象实际上是只读的</strong>，redis没有为embstr编码的字符串对象编写任何相应的修改程序。当我们对embstr编码的字符串对象执行任何修改命令（例如append）时，程序会先将对象的编码从embstr转换成raw，然后再执行修改命令</li>
+</ul>
+<h4 id="List"><a href="#List" class="headerlink" title="List"></a>List</h4><p>List（列表）是一种有序的字符串集合，它可以包含多个字符串元素，每个元素都有一个索引位置。Redis的List是一个双向链表结构，它支持在列表的两端进行插入和删除操作，因此可以用来实现队列（<em>Queue</em>）和栈（<em>Stack</em>）等数据结构</p>
+<p>List 的主要特点和操作：</p>
+<ol>
+<li><p>有序集合：List 中的元素是有序的，每个元素都有一个整数索引，索引从0开始</p>
+</li>
+<li><p>双向链表：List 是一个双向链表，它允许在列表的两端进行插入和删除操作</p>
+</li>
+<li><p>常用操作：List 支持从头部和尾部插入元素（LPUSH、RPUSH命令），从头部和尾部弹出元素（LPOP、RPOP命令），以及获取指定索引位置的元素（LINDEX命令）等操作</p>
+</li>
+<li><p>获取范围元素：可以使用 LRANGE 命令获取列表中指定范围的元素，例如获取列表的前N个元素或后N个元素</p>
+</li>
+<li><p>元素重复：List 中的元素是可以重复的，它允许包含相同的字符串元素</p>
+</li>
+<li><p>阻塞操作：List 还支持阻塞式的弹出操作（BLPOP、BRPOP命令），如果列表为空，阻塞直到有元素可供弹出</p>
+</li>
+<li><p>可用作队列和栈：由于支持从两端插入和弹出操作，List可以用作队列（先进先出）或栈（先进后出）的数据结构</p>
+</li>
+</ol>
+<p>List 是 Redis 中非常实用的数据类型之一，它广泛应用于消息队列、任务队列、实时数据处理等场景。在处理有序数据集合，并需要支持快速插入和删除操作时，List 是一个非常好的选择。Redis 提供了丰富的List操作命令，可以满足各种复杂的业务需求</p>
+<h5 id="内部实现-1"><a href="#内部实现-1" class="headerlink" title="内部实现"></a>内部实现</h5><p>List 类型的底层数据结构是由<strong>双向链表</strong>或<strong>压缩列表</strong>实现的：</p>
+<ul>
+<li>如果列表的元素个数小于 <code>512</code> 个（默认值，可由 <code>list-max-ziplist-entries</code> 配置），列表每个元素的值都小于 <code>64</code> 字节（默认值，可由 <code>list-max-ziplist-value</code> 配置），Redis 会使用<strong>压缩列表</strong>作为 List 类型的底层数据结构；</li>
+<li>如果列表的元素不满足上面的条件，Redis 会使用<strong>双向链表</strong>作为 List 类型的底层数据结构；</li>
+</ul>
+<p>但是<strong>在 Redis 3.2 版本之后，List 数据类型底层数据结构就只由 quicklist 实现了，替代了双向链表和压缩列表</strong></p>
+<p>TODO</p>
+<h4 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h4><p>Hash（哈希）是一种用于存储字段和值之间映射关系的数据结构。Hash 是一个键值对的集合，其中每个键对应一个字段（field），每个字段又对应一个值（value）。Redis 的 Hash 类型类似于字典或关联数组，它可以用来表示对象、实体或存储多个属性的数据</p>
+<p>Hash类型主要特点和操作：</p>
+<ol>
+<li><p>哈希键（Hash Key）：Hash 类型使用一个键来标识和存储多个字段和对应的值。一个 Hash 键可以对应多个字段和值的映射关系</p>
+</li>
+<li><p>字段和值：在 Hash 中，每个字段都是一个唯一的字符串，而对应的值可以是字符串、整数、浮点数等数据类型</p>
+</li>
+<li><p>单个字段操作：Hash 支持对单个字段进行读取（HGET 命令）和设置（HSET 命令）操作</p>
+</li>
+<li><p>多字段操作：Hash 支持同时设置多个字段和值（HMSET 命令）以及同时获取多个字段的值（HMGET 命令）</p>
+</li>
+<li><p>自增和自减：可以对 Hash 中的某个字段进行自增和自减操作（HINCRBY 命令）</p>
+</li>
+<li><p>获取所有字段：可以使用 HKEYS 命令获取 Hash 中所有字段的名称</p>
+</li>
+<li><p>获取所有值：可以使用 HVALS 命令获取 Hash 中所有字段对应的值</p>
+</li>
+<li><p>获取所有字段和值：可以使用 HGETALL 命令获取 Hash 中所有字段和值的映射关系</p>
+</li>
+</ol>
+<p>Hash 类型在 Redis 中非常实用，特别适用于存储和表示对象、实体或属性数据。它可以有效地将多个相关属性组织在一起，并且支持快速查找和访问。在需要存储和处理多个属性的数据时，Hash类型是一个很好的选择。在一些场景中，例如存储用户信息、缓存对象、存储商品信息等，Hash类型都可以提供便捷的数据组织和高效的查询性能</p>
+<h5 id="内部实现-2"><a href="#内部实现-2" class="headerlink" title="内部实现"></a>内部实现</h5><p>Hash 类型的底层数据结构是由<strong>压缩列表或哈希表</strong>实现的：</p>
+<ul>
+<li>如果哈希类型元素个数小于 <code>512</code> 个（默认值，可由 <code>hash-max-ziplist-entries</code> 配置），所有值小于 <code>64</code> 字节（默认值，可由 <code>hash-max-ziplist-value</code> 配置）的话，Redis 会使用<strong>压缩列表</strong>作为 Hash 类型的底层数据结构</li>
+<li>如果哈希类型元素不满足上面条件，Redis 会使用<strong>哈希表</strong>作为 Hash 类型的 底层数据结构</li>
+</ul>
+<p><strong>在 Redis 7.0 中，压缩列表数据结构已经废弃了，交由 listpack 数据结构来实现了</strong></p>
+<p>TODO</p>
+<h4 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h4><p>Set（集合）是一种无序且不重复的数据结构，它存储了一组唯一的元素。Set 类型类似于数学上的集合，它可以用来表示多个元素的集合，并且可以进行集合间的交集、并集、差集等操作</p>
+<p>Set 类型的主要特点和操作：</p>
+<ol>
+<li><p>无序性：Set 中的元素是无序的，每个元素都是唯一的，不会出现重复的元素。</p>
+</li>
+<li><p>唯一性：Set 确保其中的每个元素都是唯一的，重复的元素将被自动去重。</p>
+</li>
+<li><p>添加元素：使用 SADD 命令可以向 Set 中添加一个或多个元素。</p>
+</li>
+<li><p>移除元素：使用 SREM 命令可以从 Set 中移除一个或多个元素。</p>
+</li>
+<li><p>获取所有元素：使用 SMEMBERS 命令可以获取 Set 中所有的元素。</p>
+</li>
+<li><p>随机获取元素：使用 SRANDMEMBER 命令可以随机获取 Set 中的一个或多个元素。</p>
+</li>
+<li><p>判断元素是否存在：使用 SISMEMBER 命令可以判断某个元素是否存在于 Set 中。</p>
+</li>
+<li><p>集合运算：Redis 还支持对多个 Set 进行集合运算，包括交集（SINTER）、并集（SUNION）和差集（SDIFF）等操作。</p>
+</li>
+</ol>
+<p>Set 类型在 Redis 中非常实用，特别适用于存储一组唯一的元素，并且在元素的去重和查找方面具有高效性能。常见的应用场景包括社交网络关注关系、标签系统、统计不重复访问 IP 等。通过 Set 类型，可以快速地对多个元素进行去重、查找和集合运算，是实现这些功能的理想数据结构之一</p>
+<h5 id="内部实现-3"><a href="#内部实现-3" class="headerlink" title="内部实现"></a>内部实现</h5><p>Set 类型的底层数据结构是由<strong>哈希表</strong>或<strong>整数集合</strong>实现的：</p>
+<ul>
+<li>如果集合中的元素都是整数且元素个数小于 <code>512</code> （默认值，<code>set-maxintset-entries</code>配置）个，Redis 会使用<strong>整数集合</strong>作为 Set 类型的底层数据结构</li>
+<li>如果集合中的元素不满足上面条件，则 Redis 使用<strong>哈希表</strong>作为 Set 类型的底层数据结构</li>
+</ul>
+<p>TODO</p>
+<h4 id="Zset"><a href="#Zset" class="headerlink" title="Zset"></a>Zset</h4><p>ZSet（有序集合，Sorted Set）是一种有序且不重复的数据结构，它与 Set 类型类似，都是存储一组唯一的元素。不同之处在于 ZSet 中的每个元素都会关联一个分数（score），通过分数来对元素进行排序，使得 ZSet 成为一个按照分数排序的集合</p>
+<p>以下是 Redis 中 ZSet 类型的一些主要特点和操作：</p>
+<ol>
+<li><p>有序性：ZSet 中的元素是有序的，每个元素都关联一个分数，通过分数来对元素进行排序</p>
+</li>
+<li><p>唯一性：ZSet 确保其中的每个元素都是唯一的，不会出现重复的元素</p>
+</li>
+<li><p>添加元素：使用 ZADD 命令可以向 ZSet 中添加一个元素，并指定其对应的分数</p>
+</li>
+<li><p>获取元素：使用 ZRANGE 命令可以按照分数范围获取 ZSet 中的元素，也可以通过索引位置来获取指定位置的元素</p>
+</li>
+<li><p>获取分数：使用 ZSCORE 命令可以获取 ZSet 中指定元素的分数</p>
+</li>
+<li><p>移除元素：使用 ZREM 命令可以从 ZSet 中移除一个或多个元素</p>
+</li>
+<li><p>排序：ZSet 根据元素的分数进行排序，支持升序和降序两种排序方式</p>
+</li>
+<li><p>集合运算：Redis 还支持对多个 ZSet 进行集合运算，包括求交集（ZINTERSTORE）、求并集（ZUNIONSTORE）等操作</p>
+</li>
+</ol>
+<p>ZSet 类型在 Redis 中非常实用，特别适用于需要按照分数进行排序的场景。常见的应用场景包括排行榜、计分系统、最新消息列表等。通过ZSet，可以高效地对元素按照分数排序，并且支持根据分数范围获取元素，以及进行集合运算。这使得ZSet成为了实现类似排行榜和计分系统的首选数据结构</p>
+<h5 id="内部实现-4"><a href="#内部实现-4" class="headerlink" title="内部实现"></a>内部实现</h5><p>Zset 类型的底层数据结构是由<strong>压缩列表</strong>或<strong>跳表</strong>实现的：</p>
+<ul>
+<li>如果有序集合的元素个数小于 <code>128</code> 个，并且每个元素的值小于 <code>64</code> 字节时，Redis 会使用<strong>压缩列表</strong>作为 Zset 类型的底层数据结构</li>
+<li>如果有序集合的元素不满足上面的条件，Redis 会使用<strong>跳表</strong>作为 Zset 类型的底层数据结构</li>
+</ul>
+<p><strong>在 Redis 7.0 中，压缩列表数据结构已经废弃了，交由 listpack 数据结构来实现了</strong></p>
+<p>TODO</p>
+<h4 id="BitMap"><a href="#BitMap" class="headerlink" title="BitMap"></a>BitMap</h4><p>Bitmap（位图）是一种特殊的数据结构，用于对大量的位（bit）进行高效的存储和操作。Bitmap 可以看作是由二进制位组成的一个数组，其中每个位可以表示某个对象的状态或标记</p>
+<p>Bitmap 的特点和操作：</p>
+<ol>
+<li><p>存储二进制位：Bitmap 实际上是由二进制位组成的数组，每个位可以表示某个对象的状态，例如在线&#x2F;离线状态、签到记录等</p>
+</li>
+<li><p>压缩存储：由于 Bitmap 存储的数据通常具有稀疏性（大部分位为0），Redis 对 Bitmap 进行了优化，采用了紧凑的存储方式，减少了存储空间的占用</p>
+</li>
+<li><p>设置位：使用 SETBIT 命令可以设置指定位置上的二进制位的值为0或1</p>
+</li>
+<li><p>获取位：使用 GETBIT 命令可以获取指定位置上的二进制位的值</p>
+</li>
+<li><p>计数：使用 BITCOUNT 命令可以计算 Bitmap 中值为1的二进制位的个数</p>
+</li>
+<li><p>位运算：Redis 支持对多个 Bitmap 进行位运算，包括与（AND）、或（OR）、异或（XOR）等操作</p>
+</li>
+</ol>
+<p>Bitmap 在 Redis 中可以非常高效地存储大量的位信息，并且支持快速的位设置和获取操作。常见的应用场景包括：</p>
+<ul>
+<li><p>在线&#x2F;离线状态记录：可以使用 Bitmap 记录用户的在线&#x2F;离线状态，每个用户用一个位来表示状态，1表示在线，0表示离线</p>
+</li>
+<li><p>签到记录：可以使用 Bitmap 记录用户的签到情况，每天用一个位来表示签到状态，1表示已签到，0表示未签到</p>
+</li>
+<li><p>统计用户活跃度：可以使用 Bitmap 统计用户在某段时间内的活跃度，每天用一个位来表示用户是否有活动，1表示有活动，0表示没有活动</p>
+</li>
+<li><p>浏览次数统计：可以使用 Bitmap 记录网页或文章的浏览次数，每次浏览用一个位来表示，1表示浏览过，0表示未浏览过</p>
+</li>
+</ul>
+<p>Bitmap 在以上场景中都可以提供高效的存储和查询，同时占用较小的存储空间，是一种非常实用的数据结构</p>
+<h5 id="内部实现-5"><a href="#内部实现-5" class="headerlink" title="内部实现"></a>内部实现</h5><p>Bitmap 本身是用 String 类型作为底层数据结构实现的一种统计二值状态的数据类型</p>
+<p>String 类型是会保存为二进制的字节数组，所以，Redis 就把字节数组的每个 bit 位利用起来，用来表示一个元素的二值状态，你可以把 Bitmap 看作是一个 bit 数组</p>
+<h4 id="HyperLogLog"><a href="#HyperLogLog" class="headerlink" title="HyperLogLog"></a>HyperLogLog</h4><p>HyperLogLog 是一种用于基数（<em>cardinality</em>）估算的概率性数据结构。基数是指集合中不重复元素的数量。HyperLogLog 通过使用非常少的内存来估算大规模集合的基数，它在计算基数时，占用的内存固定且非常小，而且估算的结果误差很小</p>
+<p>HyperLogLog 的特点和操作如下：</p>
+<ol>
+<li><p>基数估算：HyperLogLog 用于估算大规模集合中不重复元素的数量，即基数</p>
+</li>
+<li><p>占用固定内存：HyperLogLog 使用的内存量是固定的，不会随着集合元素数量的增加而增加，因此它适用于处理大规模的数据</p>
+</li>
+<li><p>误差率可控：HyperLogLog 的计算结果是概率性的，可以通过调整内存分配来控制估算的误差率</p>
+</li>
+<li><p>不支持元素查询：HyperLogLog 不支持查询具体的元素，它只用于估算基数，无法获取集合中的具体元素</p>
+</li>
+<li><p>高性能：HyperLogLog 对于基数估算有着非常高的性能，估算结果可以在很短的时间内得到</p>
+</li>
+</ol>
+<p>HyperLogLog 适用于一些需要估算大规模集合中不重复元素数量的场景，比如：</p>
+<ul>
+<li><p>统计网站的UV（独立访客数）：通过使用 HyperLogLog 估算用户的访问 IP 数量，可以估算出网站的独立访客数</p>
+</li>
+<li><p>统计活跃用户数：在大规模的用户行为日志中，使用 HyperLogLog 估算不同用户的数量，可以快速统计活跃用户数</p>
+</li>
+<li><p>去重：通过 HyperLogLog 可以对大规模的数据进行去重，找出不重复的元素</p>
+</li>
+</ul>
+<p>需要注意的是，虽然 HyperLogLog 适用于估算大规模集合的基数，但是估算的结果并不是精确值，而是概率性的。根据实际应用场景，可以通过调整内存分配来控制估算的误差率，使得 HyperLogLog 在估算基数时达到较高的准确性和效率</p>
+<h4 id="GEO"><a href="#GEO" class="headerlink" title="GEO"></a>GEO</h4><p>GEO（地理空间）类型是用于存储地理位置信息的数据结构。GEO 类型允许将地理位置（经度和纬度）与名称或标识符关联起来，同时支持对地理位置进行距离计算和地理位置范围查询</p>
+<p>GEO 类型在Redis中是通过有序集合（Sorted Set）来实现的，每个成员（member）都有一个对应的经度和纬度值，成员在有序集合中的分数（score）用于保存地理位置的距离值，可以根据这个距离值进行排序</p>
+<p>GEO 类型特点和操作：</p>
+<ol>
+<li><p>存储地理位置：使用 GEOADD 命令可以将地理位置（经度和纬度）与成员关联，并将其存储在有序集合中</p>
+</li>
+<li><p>获取地理位置：使用 GEOPOS 命令可以获取指定成员的地理位置（经度和纬度）</p>
+</li>
+<li><p>计算距离：使用 GEODIST 命令可以计算两个成员之间的地理位置距离</p>
+</li>
+<li><p>查询范围：使用 GEORADIUS 命令可以根据给定的地理位置和距离范围，查询在这个范围内的成员</p>
+</li>
+<li><p>查询范围并排序：使用 GEORADIUS 命令可以根据距离对查询结果进行排序</p>
+</li>
+<li><p>查询范围并限制数量：使用 GEORADIUS 命令可以对查询结果数量进行限制</p>
+</li>
+</ol>
+<p>GEO 类型在 Redis 中非常实用，特别适用于存储和查询地理位置信息。常见的应用场景包括：</p>
+<ul>
+<li><p>附近的人或商家查询：可以根据用户的当前地理位置，查询附近的其他用户或商家</p>
+</li>
+<li><p>地理位置推荐：可以根据用户的地理位置信息，为其推荐附近的兴趣点、热门活动等</p>
+</li>
+<li><p>配送和距离计算：可以根据商家和用户的地理位置信息，计算配送距离，帮助选择最近的商家进行配送</p>
+</li>
+</ul>
+<p>GEO 类型为应用程序提供了强大的地理位置处理能力，是处理地理位置信息的理想选择。通过 GEO 类型，可以高效地存储和查询地理位置信息，为地理位置相关的应用场景提供支持</p>
+<h5 id="内部实现-6"><a href="#内部实现-6" class="headerlink" title="内部实现"></a>内部实现</h5><p>GEO 本身并没有设计新的底层数据结构，而是直接使用了 Sorted Set 集合类型</p>
+<p>GEO 类型使用 GeoHash 编码方法实现了经纬度到 Sorted Set 中元素权重分数的转换，这其中的两个关键机制就是「对二维地图做区间划分」和「对区间进行编码」。一组经纬度落在某个区间后，就用区间的编码值来表示，并把编码值作为 Sorted Set 元素的权重分数</p>
+<p>这样一来，我们就可以把经纬度保存到 Sorted Set 中，利用 Sorted Set 提供的“按权重进行有序范围查找”的特性，实现 LBS 服务中频繁使用的“搜索附近”的需求</p>
+<h4 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h4><p>Stream（流）类型是 Redis 5.0 版本中引入的一种新的数据结构，用于支持消息发布与订阅的高级数据类型。Stream 提供了一个持久化的日志数据结构，可以用于消息队列、事件发布订阅、日志记录等场景</p>
+<p>Stream 类型特点和操作：</p>
+<ol>
+<li><p>消息的顺序和持久化：Stream 以日志形式持久化消息，每条消息都有一个全局唯一的 ID，保证了消息的顺序和不丢失</p>
+</li>
+<li><p>多个消费者：可以有多个消费者（消费者组）订阅同一个 Stream，并且每个消息只会被消费者组中的一个消费者处理，实现了消息的多播（message broadcasting）</p>
+</li>
+<li><p>消息确认：消费者在处理完消息后，可以向 Stream 发送确认（ACK）来表示消息已经被处理，这样消息会被从 Stream 中删除</p>
+</li>
+<li><p>消息超时：可以为每个消息设置过期时间，一旦消息过期，将会被自动删除</p>
+</li>
+<li><p>消息阻塞：消费者可以使用 XREAD 命令阻塞等待新消息到达 Stream，实现实时的订阅</p>
+</li>
+<li><p>消息范围查询：可以使用 XRANGE 命令查询 Stream 中的消息，支持按消息 ID 范围查询</p>
+</li>
+<li><p>消息消费者信息：可以使用 XINFO 命令查询 Stream 中的消费者信息，包括消费者组、待处理消息等</p>
+</li>
+</ol>
+<p>Stream 类型在 Redis 中为实时消息传递和事件处理提供了一种可靠的解决方案。它可以用于构建消息队列、实现发布&#x2F;订阅模式，以及记录事件和日志等。通过 Stream，应用程序可以高效地处理和传递大量的实时数据，并支持多个消费者同时订阅和处理消息，是一个非常实用的数据结构</p>
+<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><p>Redis 支持几种主要的持久化机制，分别是 <strong>RDB（<em>Redis Database File</em>）持久化</strong>，<strong>AOF（<em>Append-Only File</em>）持久化</strong>和 <strong>RDB + AOF 的混合持久化</strong>。这三种机制可以用来将内存中的数据持久化到磁盘，以确保在Redis 重启或宕机后数据不会丢失</p>
+<ol>
+<li><p><strong>RDB 持久化</strong>：</p>
+<ul>
+<li>RDB 持久化是将 Redis 的数据在某个时间点生成快照，保存到磁盘上的一个二进制文件中。这个文件以 <code>.rdb</code> 为后缀，因此通常被称为 RDB 文件。</li>
+<li>RDB 持久化是通过 fork 子进程来实现的，子进程会复制父进程的内存数据，然后将数据写入到磁盘上的 RDB 文件中。这个过程称为 <em><strong>fork-on-save</strong></em></li>
+<li>RDB 持久化的优点是生成的 RDB 文件非常紧凑，适用于备份和恢复数据，且对恢复速度较快。同时由于是快照机制，适用于设置不同的持久化频率，如定期持久化或手动触发持久化</li>
+<li>缺点是在发生宕机时，可能会丢失最后一次持久化后的数据</li>
+</ul>
+</li>
+<li><p><strong>AOF 持久化</strong>：</p>
+<ul>
+<li>AOF 持久化是将 Redis 的写操作以日志的形式追加到 AOF 文件中，这样可以保证数据的持久化和数据完整性</li>
+<li>AOF 文件保存了所有对 Redis 进行修改的命令，因此可以通过重放 AOF 文件中的命令来恢复数据</li>
+<li>AOF 持久化有两种策略：<em><strong>appendfsync always</strong></em> 和 <em><strong>appendfsync everysec</strong></em>。前者每次写入都会立即刷写到磁盘，保证数据的完整性，但可能影响性能；后者每秒刷写一次，牺牲一定的数据完整性来换取更好的性能</li>
+<li>AOF 持久化的优点是对于写操作的数据完整性较好，即使发生宕机，只会丢失最后一次写入 AOF 文件的数据</li>
+<li>缺点是 AOF 文件相对于 RDB 文件较大，恢复速度可能较慢</li>
+</ul>
+</li>
+</ol>
+<p>通常，可以根据应用的需求来选择适合的持久化机制。如果追求<strong>较好的数据完整性</strong>，可以选择AOF持久化；如果对于<strong>备份和恢复速度有较高要求</strong>，可以选择RDB持久化。有些情况下，也可以<strong>同时使用RDB和AOF持久化</strong>，以提供更可靠的数据保护</p>
+<h4 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h4><p>RDB 中的核心思路是 <em><strong>Copy-on-Write</strong></em>，来保证在进行快照操作的这段时间，需要压缩写入磁盘上的数据在内存中不会发生变化。在正常的快照操作中，一方面 Redis 主进程会 <strong>fork 一个新的快照进程</strong>专门来做这个事情，这样保证了 Redis 服务不会停止对客户端包括写请求在内的任何响应。另一方面<strong>这段时间发生的数据变化会以副本的方式存放在另一个新的内存区域</strong>，待快照操作结束后才会同步到原来的内存区域</p>
+<p>举个例子：</p>
+<p>执行 bgsave 命令的时候，会通过 fork（）创建子进程，此时子进程和父进程是共享同一片内存数据的，因为创建子进程的时候，会<strong>复制父进程的页表</strong>，但是页表<strong>指向的物理内存还是一个</strong>，由于共享父进程的所有数据，可以直接读取主线程里的内存数据，并将数据写入到 RDB 文件。此时如果主线程执行<strong>读操作</strong>，则主线程和 bgsave 子进程<strong>互相不影响</strong>。如果主线程要<strong>修改共享数据里的某一块数据，就会发生写时复制，数据的物理内存就会被复制一份</strong>，主线程在这个数据副本进行修改操作。与此同时，子进程可以继续把原来的数据写入到 RDB 文件</p>
+<p><img src="/posts/27273/redis-x-aof-42.jpg" srcset="/img/loading.gif" lazyload alt="rdb"></p>
+<h5 id="触发方式"><a href="#触发方式" class="headerlink" title="触发方式"></a>触发方式</h5><h6 id="手动触发"><a href="#手动触发" class="headerlink" title="手动触发"></a>手动触发</h6><blockquote>
+<p>手动触发分别对应 save 和 bgsave 命令</p>
+</blockquote>
+<ul>
+<li><p><strong>save 命令</strong>：阻塞当前Redis服务器，直到RDB过程完成为止，对于内存 比较大的实例会造成长时间<strong>阻塞</strong>，线上环境不建议使用</p>
+</li>
+<li><p><strong>bgsave 命令</strong>：Redis进程执行fork操作创建子进程，RDB持久化过程由子进程负责，完成后自动结束。阻塞只发生在fork阶段，一般时间很短</p>
+<ul>
+<li><p>具体流程如下：</p>
+<ul>
+<li><p>redis 客户端执行 bgsave 命令或者自动触发 bgsave 命令</p>
+</li>
+<li><p>主进程判断当前是否已经存在正在执行的子进程，如果存在，那么主进程直接返回</p>
+</li>
+<li><p>如果不存在正在执行的子进程，那么就 fork 一个新的子进程进行持久化数据，fork 过程是阻塞的，fork 操作完成后主进程即可执行其他操作</p>
+</li>
+<li><p>子进程先将数据写入到临时的 rdb 文件中，待快照数据写入完成后再原子替换旧的 rdb 文件</p>
+</li>
+<li><p>同时发送信号给主进程，通知主进程 rdb 持久化完成，主进程更新相关的统计信息（info Persitence下的 rdb_* 相关选项）</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h6 id="自动触发"><a href="#自动触发" class="headerlink" title="自动触发"></a>自动触发</h6><blockquote>
+<p>在以下4种情况时会自动触发</p>
+</blockquote>
+<ul>
+<li>redis.conf 中配置 <code>save m n</code>，即在 m 秒内有 n 次修改时，自动触发 bgsave 生成 rdb 文件；</li>
+<li>主从复制时，从节点要从主节点进行全量复制时也会触发 bgsave 操作，生成当时的快照发送到从节点；</li>
+<li>执行 debug reload 命令重新加载 redis 时也会触发 bgsave 操作；</li>
+<li>默认情况下执行 shutdown 命令时，如果没有开启 aof 持久化，那么也会触发 bgsave 操作；</li>
+</ul>
+<h5 id="RDB-配置"><a href="#RDB-配置" class="headerlink" title="RDB 配置"></a>RDB 配置</h5><blockquote>
+<p>redis.conf</p>
+</blockquote>
+<p><strong>快照周期</strong>：内存快照虽然可以通过技术人员手动执行SAVE或BGSAVE命令来进行，但生产环境下多数情况都会设置其周期性执行条件。</p>
+<ul>
+<li><strong>Redis中默认的周期新设置</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 周期性执行条件的设置格式为</span><br>save &lt;seconds&gt; &lt;changes&gt;<br><br><span class="hljs-comment"># 默认的设置为：</span><br>save 900 1<br>save 300 10<br>save 60 10000<br><br><span class="hljs-comment"># 以下设置方式为关闭RDB快照功能</span><br>save <span class="hljs-string">&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>以上三项默认信息设置代表的意义是：</p>
+<ul>
+<li>如果900秒内有1条Key信息发生变化，则进行快照</li>
+<li>如果300秒内有10条Key信息发生变化，则进行快照</li>
+<li>如果60秒内有10000条Key信息发生变化，则进行快照。读者可以按照这个规则，根据自己的实际请求压力进行设置调整</li>
+<li><strong>其它相关配置</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 文件名称</span><br>dbfilename dump.rdb<br><br><span class="hljs-comment"># 文件保存路径</span><br><span class="hljs-built_in">dir</span> /home/work/app/redis/data/<br><br><span class="hljs-comment"># 如果持久化出错，主进程是否停止写入</span><br>stop-writes-on-bgsave-error <span class="hljs-built_in">yes</span><br><br><span class="hljs-comment"># 是否压缩</span><br>rdbcompression <span class="hljs-built_in">yes</span><br><br><span class="hljs-comment"># 导入时是否检查</span><br>rdbchecksum <span class="hljs-built_in">yes</span><br></code></pre></td></tr></table></figure>
+
+<p><code>dbfilename</code>：RDB文件在磁盘上的名称</p>
+<p><code>dir</code>：RDB文件的存储路径。默认设置为“.&#x2F;”，也就是Redis服务的主目录</p>
+<p><code>stop-writes-on-bgsave-error</code>：上文提到的在快照进行过程中，主进程照样可以接受客户端的任何写操作的特性，是指在快照操作正常的情况下。如果快照操作出现异常（例如操作系统用户权限不够、磁盘空间写满等等）时，Redis就会禁止写操作。这个特性的主要目的是使运维人员在第一时间就发现Redis的运行错误，并进行解决。一些特定的场景下，您可能需要对这个特性进行配置，这时就可以调整这个参数项。该参数项默认情况下值为yes，如果要关闭这个特性，指定即使出现快照错误Redis一样允许写操作，则可以将该值更改为no</p>
+<p><code>rdbcompression</code>：该属性将在字符串类型的数据被快照到磁盘文件时，启用LZF压缩算法。Redis官方的建议是请保持该选项设置为yes，因为“it’s almost always a win”</p>
+<p><code>rdbchecksum</code>：从RDB快照功能的version 5 版本开始，一个64位的CRC冗余校验编码会被放置在RDB文件的末尾，以便对整个RDB文件的完整性进行验证。这个功能大概会多损失10%左右的性能，但获得了更高的数据可靠性。所以如果您的Redis服务需要追求极致的性能，就可以将这个选项设置为no</p>
+<h5 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h5><ul>
+<li><strong>优点</strong><ul>
+<li>RDB文件是某个时间节点的快照，默认使用LZF算法进行压缩，压缩后的文件体积远远小于内存大小，适用于备份、全量复制等场景；</li>
+<li>Redis加载RDB文件恢复数据要远远快于AOF方式；</li>
+</ul>
+</li>
+<li><strong>缺点</strong><ul>
+<li>RDB方式实时性不够，无法做到秒级的持久化；</li>
+<li>每次调用bgsave都需要fork子进程，fork子进程属于重量级操作，频繁执行成本较高；</li>
+<li>RDB文件是二进制的，没有可读性，AOF文件在了解其结构的情况下可以手动修改或者补全；</li>
+<li>版本兼容RDB文件问题；</li>
+</ul>
+</li>
+</ul>
+<p><strong>针对RDB不适合实时持久化的问题，Redis提供了AOF持久化方式来解决</strong></p>
+<h4 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h4><p><strong>AOF</strong>（<em><strong>Append-Only File</strong></em>）是 Redis 持久化机制中的一种方式，用于将 Redis 的写操作以日志的形式追加到 AOF 文件中，保证数据的持久化和数据完整性。AOF持久化相较于RDB持久化更加可靠，因为它记录了每个写命令，可以完整地恢复Redis的状态</p>
+<p>默认情况下 Redis 没有开启 AOF 方式的持久化（Redis 6.0 之后已经默认是开启了），可以通过 <code>appendonly</code> 参数开启：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">appendonly <span class="hljs-built_in">yes</span><br></code></pre></td></tr></table></figure>
+
+<p>开启 AOF 持久化后每执行一条会更改 Redis 中的数据的命令，Redis 就会将该命令写入到 AOF 缓冲区 <code>server.aof_buf</code> 中，然后再写入到 AOF 文件中（此时还在系统内核缓存区未同步到磁盘），最后再根据持久化方式（ <code>fsync</code>策略）的配置来决定何时将系统内核缓存区的数据同步到硬盘中的</p>
+<p>只有同步到磁盘中才算持久化保存了，否则依然存在数据丢失的风险，比如说：系统内核缓存区的数据还未同步，磁盘机器就宕机了，那这部分数据就算丢失了</p>
+<p>AOF 文件的保存位置和 RDB 文件的位置相同，都是通过 <code>dir</code> 参数设置的，默认的文件名是 <code>appendonly.aof</code></p>
+<p>AOF日志采用写后日志，即<strong>先写内存，后写日志</strong></p>
+<p><img src="/posts/27273/redis-x-aof-41.jpg" srcset="/img/loading.gif" lazyload alt="aof"></p>
+<p><strong>为什么采用写后日志</strong></p>
+<p>Redis要求高性能，采用写日志有两方面好处：</p>
+<ul>
+<li><strong>避免额外的检查开销</strong>：Redis 在向 AOF 里面记录日志的时候，并不会先去对这些命令进行语法检查。所以，如果先记日志再执行命令的话，日志中就有可能记录了错误的命令，Redis 在使用日志恢复数据时，就可能会出错。</li>
+<li><strong>不会阻塞</strong>当前的写操作</li>
+</ul>
+<p>但这种方式存在潜在风险：</p>
+<ul>
+<li>如果命令执行完成，写日志之前宕机了，会丢失数据</li>
+<li>主线程写磁盘压力大，导致写盘慢，阻塞后续操作</li>
+</ul>
+<h5 id="基本流程"><a href="#基本流程" class="headerlink" title="基本流程"></a>基本流程</h5><p>AOF 持久化功能的实现可以简单分为 5 步：</p>
+<ol>
+<li><strong>命令追加（append）</strong>：所有的写命令会追加到 AOF 缓冲区中</li>
+<li><strong>文件写入（write）</strong>：将 AOF 缓冲区的数据写入到 AOF 文件中。这一步需要调用<code>write</code>函数（系统调用），<code>write</code>将数据写入到了系统内核缓冲区之后直接返回了（延迟写）。注意！！！此时并没有同步到磁盘</li>
+<li><strong>文件同步（fsync）</strong>：AOF 缓冲区根据对应的持久化方式（ <code>fsync</code> 策略）向硬盘做同步操作。这一步需要调用 <code>fsync</code> 函数（系统调用）， <code>fsync</code> 针对单个文件操作，对其进行强制硬盘同步，<code>fsync</code> 将阻塞直到写入磁盘完成后返回，保证了数据持久化</li>
+<li><strong>文件重写（rewrite）</strong>：随着 AOF 文件越来越大，需要定期对 AOF 文件进行重写，达到压缩的目的。</li>
+<li><strong>重启加载（load）</strong>：当 Redis 重启时，可以加载 AOF 文件进行数据恢复</li>
+</ol>
+<blockquote>
+<p>Linux 系统直接提供了一些函数用于对文件和设备进行访问和控制，这些函数被称为 <strong>系统调用（syscall）</strong>。</p>
+</blockquote>
+<p>这里对上面提到的一些 Linux 系统调用再做一遍解释：</p>
+<ul>
+<li><code>write</code>：写入系统内核缓冲区之后直接返回（仅仅是写到缓冲区），不会立即同步到硬盘。虽然提高了效率，但也带来了数据丢失的风险。同步硬盘操作通常依赖于系统调度机制，Linux 内核通常为 30s 同步一次，具体值取决于写出的数据量和 I&#x2F;O 缓冲区的状态。</li>
+<li><code>fsync</code>：<code>fsync</code>用于强制刷新系统内核缓冲区（同步到到磁盘），确保写磁盘操作结束才会返回。</li>
+</ul>
+<p>AOF 工作流程图如下：</p>
+<p><img src="/posts/27273/20191010084730557.png" srcset="/img/loading.gif" lazyload alt="redis aof持久化详解"></p>
+<h5 id="持久化方式"><a href="#持久化方式" class="headerlink" title="持久化方式"></a>持久化方式</h5><p>在 Redis 的配置文件中存在三种不同的 AOF 持久化方式（ <code>fsync</code>策略），它们分别是：</p>
+<ol>
+<li><strong>appendfsync</strong> <em><strong>always</strong></em>：主线程调用 <code>write</code> 执行写操作后，后台线程（ <code>aof_fsync</code> 线程）立即会调用 <code>fsync</code> 函数同步 AOF 文件（刷盘），<code>fsync</code> 完成后线程返回，这样会严重降低 Redis 的性能（<code>write</code> + <code>fsync</code>）</li>
+<li><strong>appendfsync</strong> <em><strong>everysec</strong></em>：主线程调用 <code>write</code> 执行写操作后立即返回，由后台线程（ <code>aof_fsync</code> 线程）每秒钟调用 <code>fsync</code> 函数（系统调用）同步一次 AOF 文件（<code>write</code>+<code>fsync</code>，<code>fsync</code>间隔为 1 秒）</li>
+<li><strong>appendfsync</strong> <em><strong>no</strong></em>：主线程调用 <code>write</code> 执行写操作后立即返回，让操作系统决定何时进行同步，Linux 下一般为 30 秒一次（<code>write</code>但不<code>fsync</code>，<code>fsync</code> 的时机由操作系统决定）</li>
+</ol>
+<p>可以看出：<strong>这 3 种持久化方式的主要区别在于 <code>fsync</code> 同步 AOF 文件的时机（刷盘）</strong></p>
+<p>为了兼顾数据和写入性能，可以考虑 <strong>appendfsync</strong> <em><strong>everysec</strong></em> 选项 ，让 Redis 每秒同步一次 AOF 文件，Redis 性能受到的影响较小。而且这样即使出现系统崩溃，用户最多只会丢失一秒之内产生的数据。当硬盘忙于执行写入操作的时候，Redis 还会优雅的放慢自己的速度以便适应硬盘的最大写入速度</p>
+<p>从 Redis 7.0.0 开始，Redis 使用了 <strong>Multi Part AOF</strong> 机制。顾名思义，Multi Part AOF 就是将原来的单个 AOF 文件拆分成多个 AOF 文件。在 Multi Part AOF 中，AOF 文件被分为三种类型，分别为：</p>
+<ul>
+<li>BASE：表示基础 AOF 文件，它一般由子进程通过重写产生，该文件最多只有一个</li>
+<li>INCR：表示增量 AOF 文件，它一般会在 AOFRW 开始执行时被创建，该文件可能存在多个</li>
+<li>HISTORY：表示历史 AOF 文件，它由 BASE 和 INCR AOF 变化而来，每次 AOFRW 成功完成时，本次 AOFRW 之前对应的 BASE 和 INCR AOF 都将变为 HISTORY，HISTORY 类型的 AOF 会被 Redis 自动删除</li>
+</ul>
+<h5 id="AOF-重写"><a href="#AOF-重写" class="headerlink" title="AOF 重写"></a>AOF 重写</h5><p>因为 AOF 持久化是通过保存被执行的写命令来记录 Redis 状态的，所以随着 Redis 长时间运行，AOF 文件中的内容会越来越多，文件的体积也会越来越大，如果不加以控制的话，体积过大的 AOF 文件很可能对 Redis 甚至宿主计算机造成影响</p>
+<p>为了解决 AOF 文件体积膨胀的问题，Redis 提供了 AOF 文件重写( rewrite) 功能。通过该功能，Redis 可以创建一个新的 AOF 文件来替代现有的 AOF 文件。新旧两个 AOF 文件所保存的 Redis 状态相同，但是新的 AOF 文件不会包含任何浪费空间的荣誉命令，所以新 AOF 文件的体积通常比旧 AOF 文件的体积要小得很多</p>
+<p><img src="/posts/27273/redis-x-aof-1.jpg" srcset="/img/loading.gif" lazyload alt="aof rewrite"></p>
+<p>如上图所示，重写前要记录名为<code>list</code>的键的状态，AOF 文件要保存五条命令，而重写后，则只需要保存一条命令</p>
+<p>AOF 文件重写并不需要对现有的 AOF 文件进行任何读取、分析或者写入操作，而是通过读取服务器当前的数据库状态来实现的。首先从数据库中读取键现在的值，然后用一条命令去记录键值对，代替之前记录这个键值对的多条命令，这就是 AOF 重写功能的实现原理</p>
+<p>在实际过程中，为了避免在执行命令时造成客户端输入缓冲区溢出，AOF 重写在处理列表、哈希表、集合和有序集合这四种可能会带有多个元素的键时，会先检查键所包含的元素数量，如果数量超过 REDIS_AOF_REWRITE_ITEMS_PER_CMD ( 一般为64 )常量，则使用多条命令记录该键的值，而不是一条命令</p>
+<p>rewrite 的触发机制主要有一下三个：</p>
+<ul>
+<li>手动调用 bgrewriteaof 命令，如果当前有正在运行的 rewrite 子进程，则本次rewrite 会推迟执行，否则，直接触发一次 rewrite</li>
+<li>通过配置指令手动开启 AOF 功能，如果没有 RDB 子进程的情况下，会触发一次 rewrite，将当前数据库中的数据写入 rewrite 文件</li>
+<li>在 Redis 定时器中，如果有需要退出执行的 rewrite 并且没有正在运行的 RDB 或者 rewrite 子进程时，触发一次或者 AOF 文件大小已经到达配置的 rewrite 条件也会自动触发一次</li>
+</ul>
+<p>AOF 重写函数会进行大量的写入操作，调用该函数的线程将被长时间阻塞，所以 <strong>Redis 在子进程</strong>中执行 AOF 重写操作</p>
+<ul>
+<li>子进程进行 AOF 重写期间，Redis 进程可以继续处理客户端命令请求</li>
+<li>子进程带有父进程的内存数据拷贝副本，在不适用锁的情况下，也可以保证数据的安全性</li>
+</ul>
+<p>但是，在子进程进行 AOF 重启期间，Redis接收客户端命令，会对现有数据库状态进行修改，从而导致数据当前状态和 重写后的 AOF 文件所保存的数据库状态不一致</p>
+<p>为此，Redis 设置了一个 AOF 重写缓冲区，这个缓冲区在服务器创建子进程之后开始使用，当 Redis 执行完一个写命令之后，它会同时将这个写命令发送给 AOF 缓冲区和 AOF 重写缓冲区</p>
+<p><img src="/posts/27273/redis-x-aof-2.jpg" srcset="/img/loading.gif" lazyload alt="aof bgrewrite"></p>
+<p>当子进程完成 AOF 重写工作之后，它会向父进程发送一个信号，父进程在接收到该信号之后，会调用一个信号处理函数，并执行以下工作：</p>
+<ul>
+<li>将 AOF 重写缓冲区中的所有内容写入到新的 AOF 文件中，保证新 AOF 文件保存的数据库状态和服务器当前状态一致</li>
+<li>对新的 AOF 文件进行改名，原子地覆盖现有 AOF 文件，完成新旧文件的替换</li>
+<li>继续处理客户端请求命令</li>
+</ul>
+<p><strong>在重写日志整个过程时，主线程有哪些地方会被阻塞</strong></p>
+<ol>
+<li>fork子进程时，需要拷贝虚拟页表，会对主线程阻塞。</li>
+<li>主进程有 bigkey 写入时，操作系统会创建页面的副本，并拷贝原有的数据，会对主线程阻塞。</li>
+<li>子进程重写日志完成后，主进程追加aof重写缓冲区时可能会对主线程阻塞</li>
+</ol>
+<h4 id="RDB-和-AOF-混合方式"><a href="#RDB-和-AOF-混合方式" class="headerlink" title="RDB 和 AOF 混合方式"></a>RDB 和 AOF 混合方式</h4><blockquote>
+<p>Redis 4.0 中提出了一个<strong>混合使用 AOF 日志和内存快照</strong>的方法。简单来说，内存快照以一定的频率执行，在两次快照之间，使用 AOF 日志记录这期间的所有命令操作。</p>
+</blockquote>
+<p>这样一来，快照不用很频繁地执行，这就避免了频繁 fork 对主线程的影响。而且，AOF 日志也只用记录两次快照间的操作，也就是说，不需要记录所有操作了，因此，就不会出现文件过大的情况了，也可以避免重写开销</p>
+<p>如下图所示，T1 和 T2 时刻的修改，用 AOF 日志记录，等到第二次做全量快照时，就可以清空 AOF 日志，因为此时的修改都已经记录到快照中了，恢复时就不再用日志了</p>
+<p><img src="/posts/27273/redis-x-rdb-4.jpg" srcset="/img/loading.gif" lazyload alt="rdb &amp; aof mixed"></p>
+<p>这个方法既能享受到 RDB 文件快速恢复的好处，又能享受到 AOF 只记录操作命令的简单优势, 实际环境中用的很多。</p>
+<h4 id="从持久化中恢复数据"><a href="#从持久化中恢复数据" class="headerlink" title="从持久化中恢复数据"></a>从持久化中恢复数据</h4><blockquote>
+<p>数据的备份、持久化做完了，我们如何从这些持久化文件中恢复数据呢？如果一台服务器上有既有RDB文件，又有AOF文件，该加载谁呢？</p>
+</blockquote>
+<p>其实想要从这些文件中恢复数据，只需要重新启动 Redis 即可。我们还是通过图来了解这个流程：</p>
+<p><img src="/posts/27273/redis-x-aof-5.png" srcset="/img/loading.gif" lazyload alt="recover"></p>
+<ul>
+<li>redis重启时判断是否开启aof，如果开启了aof，那么就优先加载aof文件；</li>
+<li>如果aof存在，那么就去加载aof文件，加载成功的话redis重启成功，如果aof文件加载失败，那么会打印日志表示启动失败，此时可以去修复aof文件后重新启动；</li>
+<li>若aof文件不存在，那么redis就会转而去加载rdb文件，如果rdb文件不存在，redis直接启动成功；</li>
+<li>如果rdb文件存在就会去加载rdb文件恢复数据，如加载失败则打印日志提示启动失败，如加载成功，那么redis重启成功，且使用rdb文件恢复数据；</li>
+</ul>
+<p>那么为什么会优先加载 AOF 呢？因为 AOF 保存的数据更完整，通过上面的分析我们知道 AOF 基本上最多损失 1s 的数据</p>
+<h4 id="性能与实践"><a href="#性能与实践" class="headerlink" title="性能与实践"></a>性能与实践</h4><p>通过上面的分析，我们都知道 RDB 的快照、AOF 的重写都需要 fork，这是一个重量级操作，会对 Redis 造成阻塞。因此为了不影响 Redis 主进程响应，我们需要尽可能降低阻塞。</p>
+<ul>
+<li>降低 fork 的频率，比如可以手动来触发 RDB 生成快照、与 AOF 重写；</li>
+<li>控制 Redis 最大使用内存，防止 fork 耗时过长；</li>
+<li>使用更牛的硬件；</li>
+<li>合理配置Linux的内存分配策略，避免因为物理内存不足导致fork失败。</li>
+</ul>
+<p>在线上该怎么做？</p>
+<ul>
+<li>如果Redis中的数据并不是特别敏感或者可以通过其它方式重写生成数据，可以关闭持久化，如果丢失数据可以通过其它途径补回；</li>
+<li>自己制定策略定期检查Redis的情况，然后可以手动触发备份、重写数据；</li>
+<li>单机如果部署多个实例，要防止多个机器同时运行持久化、重写操作，防止出现内存、CPU、IO资源竞争，让持久化变为串行；</li>
+<li>可以加入主从机器，利用一台从机器进行备份处理，其它机器正常响应客户端的命令；</li>
+<li>RDB持久化与AOF持久化可以同时存在，配合使用</li>
+</ul>
+<h4 id="RDB-与-AOF-比较"><a href="#RDB-与-AOF-比较" class="headerlink" title="RDB 与 AOF 比较"></a>RDB 与 AOF 比较</h4><p><strong>RDB 比 AOF 优秀的地方</strong>：</p>
+<ul>
+<li>RDB 文件存储的内容是经过压缩的二进制数据， 保存着某个时间点的数据集，文件很小，适合做数据的备份，灾难恢复。AOF 文件存储的是每一次写命令，类似于 MySQL 的 binlog 日志，通常会比 RDB 文件大很多。当 AOF 变得太大时，Redis 能够在后台自动重写 AOF。新的 AOF 文件和原有的 AOF 文件所保存的数据库状态一样，但体积更小。不过， Redis 7.0 版本之前，如果在重写期间有写入命令，AOF 可能会使用大量内存，重写期间到达的所有写入命令都会写入磁盘两次</li>
+<li>使用 RDB 文件恢复数据，直接解析还原数据即可，不需要一条一条地执行命令，速度非常快。而 AOF 则需要依次执行每个写命令，速度非常慢。也就是说，与 AOF 相比，恢复大数据集的时候，RDB 速度更快</li>
+</ul>
+<p><strong>AOF 比 RDB 优秀的地方</strong>：</p>
+<ul>
+<li>RDB 的数据安全性不如 AOF，没有办法实时或者秒级持久化数据。生成 RDB 文件的过程是比较繁重的， 虽然 BGSAVE 子进程写入 RDB 文件的工作不会阻塞主线程，但会对机器的 CPU 资源和内存资源产生影响，严重的情况下甚至会直接把 Redis 服务干宕机。AOF 支持秒级数据丢失（取决 fsync 策略，如果是 everysec，最多丢失 1 秒的数据），仅仅是追加命令到 AOF 文件，操作轻量</li>
+<li>RDB 文件是以特定的二进制格式保存的，并且在 Redis 版本演进中有多个版本的 RDB，所以存在老版本的 Redis 服务不兼容新版本的 RDB 格式的问题</li>
+<li>AOF 以一种易于理解和解析的格式包含所有操作的日志。你可以轻松地导出 AOF 文件进行分析，你也可以直接操作 AOF 文件来解决一些问题。比如，如果执行<code>FLUSHALL</code>命令意外地刷新了所有内容后，只要 AOF 文件没有被重写，删除最新命令并重启即可恢复之前的状态</li>
+</ul>
+<p><strong>综上</strong>：</p>
+<ul>
+<li>Redis 保存的数据丢失一些也没什么影响的话，可以选择使用 RDB</li>
+<li>不建议单独使用 AOF，因为时不时地创建一个 RDB 快照可以进行数据库备份、更快的重启以及解决 AOF 引擎错误</li>
+<li>如果保存的数据要求安全性比较高的话，建议同时开启 RDB 和 AOF 持久化或者开启 RDB 和 AOF 混合持久化</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Redis/" class="category-chain-item">Redis</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Redis/" class="print-no-link">#Redis</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Redis 基础</div>
+      <div>https://sugayoiya.github.io/posts/27273.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年11月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/52833.html" title="家庭 Nas 打造全自动追剧流程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">家庭 Nas 打造全自动追剧流程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/35975.html" title="MySQL 事务">
+                        <span class="hidden-mobile">MySQL 事务</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,882 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="graylog">
+  
+    <meta name="description" content="编写搜索查询语法搜索语法非常接近 Lucene 语法。如果你没有指定要搜索的消息字段，那么默认情况下所有的消息字段都会被包括在搜索中。  包含词汇 ssh 的消息： 1ssh  包含词汇 ssh 或 login 的消息： 1ssh login  包含精确短语 ssh login 的消息： 1&quot;ssh login&quot;  字段 type 包含 ssh 的消息： 1type:ssh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Graylog 查询语句语法">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/2802.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="编写搜索查询语法搜索语法非常接近 Lucene 语法。如果你没有指定要搜索的消息字段，那么默认情况下所有的消息字段都会被包括在搜索中。  包含词汇 ssh 的消息： 1ssh  包含词汇 ssh 或 login 的消息： 1ssh login  包含精确短语 ssh login 的消息： 1&quot;ssh login&quot;  字段 type 包含 ssh 的消息： 1type:ssh">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sugayoiya.github.io/img/post/(87952624)2019-2020miku2_p6.jpg">
+<meta property="article:published_time" content="2022-03-05T07:55:24.000Z">
+<meta property="article:modified_time" content="2024-03-15T04:00:06.405Z">
+<meta property="article:author" content="Sugayoiya">
+<meta property="article:tag" content="graylog">
+<meta property="article:tag" content="elastic search">
+<meta property="article:tag" content="es">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sugayoiya.github.io/img/post/(87952624)2019-2020miku2_p6.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Graylog 查询语句语法 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>妖怪の山</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>紅魔館</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>雾之湖</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>人間の里</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>永遠亭</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post/(87951954)UcyUu_p7.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Graylog 查询语句语法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-03-05 15:55" pubdate>
+          2022年3月5日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Graylog 查询语句语法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="编写搜索查询"><a href="#编写搜索查询" class="headerlink" title="编写搜索查询"></a>编写搜索查询</h2><h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p>搜索语法非常接近 Lucene 语法。如果你没有指定要搜索的消息字段，那么默认情况下所有的消息字段都会被包括在搜索中。</p>
+<ul>
+<li><p>包含词汇 ssh 的消息：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">ssh</span> <br></code></pre></td></tr></table></figure></li>
+<li><p>包含词汇 ssh 或 login 的消息：</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">ssh login</span> <br></code></pre></td></tr></table></figure></li>
+<li><p>包含精确短语 ssh login 的消息：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-string">&quot;ssh login&quot;</span> <br></code></pre></td></tr></table></figure></li>
+<li><p>字段 type 包含 ssh 的消息：</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elm"><span class="hljs-keyword">type</span>:ssh <br></code></pre></td></tr></table></figure></li>
+<li><p>字段 type 包含 ssh 或 login 的消息：</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elm"><span class="hljs-keyword">type</span>:(ssh <span class="hljs-type">OR</span> login)<br></code></pre></td></tr></table></figure>
+<p>提示：Elasticsearch 2.x 和 5.x 在空格处分割查询，所以查询 <code>type:(ssh login)</code> 等同于 <code>type:(ssh OR login)</code>。在 Elasticsearch 6.0 中，这种情况已经不再存在，你现在必须在每个词汇之间包含一个 OR 运算符。</p>
+</li>
+<li><p>字段 type 包含精确短语 ssh login 的消息：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada"><span class="hljs-keyword">type</span>:<span class="hljs-string">&quot;ssh login&quot;</span> <br></code></pre></td></tr></table></figure></li>
+<li><p>具有字段 type 的消息：</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elm"><span class="hljs-title">_exists_</span>:<span class="hljs-keyword">type</span> <br></code></pre></td></tr></table></figure></li>
+<li><p>不具有字段 type 的消息：</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elm"><span class="hljs-type">NOT</span> _exists_:<span class="hljs-keyword">type</span> <br></code></pre></td></tr></table></figure>
+<p>提示：Elasticsearch 2.x 允许使用 <code>_missing_:type</code> 替代 <code>NOT _exists_:type</code>。这种查询语法在 Elasticsearch 5.0 中已被移除。</p>
+</li>
+<li><p>匹配正则表达式 ethernet[0-9]+ 的消息：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-regexp">/ethernet[0-9]+/</span><br></code></pre></td></tr></table></figure>
+<p>提示：请参考 Elasticsearch 文档中关于正则表达式语法的部分，以获取关于支持的正则表达式方言的详细信息。</p>
+</li>
+</ul>
+<p>默认情况下，所有的词汇或短语都是 OR 连接的，所以所有至少有一个命中的消息都会被返回。你可以使用布尔运算符和组来控制这一点：<br>  <figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-string">&quot;ssh login&quot;</span> <span class="hljs-keyword">AND </span>source:example.<span class="hljs-keyword">org</span><br><span class="hljs-keyword"></span>(<span class="hljs-string">&quot;ssh login&quot;</span> <span class="hljs-keyword">AND </span>(source:example.<span class="hljs-keyword">org </span><span class="hljs-keyword">OR </span>source:another.example.<span class="hljs-keyword">org)) </span><span class="hljs-keyword">OR </span>_exists_:always_find_me<br></code></pre></td></tr></table></figure><br>你也可以使用 NOT 运算符：<br>  <figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-string">&quot;ssh login&quot;</span> <span class="hljs-keyword">AND</span> NOT source:example<span class="hljs-meta">.org</span><br>NOT example<span class="hljs-meta">.org</span><br></code></pre></td></tr></table></figure><br>请注意，AND、OR 和 NOT 是区分大小写的，必须全部使用大写字母输入。</p>
+<h2 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h2><p>使用 <code>?</code> 替换单个字符或 <code>*</code> 替换零个或多个字符：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">source:</span>*<span class="hljs-meta">.org</span><br><span class="hljs-symbol">source:</span>exam?le<span class="hljs-meta">.org</span><br><span class="hljs-symbol">source:</span>exam?le.*<br></code></pre></td></tr></table></figure>
+<p>请注意，为避免过度消耗内存，禁用了前导通配符！你可以在你的 Graylog 配置文件中启用它们：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">allow_leading_wildcard_searches</span> = <span class="hljs-literal">true</span> <br></code></pre></td></tr></table></figure>
+<p>还要注意，默认情况下，只有 message、full_message 和 source 这三个字段会被分析。虽然通配符搜索（使用 * 和 ?）适用于所有索引的字段，但分析过的字段的行为会有些不同。详情请参见通配符和正则表达式查询。</p>
+<h2 id="模糊性"><a href="#模糊性" class="headerlink" title="模糊性"></a>模糊性</h2><p>你可以搜索相似的词汇：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs avrasm">ssh logni~  <br><span class="hljs-symbol">source:</span>exmaple<span class="hljs-meta">.org</span>~  <br></code></pre></td></tr></table></figure>
+<p>这个例子使用了默认距离为2的 Damerau–Levenshtein 距离，将匹配 “ssh login” 和 “example.org”（查询中故意拼错）。</p>
+<p>你可以像这样改变距离：</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">source:</span>exmaple<span class="hljs-meta">.org</span>~<span class="hljs-number">1</span> <br></code></pre></td></tr></table></figure>
+<p>你也可以使用模糊性运算符进行接近搜索，其中短语中的词汇可以彼此有不同&#x2F;模糊的距离，而不必按照定义的顺序：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-string">&quot;foo bar&quot;</span><span class="hljs-symbol">~5 </span><br></code></pre></td></tr></table></figure>
+<p>数值字段支持范围查询。方括号中的范围是包含的，花括号中的范围是排除的，甚至可以组合使用：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">http_response_code</span>:[<span class="hljs-number">500</span> TO <span class="hljs-number">504</span>]<br><span class="hljs-attribute">http_response_code</span>:&#123;<span class="hljs-number">400</span> TO <span class="hljs-number">404</span>&#125;<br><span class="hljs-attribute">bytes</span>:&#123;<span class="hljs-number">0</span> TO <span class="hljs-number">64</span>]<br><span class="hljs-attribute">http_response_code</span>:[<span class="hljs-number">0</span> TO <span class="hljs-number">64</span>&#125;<br></code></pre></td></tr></table></figure>
+<p>你也可以进行一边无界的搜索：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">http_response_code</span>:&gt;<span class="hljs-number">400</span><br><span class="hljs-attribute">http_response_code</span>:&lt;<span class="hljs-number">400</span><br><span class="hljs-attribute">http_response_code</span>:&gt;=<span class="hljs-number">400</span><br><span class="hljs-attribute">http_response_code</span>:&lt;=<span class="hljs-number">400</span><br></code></pre></td></tr></table></figure>
+<p>还可以组合无界范围运算符：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">http_response_code</span>:(&gt;=<span class="hljs-number">400</span> AND &lt;<span class="hljs-number">500</span>)<br></code></pre></td></tr></table></figure>
+<p>可以对日期字段进行范围查询。重要的是，时间选择器选定的时间段要符合你想要搜索的范围。如果你在过去的5分钟内搜索，但是搜索的时间是一周前，那么查询将不会返回任何内容。日期需要是 UTC 格式，格式需要像 Graylog 显示的那样：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dns">timestamp:[&quot;<span class="hljs-number">2019-07-23</span> <span class="hljs-number">09:53:08.175</span>&quot; TO &quot;<span class="hljs-number">2019-07-23</span> <span class="hljs-number">09</span>:<span class="hljs-number">53:08.575</span>&quot;]<br></code></pre></td></tr></table></figure>
+<p>Graylog 为字段 timestamp 有一个自定义的索引映射，用于以 YYYY-MM-DD HH:MM:SS.sss 的格式保存日期。如果有一个额外的字段，Elasticsearch 判断这是一个日期并使用默认的日期格式，即 YYYY-MM-DD HH:MM:SS.sss。这意味着在那个期间的搜索将会像这样：</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs subunit">otherDate:[&quot;2019<span class="hljs-string">-07</span><span class="hljs-string">-23</span>T09:53:08.175&quot; TO &quot;2019<span class="hljs-string">-07</span><span class="hljs-string">-23</span>T09:53:08.575&quot;]<br></code></pre></td></tr></table></figure>
+<p>至少在 Elasticsearch 6.x 中，你可以在时间范围中包含时区信息。查询将看起来像这样：</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs subunit">otherDate:[&quot;2020<span class="hljs-string">-07</span><span class="hljs-string">-29</span>T12:00:00.000<span class="hljs-string">-05</span>:00&quot; TO &quot;2020<span class="hljs-string">-07</span><span class="hljs-string">-30</span>T15:13:00.000<span class="hljs-string">-05</span>:00&quot;] <br></code></pre></td></tr></table></figure>
+<p>这个日期查询也可以是动态的，你总是回看指定的时间：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">otherDate</span>:[now-<span class="hljs-number">5</span>d TO now-<span class="hljs-number">4</span>d]<br></code></pre></td></tr></table></figure>
+
+<h2 id="转义"><a href="#转义" class="headerlink" title="转义"></a>转义</h2><p>以下字符必须使用反斜杠进行转义：</p>
+<figure class="highlight wren"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs wren"><span class="hljs-operator">&amp;</span> <span class="hljs-operator">|</span> : \ / <span class="hljs-operator">+</span> <span class="hljs-operator">-</span> <span class="hljs-title function_">!</span> ( ) &#123; &#125; [ ] <span class="hljs-operator">^</span> <span class="hljs-string">&quot; ~ * ?</span><br></code></pre></td></tr></table></figure>
+<p>示例：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">resource:\<span class="hljs-string">/posts</span>\<span class="hljs-string">/45326</span><br></code></pre></td></tr></table></figure>
+<h2 id="正则表达式语法"><a href="#正则表达式语法" class="headerlink" title="正则表达式语法"></a>正则表达式语法</h2><p>正则表达式查询由 <code>regexp</code> 和 <code>query_string</code> 查询支持。Lucene 正则表达式引擎不兼容 Perl，但支持更小范围的运算符。</p>
+<p>我们不会试图解释正则表达式，而只是解释支持的运算符。</p>
+<h3 id="标准运算符"><a href="#标准运算符" class="headerlink" title="标准运算符"></a>标准运算符</h3><h4 id="锚定"><a href="#锚定" class="headerlink" title="锚定"></a>锚定</h4><p>大多数正则表达式引擎允许你匹配字符串的任何部分。如果你希望 regexp 模式从字符串的开始开始或在字符串的结束结束，那么你必须特别锚定它，使用 <code>^</code> 表示开始或 <code>$</code> 表示结束。</p>
+<p>Lucene 的模式总是锚定的。提供的模式必须匹配整个字符串。对于字符串 “abcde”：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs 1c">ab.*     <span class="hljs-meta"># 匹配</span><br>abcd     <span class="hljs-meta"># 不匹配</span><br></code></pre></td></tr></table></figure>
+<h4 id="允许的字符"><a href="#允许的字符" class="headerlink" title="允许的字符"></a>允许的字符</h4><p>模式中可以使用任何 Unicode 字符，但某些字符是保留的，必须被转义。标准保留字符是：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">. ? + * <span class="hljs-string">| &#123; &#125; [ ] ( ) &quot;</span> \<br></code></pre></td></tr></table></figure>
+<p>如果你启用了可选特性（见下文），那么这些字符可能也是保留的：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c"><span class="hljs-meta"># @ &amp; &lt; &gt;  ~</span><br></code></pre></td></tr></table></figure>
+<p>任何保留字符可以用反斜杠 “*“ 转义，包括文字反斜杠字符 “\“。</p>
+<p>此外，任何字符（除双引号外）在双引号中被解释为字面值：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs perl">john<span class="hljs-string">&quot;@smith.com&quot;</span><br></code></pre></td></tr></table></figure>
+<h4 id="匹配任何字符"><a href="#匹配任何字符" class="headerlink" title="匹配任何字符"></a>匹配任何字符</h4><p>句点 “.” 可用于代表任何字符。对于字符串 “abcde”：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">ab.<span class="hljs-string">..</span>   <span class="hljs-comment"># 匹配</span><br>a.c.e   <span class="hljs-comment"># 匹配</span><br></code></pre></td></tr></table></figure>
+<h4 id="一次或多次"><a href="#一次或多次" class="headerlink" title="一次或多次"></a>一次或多次</h4><p>加号 “+” 可用于重复前面的最短模式一次或多次。对于字符串 “aaabbb”：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">a+<span class="hljs-keyword">b+ </span>       <span class="hljs-comment"># 匹配</span><br>aa+<span class="hljs-keyword">bb+ </span>     <span class="hljs-comment"># 匹配</span><br>a+.+        <span class="hljs-comment"># 匹配</span><br>aa+<span class="hljs-keyword">bbb+ </span>    <span class="hljs-comment"># 匹配</span><br></code></pre></td></tr></table></figure>
+<h4 id="零次或多次"><a href="#零次或多次" class="headerlink" title="零次或多次"></a>零次或多次</h4><p>星号 “*” 可用于匹配前面的最短模式零次或多次。对于字符串 “aaabbb”：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">a*<span class="hljs-keyword">b* </span>       <span class="hljs-comment"># 匹配</span><br>a*<span class="hljs-keyword">b*c* </span>     <span class="hljs-comment"># 匹配</span><br>.*<span class="hljs-keyword">bbb.* </span>    <span class="hljs-comment"># 匹配</span><br>aaa*<span class="hljs-keyword">bbb* </span>   <span class="hljs-comment"># 匹配</span><br></code></pre></td></tr></table></figure>
+<h4 id="零次或一次"><a href="#零次或一次" class="headerlink" title="零次或一次"></a>零次或一次</h4><p>问号 “?” 使前面的最短模式变为可选。它匹配零次或一次。对于字符串 “aaabbb”：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">aaa?<span class="hljs-keyword">bbb? </span>   <span class="hljs-comment"># 匹配</span><br>aaaa?<span class="hljs-keyword">bbbb? </span> <span class="hljs-comment"># 匹配</span><br>.....?.?    <span class="hljs-comment"># 匹配</span><br>aa?<span class="hljs-keyword">bb? </span>     <span class="hljs-comment"># 不匹配</span><br></code></pre></td></tr></table></figure>
+<h4 id="最小到最大"><a href="#最小到最大" class="headerlink" title="最小到最大"></a>最小到最大</h4><p>大括号 “{}” 可用于指定前面最短模式可以重复的最小和（可选）最大次数。允许的形式是：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs 1c">&#123;<span class="hljs-number">5</span>&#125;     <span class="hljs-meta"># 重复5次</span><br>&#123;<span class="hljs-number">2</span>,<span class="hljs-number">5</span>&#125;   <span class="hljs-meta"># 至少重复2次，最多5次</span><br>&#123;<span class="hljs-number">2</span>,&#125;    <span class="hljs-meta"># 至少重复2次</span><br></code></pre></td></tr></table></figure>
+<p>对于字符串 “aaabbb”：</p>
+<figure class="highlight dust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs dust"><span class="language-xml">a</span><span class="hljs-template-variable">&#123;3&#125;</span><span class="language-xml">b</span><span class="hljs-template-variable">&#123;3&#125;</span><span class="language-xml">        # 匹配</span><br><span class="language-xml">a</span><span class="hljs-template-variable">&#123;2,4&#125;</span><span class="language-xml">b</span><span class="hljs-template-variable">&#123;2,4&#125;</span><span class="language-xml">    # 匹配</span><br><span class="language-xml">a</span><span class="hljs-template-variable">&#123;2,&#125;</span><span class="language-xml">b</span><span class="hljs-template-variable">&#123;2,&#125;</span><span class="language-xml">      # 匹配</span><br><span class="language-xml">.</span><span class="hljs-template-variable">&#123;3&#125;</span><span class="language-xml">.</span><span class="hljs-template-variable">&#123;3&#125;</span><span class="language-xml">        # 匹配</span><br><span class="language-xml">a</span><span class="hljs-template-variable">&#123;4&#125;</span><span class="language-xml">b</span><span class="hljs-template-variable">&#123;4&#125;</span><span class="language-xml">        # 不匹配</span><br><span class="language-xml">a</span><span class="hljs-template-variable">&#123;4,6&#125;</span><span class="language-xml">b</span><span class="hljs-template-variable">&#123;4,6&#125;</span><span class="language-xml">    # 不匹配</span><br><span class="language-xml">a</span><span class="hljs-template-variable">&#123;4,&#125;</span><span class="language-xml">b</span><span class="hljs-template-variable">&#123;4,&#125;</span><span class="language-xml">      # 不匹配</span><br></code></pre></td></tr></table></figure>
+<h4 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h4><p>括号 “()” 可用于形成子模式。上面列出的数量运算符作用于最短的前面的模式，这可以是一个组。对于字符串 “ababab”：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs scss">(ab)+       # 匹配<br><span class="hljs-built_in">ab</span>(ab)+     # 匹配<br>(..)+       # 匹配<br>(...)+      # 不匹配<br>(ab)*       # 匹配<br><span class="hljs-built_in">abab</span>(ab)?   # 匹配<br><span class="hljs-built_in">ab</span>(ab)?     # 不匹配<br>(ab)&#123;<span class="hljs-number">3</span>&#125;     # 匹配<br>(ab)&#123;<span class="hljs-number">1</span>,<span class="hljs-number">2</span>&#125;   # 不匹配<br></code></pre></td></tr></table></figure>
+<h4 id="交替"><a href="#交替" class="headerlink" title="交替"></a>交替</h4><p>管道符 “|” 充当 OR 运算符。如果左侧或右侧的模式匹配，匹配将成功。交替适用于最长的模式，而不是最短的。对于字符串 “aabb”：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">aabb|bbaa   <span class="hljs-comment"># 匹配</span><br>aacc|bb     <span class="hljs-comment"># 不匹配</span><br>aa(cc|bb)   <span class="hljs-comment"># 匹配</span><br><span class="hljs-keyword">a</span>+|b+       <span class="hljs-comment"># 不匹配</span><br><span class="hljs-keyword">a</span>+b+|b+<span class="hljs-keyword">a</span>+   <span class="hljs-comment"># 匹配</span><br><span class="hljs-keyword">a</span>+(b|c)+    <span class="hljs-comment"># 匹配</span><br></code></pre></td></tr></table></figure>
+<h4 id="字符类"><a href="#字符类" class="headerlink" title="字符类"></a>字符类</h4><p>可以将潜在字符的范围表示为字符类，通过在方括号 “[]” 中封闭它们。前导 ^ 对字符类取反。允许的形式是：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs autoit">[abc]   <span class="hljs-meta"># <span class="hljs-string">&#x27;a&#x27;</span> 或 <span class="hljs-string">&#x27;b&#x27;</span> 或 <span class="hljs-string">&#x27;c&#x27;</span></span><br>[a-c]   <span class="hljs-meta"># <span class="hljs-string">&#x27;a&#x27;</span> 或 <span class="hljs-string">&#x27;b&#x27;</span> 或 <span class="hljs-string">&#x27;c&#x27;</span></span><br>[-abc]  <span class="hljs-meta"># <span class="hljs-string">&#x27;-&#x27;</span> 或 <span class="hljs-string">&#x27;a&#x27;</span> 或 <span class="hljs-string">&#x27;b&#x27;</span> 或 <span class="hljs-string">&#x27;c&#x27;</span></span><br>[abc\-] <span class="hljs-meta"># <span class="hljs-string">&#x27;-&#x27;</span> 或 <span class="hljs-string">&#x27;a&#x27;</span> 或 <span class="hljs-string">&#x27;b&#x27;</span> 或 <span class="hljs-string">&#x27;c&#x27;</span></span><br>[^abc]  <span class="hljs-meta"># 除 <span class="hljs-string">&#x27;a&#x27;</span> 或 <span class="hljs-string">&#x27;b&#x27;</span> 或 <span class="hljs-string">&#x27;c&#x27;</span> 以外的任何字符</span><br>[^a-c]  <span class="hljs-meta"># 除 <span class="hljs-string">&#x27;a&#x27;</span> 或 <span class="hljs-string">&#x27;b&#x27;</span> 或 <span class="hljs-string">&#x27;c&#x27;</span> 以外的任何字符</span><br>[^-abc]  <span class="hljs-meta"># 除 <span class="hljs-string">&#x27;-&#x27;</span> 或 <span class="hljs-string">&#x27;a&#x27;</span> 或 <span class="hljs-string">&#x27;b&#x27;</span> 或 <span class="hljs-string">&#x27;c&#x27;</span> 以外的任何字符</span><br>[^abc\-] <span class="hljs-meta"># 除 <span class="hljs-string">&#x27;-&#x27;</span> 或 <span class="hljs-string">&#x27;a&#x27;</span> 或 <span class="hljs-string">&#x27;b&#x27;</span> 或 <span class="hljs-string">&#x27;c&#x27;</span> 以外的任何字符</span><br></code></pre></td></tr></table></figure>
+<p>注意，破折号 “-“ 表示一系列字符，除非它是第一个字符或者它被反斜杠转义。</p>
+<p>对于字符串 “abcd”：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">ab[<span class="hljs-built_in">cd</span>]+     <span class="hljs-comment"># 匹配</span><br>[a-d]+      <span class="hljs-comment"># 匹配</span><br>[^a-d]+     <span class="hljs-comment"># 不匹配</span><br></code></pre></td></tr></table></figure>
+<h4 id="可选运算符"><a href="#可选运算符" class="headerlink" title="可选运算符"></a>可选运算符</h4><p>这些运算符默认可用，因为 <code>flags</code> 参数默认为 ALL。可以使用不同的标志组合（用 “|” 连接）来启用&#x2F;禁用特定运算符：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;regexp&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>        <span class="hljs-attr">&quot;username&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>            <span class="hljs-attr">&quot;value&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;john~athon&lt;1-5&gt;&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;flags&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;COMPLEMENT|INTERVAL&quot;</span><br>        <span class="hljs-punctuation">&#125;</span><br>    <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<h4 id="补集"><a href="#补集" class="headerlink" title="补集"></a>补集</h4><p>补集可能是最有用的选项。跟在波浪线 “<del>“ 后面的最短模式是取反的。例如，”ab</del>cd” 意味着：</p>
+<ul>
+<li>以 a 开始</li>
+<li>后跟 b</li>
+<li>后跟一个任意长度的字符串，该字符串不是 c</li>
+<li>以 d 结束</li>
+</ul>
+<p>对于字符串 “abcdef”：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">ab~df     <span class="hljs-comment"># 匹配</span><br>ab~cf     <span class="hljs-comment"># 匹配</span><br>ab~cdef   <span class="hljs-comment"># 不匹配</span><br><span class="hljs-keyword">a</span>~(cb)def <span class="hljs-comment"># 匹配</span><br><span class="hljs-keyword">a</span>~(bc)def <span class="hljs-comment"># 不匹配</span><br></code></pre></td></tr></table></figure>
+<p>使用 COMPLEMENT 或 ALL 标志启用。</p>
+<h4 id="区间"><a href="#区间" class="headerlink" title="区间"></a>区间</h4><p>区间选项启用了使用尖括号 “&lt;&gt;” 封闭的数字范围。对于字符串 “foo80”：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">foo</span>&lt;<span class="hljs-number">1</span>-<span class="hljs-number">100</span>&gt;     # 匹配<br><span class="hljs-attribute">foo</span>&lt;<span class="hljs-number">01</span>-<span class="hljs-number">100</span>&gt;    # 匹配<br><span class="hljs-attribute">foo</span>&lt;<span class="hljs-number">001</span>-<span class="hljs-number">100</span>&gt;   # 不匹配<br></code></pre></td></tr></table></figure>
+<p>使用 INTERVAL 或 ALL 标志启用。</p>
+<h4 id="交集"><a href="#交集" class="headerlink" title="交集"></a>交集</h4><p>符号 “&amp;” 连接两个模式，使它们都必须匹配。对于字符串 “aaabbb”：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">aaa.+&amp;.+<span class="hljs-keyword">bbb </span>    <span class="hljs-comment"># 匹配</span><br>aaa&amp;<span class="hljs-keyword">bbb </span>       <br></code></pre></td></tr></table></figure>
+
+<h2 id="错误类型"><a href="#错误类型" class="headerlink" title="错误类型"></a>错误类型</h2><p>在输入查询时，请务必注意警告和异常。如果你输入了 Graylog 无法理解的查询，会出现一个带有黄色感叹号的图标，以及一条带有警告或异常的消息。它们包括：</p>
+<ul>
+<li>解析异常 - 当发生解析错误时，会抛出此异常。当你在搜索查询的语法中出错时，会出现这个异常。错误消息应该包含有关语法错误位置的更多信息。</li>
+<li>无效运算符 - 当运算符拼写错误时，会出现此错误。例如，AND 是一个有效的运算符，但 and 不是。在大多数情况下，运算符是大写的。</li>
+<li>未知字段 - 当你在搜索查询中包含一个不存在于相关索引集的字段时，会出现此警告。这是由流和索引集之间的关系决定的。</li>
+<li>参数错误 - 当你在搜索查询中使用一个未声明的参数时，会出现此错误。</li>
+</ul>
+<p>参数需要在你将它们包含在搜索中之前进行定义。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/graylog/" class="category-chain-item">graylog</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/graylog/" class="print-no-link">#graylog</a>
+      
+        <a href="/tags/elastic-search/" class="print-no-link">#elastic search</a>
+      
+        <a href="/tags/es/" class="print-no-link">#es</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Graylog 查询语句语法</div>
+      <div>https://sugayoiya.github.io/posts/2802.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年3月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/11363.html" title="Java 内存对象布局">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Java 内存对象布局</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/65174.html" title="IntelliJ IDEA for Mac 快捷键整理">
+                        <span class="hidden-mobile">IntelliJ IDEA for Mac 快捷键整理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

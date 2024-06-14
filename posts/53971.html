@@ -1,0 +1,1135 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="Java">
+  
+    <meta name="description" content="所有的final修饰的字段都是编译期常量吗?  不是的，只有被final修饰的字段同时满足是基本数据类型或者String，并且在编译期间就可以确定值的情况下，才能被视为编译期常量。例如，final int x &#x3D; 1;和final String s &#x3D; &quot;Hello&quot;;是编译期常量，但final Object o &#x3D; new Object();就不是，因为o的值需要在运行时才">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java面试题">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/53971.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="所有的final修饰的字段都是编译期常量吗?  不是的，只有被final修饰的字段同时满足是基本数据类型或者String，并且在编译期间就可以确定值的情况下，才能被视为编译期常量。例如，final int x &#x3D; 1;和final String s &#x3D; &quot;Hello&quot;;是编译期常量，但final Object o &#x3D; new Object();就不是，因为o的值需要在运行时才">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sugayoiya.github.io/img/post/(87952624)2019-2020miku2_p6.jpg">
+<meta property="article:published_time" content="2022-04-04T15:55:05.000Z">
+<meta property="article:modified_time" content="2024-03-22T09:17:56.064Z">
+<meta property="article:author" content="Sugayoiya">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sugayoiya.github.io/img/post/(87952624)2019-2020miku2_p6.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Java面试题 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>妖怪の山</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>紅魔館</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>雾之湖</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>人間の里</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>永遠亭</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post/(87951954)UcyUu_p7.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Java面试题"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-04-04 23:55" pubdate>
+          2022年4月4日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          13k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Java面试题</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <ol>
+<li>所有的final修饰的字段都是编译期常量吗?</li>
+</ol>
+<p>不是的，只有被final修饰的字段同时满足是基本数据类型或者String，并且在编译期间就可以确定值的情况下，才能被视为编译期常量。例如，<code>final int x = 1;</code>和<code>final String s = &quot;Hello&quot;;</code>是编译期常量，但<code>final Object o = new Object();</code>就不是，因为o的值需要在运行时才能确定。</p>
+<ol start="2">
+<li>如何理解private所修饰的方法是隐式的final?</li>
+</ol>
+<p>这是因为private方法只能在当前类中被访问，不能被其他类访问，更不能被其他类重写。因此，虽然我们没有显式地将private方法标记为final，但它们的行为类似于final方法。</p>
+<ol start="3">
+<li>final类型的类如何拓展?</li>
+</ol>
+<p>final类型的类不能被继承，这是final关键字的一个重要特性。如果你想写一个类，复用所有String中的方法，同时增加一个新的toMyString()的方法，你可以创建一个新的类，该类内部持有一个String对象，然后提供所有String类的方法的代理实现，同时添加toMyString()方法。这种模式被称为组合。</p>
+<ol start="4">
+<li>final方法可以被重载吗? 可以父类的final方法能不能够被子类重写?</li>
+</ol>
+<p>final方法可以在同一个类中被重载，这是因为重载是在同一个类中，方法名相同但参数列表不同的多个方法共存。但是，final方法不能被子类重写，这是final关键字的主要特性之一。</p>
+<ol start="5">
+<li>final域重排序规则?</li>
+</ol>
+<p>final域重排序规则是指在构造函数中对final字段的赋值操作，必须在构造函数执行完毕之前完成。这是为了保证在对象被其他线程引用之前，final字段已经被初始化完毕，从而保证了final字段的不变性。</p>
+<ol start="6">
+<li>final的原理?</li>
+</ol>
+<p>final关键字的原理主要体现在Java编译器和JVM的实现上。在Java编译器层面，对于final变量，如果编译时可以确定其值，那么编译器会在编译时就将这个值写入到使用该常量的字节码中。对于final方法，编译器会禁止子类重写这个方法。对于final类，编译器会禁止其他类继承这个类。</p>
+<p>在JVM层面，对于final字段，JVM会保证在构造函数执行完毕之前，这个字段已经被初始化。此外，JVM还会为final字段生成专门的字节码指令。</p>
+<ol start="7">
+<li>使用final的限制条件和局限性?</li>
+</ol>
+<p>final关键字有以下的限制条件和局限性：</p>
+<ul>
+<li>final变量：一旦被初始化后，其值就不能被修改。</li>
+<li>final方法：不能被子类重写，但可以被子类继承和使用。</li>
+<li>final类：不能被继承，但可以被实例化。</li>
+<li>final参数：在方法内部不能修改参数的值。</li>
+</ul>
+<p>这些限制条件在某些情况下可能会限制代码的灵活性，但是它们也提供了一些好处，比如提高了代码的安全性和可读性，以及在某些情况下可以提高代码的执行效率。</p>
+<ol>
+<li><code>volatile</code>关键字的作用是什么?</li>
+</ol>
+<p><code>volatile</code>是Java中的一种类型修饰符，用于标识一个变量可能会被多个线程同时修改和访问，其主要作用是保证变量的可见性和有序性。</p>
+<ol start="2">
+<li><code>volatile</code>能保证原子性吗?</li>
+</ol>
+<p><code>volatile</code>不能保证复杂操作的原子性。例如，对于<code>volatile int i</code>，<code>i++</code>这种操作不能保证原子性，因为它实际上是一个复合操作，包括读取、修改和写入三个步骤。但是，对于单个的读操作或写操作，<code>volatile</code>可以保证其原子性。</p>
+<ol start="3">
+<li>之前32位机器上共享的<code>long</code>和<code>double</code>变量的为什么要用<code>volatile</code>?</li>
+</ol>
+<p>在32位的JVM中，<code>long</code>和<code>double</code>类型的变量的读写可能会被拆分成两个32位的操作，这可能会导致其他线程在读取这个变量的时候，看到一个既不是旧值也不是新值的中间状态。使用<code>volatile</code>可以防止这种情况发生，因为<code>volatile</code>可以保证对这些变量的读写操作的原子性。</p>
+<ol start="4">
+<li>现在64位机器上是否也要设置呢?</li>
+</ol>
+<p>在64位的JVM中，<code>long</code>和<code>double</code>类型的变量的读写操作默认就是原子的，所以在大多数情况下，我们不再需要使用<code>volatile</code>来保证它们的原子性。但是，如果这些变量需要被多个线程共享，我们仍然需要使用<code>volatile</code>来保证它们的可见性。</p>
+<ol start="5">
+<li><code>i++</code>为什么不能保证原子性?</li>
+</ol>
+<p><code>i++</code>实际上是一个复合操作，包括读取、修改和写入三个步骤。在这三个步骤中，都有可能被其他线程的操作打断，从而导致结果不符合预期。只有通过同步机制（例如<code>synchronized</code>或<code>Lock</code>），或者使用原子类（例如<code>AtomicInteger</code>），才能保证<code>i++</code>操作的原子性。</p>
+<ol start="6">
+<li><code>volatile</code>是如何实现可见性的?</li>
+</ol>
+<p><code>volatile</code>通过内存屏障来实现可见性。当一个线程修改了一个<code>volatile</code>变量后，它会立即将修改写入到主内存中，而不是缓存在CPU的缓存中。当另一个线程读取这个<code>volatile</code>变量时，它会直接从主内存中读取，而不是从CPU的缓存中读取，从而保证了可见性。</p>
+<ol start="7">
+<li><code>volatile</code>是如何实现有序性的?</li>
+</ol>
+<p><code>volatile</code>通过禁止指令重排来实现有序性。在JVM中，为了提高执行效率，编译器和处理器可能会对指令进行重排。但是，如果两个操作之间存在数据依赖性，这种重排可能会导致结果不符合预期。<code>volatile</code>可以阻止这种重排，从而保证有序性。</p>
+<ol start="8">
+<li><code>volatile</code>的应用场景?</li>
+</ol>
+<p><code>volatile</code>主要用于多线程环境，当一个变量需要被多个线程共享，且不需要同步，只需要保证可见性和有序性时，可以使用<code>volatile</code>。例如，一个线程修改了一个标志位，另一个线程需要根据这个标志位来决定是否继续执行，这种情况下就可以使用<code>volatile</code>。</p>
+<p>Java的并发（Concurrency）工具类库Java.util.concurrent（JUC）主要包含以下几个部分：</p>
+<ol>
+<li><p>基础设施：提供了Java并发编程的基本接口和类，如Runnable、Callable、Future和Thread等。</p>
+</li>
+<li><p>同步器：这部分主要提供了各种同步工具类，如Semaphore（信号量）、CountDownLatch（倒计时门闩）、CyclicBarrier（循环栅栏）、Exchanger（数据交换器）等。</p>
+</li>
+<li><p>并发集合：这部分提供了多种并发集合类，如ConcurrentHashMap、CopyOnWriteArrayList、BlockingQueue等。</p>
+</li>
+<li><p>Executor框架：这部分提供了线程池框架，包括ThreadPoolExecutor、ScheduledThreadPoolExecutor等。</p>
+</li>
+<li><p>锁：提供了多种锁相关的类，如ReentrantLock、ReentrantReadWriteLock、StampedLock等。</p>
+</li>
+<li><p>原子变量：提供了一系列的原子操作类，如AtomicInteger、AtomicLong、AtomicReference等。</p>
+</li>
+</ol>
+<p>每个部分的核心类如下：</p>
+<ol>
+<li><p>基础设施：Thread、Runnable、Callable、Future。</p>
+</li>
+<li><p>同步器：Semaphore、CountDownLatch、CyclicBarrier、Exchanger。</p>
+</li>
+<li><p>并发集合：ConcurrentHashMap、CopyOnWriteArrayList、BlockingQueue。</p>
+</li>
+<li><p>Executor框架：Executor、ExecutorService、ThreadPoolExecutor、ScheduledExecutorService。</p>
+</li>
+<li><p>锁：Lock、ReentrantLock、ReentrantReadWriteLock、StampedLock。</p>
+</li>
+<li><p>原子变量：AtomicInteger、AtomicLong、AtomicReference。</p>
+</li>
+</ol>
+<p>最最核心的类有：</p>
+<ul>
+<li>基础设施：Thread、Future。</li>
+<li>同步器：Semaphore、CountDownLatch。</li>
+<li>并发集合：ConcurrentHashMap、BlockingQueue。</li>
+<li>Executor框架：ExecutorService、ThreadPoolExecutor。</li>
+<li>锁：ReentrantLock。</li>
+<li>原子变量：AtomicInteger。</li>
+</ul>
+<p>以上类是并发编程中经常会用到的类，它们提供了丰富的功能，可以满足大部分并发编程的需求。</p>
+<ol>
+<li>线程安全的实现方法有哪些？</li>
+</ol>
+<p>线程安全主要有以下几种实现方式：</p>
+<ul>
+<li>同步（Synchronized）：通过Java的关键字<code>synchronized</code>实现，它保证了同一时刻对数据的访问和操作只有一个线程。</li>
+<li>锁（Lock）：Java提供了更加灵活的锁机制，如ReentrantLock，可以实现公平锁和非公平锁，还提供了条件锁等高级功能。</li>
+<li>原子类（Atomic）：Java提供了一系列的原子类，如AtomicInteger、AtomicLong、AtomicReference等，它们通过CAS（Compare And Swap）操作实现线程安全。</li>
+<li>并发容器：Java提供了一系列并发容器，如ConcurrentHashMap、CopyOnWriteArrayList等，它们内部都实现了线程安全。</li>
+<li>线程局部变量（ThreadLocal）：通过为每个线程创建独立的变量副本，实现线程安全。</li>
+</ul>
+<ol start="2">
+<li>什么是CAS？</li>
+</ol>
+<p>CAS，全称Compare And Swap，即比较并交换。它是一种无锁的线程安全实现方式。CAS操作包含三个操作数——内存位置（V）、预期原值（A）和新值（B）。如果内存位置的当前值与预期原值相匹配，那么处理器会自动将该位置值更新为新值，否则，处理器不做任何操作。</p>
+<ol start="3">
+<li>CAS使用示例，结合AtomicInteger给出示例？</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">AtomicInteger</span> <span class="hljs-variable">atomicInteger</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AtomicInteger</span>(<span class="hljs-number">0</span>);<br><span class="hljs-type">int</span> <span class="hljs-variable">expect</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><span class="hljs-type">int</span> <span class="hljs-variable">update</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br>atomicInteger.compareAndSet(expect, update);<br></code></pre></td></tr></table></figure>
+<p>在这个例子中，我们首先创建了一个AtomicInteger对象，并设置其初始值为0。然后我们期望它的值仍然为0（expect），如果是，我们将其更新为1（update）。</p>
+<ol start="4">
+<li>CAS会有哪些问题？</li>
+</ol>
+<p>CAS主要有以下几个问题：</p>
+<ul>
+<li>ABA问题：如果一个值原来是A，变成了B，然后又变成了A，那么在CAS检查的时候会发现该值没有发生变化，但是实际上该值已经被其他线程修改过了。</li>
+<li>循环时间长开销大：CAS是一种自旋操作，如果不断地CAS失败，会消耗大量的CPU资源。</li>
+<li>只能保证一个共享变量的原子操作：当对一个共享变量执行操作时，CAS能够保证该变量的原子性，但是对于多个共享变量，CAS就无法保证其原子性。</li>
+</ul>
+<ol start="5">
+<li>针对这些问题，Java提供了哪几个解决的？</li>
+</ol>
+<ul>
+<li>ABA问题：Java提供了AtomicStampedReference和AtomicMarkableReference等类来解决ABA问题，它们通过给每个值加上一个版本号或标记来实现。</li>
+<li>循环时间长开销大：可以通过限制CAS重试的次数来减少CPU的消耗。</li>
+<li>只能保证一个共享变量的原子操作：可以通过AtomicReference来保证多个共享变量的原子性。</li>
+</ul>
+<ol start="6">
+<li>AtomicInteger底层实现？</li>
+</ol>
+<p>AtomicInteger的底层主要依赖Unsafe类提供的原生方法，如<code>compareAndSwapInt</code>来实现CAS操作，从而实现原子性。</p>
+<ol start="7">
+<li>CAS+volatile请阐述你对Unsafe类的理解？</li>
+</ol>
+<p>Unsafe类提供了一些低层次的、操作系统级别的API，包括直接访问系统内存、执行类似于C语言的指针操作等。在AtomicInteger等原子类的实现中，主要利用了Unsafe类提供的CAS操作和volatile的内存语义，来实现线程安全的原子操作。</p>
+<ol start="8">
+<li>说说你对Java原子类的理解？</li>
+</ol>
+<p>Java的原子类主要包括AtomicInteger、AtomicLong、AtomicBoolean、AtomicReference等，它们提供了一种无锁的线程安全实现方式。这些类内部主要依赖Unsafe类提供的CAS操作来实现线程安全。它们通常用于在高并发环境下替代synchronized或Lock，因为它们的性能通常更高。</p>
+<ol start="9">
+<li>AtomicStampedReference是什么？</li>
+</ol>
+<p>AtomicStampedReference是一个带有”时间戳”（或者说是版本号）的引用类型的原子类，它可以解决CAS操作的ABA问题。它通过将版本号和值一起进行CAS操作，来保证线程安全。</p>
+<ol start="10">
+<li>AtomicStampedReference是怎么解决ABA的？</li>
+</ol>
+<p>AtomicStampedReference通过给每个值加上一个版本号（或者说是时间戳）来解决ABA问题。在每次操作的时候，不仅要比较值是否相等，还要比较版本号是否相等。如果版本号不相等，即使值相等，CAS操作也会失败。</p>
+<ol start="11">
+<li>内部使用Pair来存储元素值及其版本号java中还有哪些类可以解决ABA的问题？</li>
+</ol>
+<p>除了AtomicStampedReference外，Java还提供了AtomicMarkableReference来解决ABA问题。AtomicMarkableReference通过给每个值加上一个布尔标记来解决ABA问题。在每次操作的时候，不仅要比较值是否相等，还要比较标记是否相等。如果标记不相等，即使值相等，CAS操作也会失败。</p>
+<ol>
+<li>为什么LockSupport也是核心基础类？</li>
+</ol>
+<p>LockSupport是Java并发编程的核心类之一，它提供了基本的线程同步原语。LockSupport类是构建许多同步组件和工具的基础，包括ForkJoinPool、FutureTask、AbstractQueuedSynchronizer（AQS）和ReentrantLock等。LockSupport中的park()和unpark()方法提供了一种安全和高效的方式来暂停和恢复线程。</p>
+<ol start="2">
+<li>AQS框架借助于两个类：Unsafe(提供CAS操作)和LockSupport(提供park&#x2F;unpark操作)</li>
+</ol>
+<p>AQS是AbstractQueuedSynchronizer的简称，它是Java并发包中的一个基础框架，用于构建锁和同步组件。AQS内部通过一个int成员变量来表示同步状态，并提供了修改同步状态的方法。这些方法基于Unsafe类提供的CAS操作，以实现同步状态管理的线程安全。</p>
+<p>同时，AQS使用了LockSupport的park()和unpark()方法来挂起和唤醒线程。当获取同步状态失败时，线程会被AQS通过LockSupport.park()方法挂起；当同步状态释放时，被挂起的线程会被AQS通过LockSupport.unpark()方法唤醒。</p>
+<ol start="3">
+<li>写出分别通过wait&#x2F;notify和LockSupport的park&#x2F;unpark实现同步的代码</li>
+</ol>
+<p>通过wait&#x2F;notify实现同步：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">final</span> <span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>();<br><span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(() -&gt; &#123;<br>    <span class="hljs-keyword">synchronized</span> (obj) &#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            obj.wait();<br>        &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;<br>            e.printStackTrace();<br>        &#125;<br>    &#125;<br>&#125;).start();<br><br><span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(() -&gt; &#123;<br>    <span class="hljs-keyword">synchronized</span> (obj) &#123;<br>        obj.notify();<br>    &#125;<br>&#125;).start();<br></code></pre></td></tr></table></figure>
+
+<p>通过LockSupport的park&#x2F;unpark实现同步：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Thread</span> <span class="hljs-variable">t1</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(() -&gt; &#123;<br>    LockSupport.park();<br>&#125;);<br>t1.start();<br><br><span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(() -&gt; &#123;<br>    LockSupport.unpark(t1);<br>&#125;).start();<br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>LockSupport.park()会释放锁资源吗？那么Condition.await()呢？</li>
+</ol>
+<p>LockSupport.park()不会释放任何锁资源，它只是让当前线程进入等待状态。而Condition.await()方法会释放与Condition相关联的Lock锁。</p>
+<ol start="5">
+<li>Thread.sleep()、Object.wait()、Condition.await()、LockSupport.park()的区别？</li>
+</ol>
+<ul>
+<li>Thread.sleep()：使当前线程进入TIMED_WAITING状态，不释放锁，指定时间后线程自动恢复。</li>
+<li>Object.wait()：使当前线程进入WAITING状态，同时会释放锁，需要被其他线程调用notify&#x2F;notifyAll唤醒。</li>
+<li>Condition.await()：使当前线程进入WAITING状态，同时会释放与Condition相关联的Lock锁，需要被其他线程调用Condition的signal&#x2F;signalAll唤醒。</li>
+<li>LockSupport.park()：使当前线程进入WAITING状态，不释放任何锁资源，需要被其他线程调用LockSupport的unpark方法唤醒。</li>
+</ul>
+<ol start="6">
+<li>如果在wait()之前执行了notify()会怎样？如果在park()之前执行了unpark()会怎样？</li>
+</ol>
+<p>如果在wait()之前执行了notify()，那么这个notify()的唤醒效果就会被忽略，因为没有线程在等待状态，所以wait()方法会让线程进入无限期的等待状态，除非有其他线程再次调用notify()。</p>
+<p>而如果在park()之前执行了unpark()，那么下一次调用park()时，不会阻塞，因为unpark()具有许可的特性，可以先于park()调用，也就是说unpark()的唤醒效果可以被先行保留。</p>
+<ol>
+<li>什么是AQS？</li>
+</ol>
+<p>AQS，全称为AbstractQueuedSynchronizer，是Java并发包中的一个抽象类，它为实现依赖于先进先出 (FIFO) 等待队列的阻塞锁和相关同步器（如semaphores、events）提供了一个框架。AQS解决了实现同步器的大部分细节问题，自定义同步组件只需要实现共享和独占模式下获取和释放同步状态的方法即可。</p>
+<ol start="2">
+<li>为什么它是核心？</li>
+</ol>
+<p>AQS是Java并发包中的核心组件，许多高级同步工具，如ReentrantLock、Semaphore、CountDownLatch、ReentrantReadWriteLock、FutureTask等，都是基于AQS实现的。AQS通过内部的同步队列来管理阻塞的线程，提供了丰富的状态操作方法，简化了同步器的实现。</p>
+<ol start="3">
+<li>AQS的核心思想是什么？</li>
+</ol>
+<p>AQS的核心思想是，如果被请求的状态未被当前线程持有，则该线程将会被加入到队列中，并在其线程调度的turn时被唤醒；如果恰好获取到了可以满足其需求的状态，那么该线程将会从该等待队列中移除，并且得以执行。</p>
+<ol start="4">
+<li>AQS是怎么实现的？底层数据结构等</li>
+</ol>
+<p>AQS的底层数据结构是一个双向链表（FIFO），用于维护等待获取资源的线程。AQS通过一个int类型的成员变量state来控制同步状态，通过内部的ConditionObject类来支持条件变量。</p>
+<ol start="5">
+<li>AQS有哪些核心的方法？</li>
+</ol>
+<p>AQS的核心方法主要有以下几个：</p>
+<ul>
+<li>acquire(int arg)：独占式获取同步状态，如果当前线程获取同步状态失败，则会进入同步队列等待，同时会阻塞当前线程。</li>
+<li>release(int arg)：独占式释放同步状态，会唤醒后继节点。</li>
+<li>acquireShared(int arg)：共享式获取同步状态，如果当前线程获取同步状态失败，则会进入同步队列等待，同时会阻塞当前线程。</li>
+<li>releaseShared(int arg)：共享式释放同步状态，会唤醒后继节点。</li>
+</ul>
+<ol start="6">
+<li>AQS定义什么样的资源获取方式？</li>
+</ol>
+<p>AQS定义了两种资源获取方式：独占模式和共享模式。</p>
+<ul>
+<li>独占模式：只有一个线程能执行，又根据是否按队列的顺序分为公平锁和非公平锁，如ReentrantLock。</li>
+<li>共享模式：多个线程可同时执行，如Semaphore、CountDownLatch、CyclicBarrier。ReentrantReadWriteLock可以看成是组合式，允许多个线程同时对某一资源进行读。</li>
+</ul>
+<ol start="7">
+<li>AQS底层使用了什么样的设计模式？</li>
+</ol>
+<p>AQS底层使用了模板方法设计模式，定义了一套同步器的操作流程。子类通过实现AQS的几个protected方法来改变同步器的行为。</p>
+<ol start="8">
+<li>AQS的应用示例？</li>
+</ol>
+<p>ReentrantLock和Semaphore都是AQS的典型应用。ReentrantLock是一种基于AQS实现的可重入独占锁，Semaphore则是一种基于AQS实现的多线程并发控制工具。</p>
+<ol>
+<li>什么是可重入，什么是可重入锁？</li>
+</ol>
+<p>可重入，又称为递归调用，是指在同一个线程在外层方法获取锁的时候，再进入内层方法会自动获取锁。换句话说，线程可以进入任何一个它已经拥有的锁所同步着的代码块。</p>
+<p>可重入锁，是指一个线程可以多次获取同一把锁。例如，一个线程在持有锁的情况下，再次请求同一把锁，如果这把锁是可重入的，那么请求会成功。</p>
+<ol start="2">
+<li>它用来解决什么问题？</li>
+</ol>
+<p>可重入锁主要解决了方法或者代码块的重复调用的问题，避免了因重入造成的死锁问题。</p>
+<ol start="3">
+<li>ReentrantLock的核心是AQS，那么它怎么来实现的，继承吗？说说其类内部结构关系。</li>
+</ol>
+<p>ReentrantLock的核心是AQS，它通过内部类（FairSync和NonfairSync）继承AQS来实现的。这两个内部类分别实现了公平锁和非公平锁的逻辑。ReentrantLock在创建时，会根据传入的公平性参数，实例化对应的Sync对象。</p>
+<ol start="4">
+<li>ReentrantLock是如何实现公平锁的？ReentrantLock是如何实现非公平锁的？</li>
+</ol>
+<ul>
+<li>公平锁：通过队列来实现公平性。当锁被请求时，如果有其他线程正在等待，或者锁已经被其他线程持有，那么请求的线程会被加入到队列的尾部，并且不会试图去获取锁，直到它的turn。</li>
+<li>非公平锁：当锁被请求时，会首先尝试去获取锁，如果获取失败，才会进入等待队列。</li>
+</ul>
+<ol start="5">
+<li>ReentrantLock默认实现的是公平还是非公平锁？</li>
+</ol>
+<p>ReentrantLock默认实现的是非公平锁。</p>
+<ol start="6">
+<li>使用ReentrantLock实现公平和非公平锁的示例？</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 公平锁</span><br><span class="hljs-type">ReentrantLock</span> <span class="hljs-variable">fairLock</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReentrantLock</span>(<span class="hljs-literal">true</span>);<br><br><span class="hljs-comment">// 非公平锁</span><br><span class="hljs-type">ReentrantLock</span> <span class="hljs-variable">nonfairLock</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ReentrantLock</span>(); <span class="hljs-comment">// 或者 new ReentrantLock(false);</span><br></code></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>ReentrantLock和Synchronized的对比？</li>
+</ol>
+<ul>
+<li>ReentrantLock和synchronized都是可重入锁，都支持公平和非公平锁，但是ReentrantLock需要显式解锁，synchronized会在代码块结束时自动解锁。</li>
+<li>ReentrantLock提供了更高级的功能，例如能够中断等待锁的线程，或者限时等待获取锁，而synchronized则不具备这些功能。</li>
+<li>ReentrantLock通过Condition类提供了分组唤醒需要唤醒的线程的能力，而synchronized则只能随机唤醒一个线程或者唤醒所有线程。</li>
+<li>ReentrantLock的性能通常比synchronized要好。</li>
+</ul>
+<ol>
+<li>为什么有了ReentrantLock还需要ReentrantReadWriteLock？</li>
+</ol>
+<p>ReentrantLock是一个独占锁，同一时间只能有一个线程获取锁。在某些读多写少的场景下，如果使用ReentrantLock可能会导致并发性能较差，因为读操作并不需要互斥。ReentrantReadWriteLock引入了读锁和写锁的概念，读锁是共享的，写锁是独占的，这样在读多写少的场景下，读操作可以并发进行，提高了并发性能。</p>
+<ol start="2">
+<li>ReentrantReadWriteLock底层实现原理？</li>
+</ol>
+<p>ReentrantReadWriteLock的实现也是基于AQS的。它通过一个int变量来表示读锁和写锁的状态，高16位表示读锁，低16位表示写锁。读锁是共享的，写锁是独占的。</p>
+<ol start="3">
+<li>ReentrantReadWriteLock底层读写状态如何设计的？</li>
+</ol>
+<p>ReentrantReadWriteLock的状态是由一个int变量表示的，这个int变量的高16位表示读锁的重入次数，低16位表示写锁的重入次数。</p>
+<ol start="4">
+<li>读锁和写锁的最大数量是多少？</li>
+</ol>
+<p>由于ReentrantReadWriteLock的状态是由一个int变量表示的，所以读锁和写锁的最大数量是2^16-1，即65535。</p>
+<ol start="5">
+<li>本地线程计数器ThreadLocalHoldCounter是用来做什么的？</li>
+</ol>
+<p>ThreadLocalHoldCounter用于保存当前线程获取读锁的重入次数。</p>
+<ol start="6">
+<li>缓存计数器HoldCounter是用来做什么的？</li>
+</ol>
+<p>HoldCounter是ThreadLocalHoldCounter的一个优化，用于减少ThreadLocal的查询次数。</p>
+<ol start="7">
+<li>写锁的获取与释放是怎么实现的？</li>
+</ol>
+<p>写锁的获取和释放是通过AQS的acquire和release方法实现的。</p>
+<ol start="8">
+<li>读锁的获取与释放是怎么实现的？</li>
+</ol>
+<p>读锁的获取和释放是通过AQS的acquireShared和releaseShared方法实现的。</p>
+<ol start="9">
+<li>RentrantReadWriteLock为什么不支持锁升级？</li>
+</ol>
+<p>锁升级是指一个线程在持有读锁的情况下，再尝试获取写锁，这种情况在ReentrantReadWriteLock中是不被允许的，因为这可能会导致死锁。例如，线程A持有读锁，线程B尝试获取写锁但失败，然后阻塞；此时，如果线程A尝试获取写锁（即尝试锁升级），那么线程A也会阻塞，这样就形成了死锁。</p>
+<ol start="10">
+<li>什么是锁的升降级？</li>
+</ol>
+<p>锁的升级是指一个线程在持有读锁的情况下，再尝试获取写锁。锁的降级是指一个线程在持有写锁的情况下，再尝试获取读锁，然后释放写锁。ReentrantReadWriteLock支持锁的降级，但不支持锁的升级。</p>
+<ol>
+<li>为什么HashTable慢？它的并发度是什么？</li>
+</ol>
+<p>HashTable是线程安全的，它的线程安全是通过在修改数据时锁定整个HashTable来实现的。这意味着任何时候只能有一个线程能访问HashTable，这就是HashTable的并发度。这种方式在并发度较低时效率是可以接受的，但是在并发度较高时，由于大量线程阻塞等待获取锁，效率会变得非常低。</p>
+<ol start="2">
+<li>ConcurrentHashMap并发度是什么？</li>
+</ol>
+<p>ConcurrentHashMap的并发度是它的分段锁的数量。在JDK1.7中，ConcurrentHashMap内部使用一个Segment数组，每个Segment对象持有一个锁，一个Segment内部包含一个HashEntry数组，每个HashEntry对象就是一个键值对。不同的Segment之间可以并发操作。在JDK1.8中，ConcurrentHashMap取消了Segment的概念，直接用Node数组实现，每个Node就是一个键值对，对Node数组的不同部分可以并发操作。</p>
+<ol start="3">
+<li>ConcurrentHashMap在JDK1.7和JDK1.8中实现有什么差别？</li>
+</ol>
+<p>JDK1.7的ConcurrentHashMap使用分段锁机制，每个Segment持有一个锁，Segment的数量就是并发度。JDK1.8的ConcurrentHashMap取消了Segment的概念，直接使用Node数组和CAS操作来实现并发操作，提高了并发度。</p>
+<ol start="4">
+<li>JDK1.8解决了JDK1.7中什么问题？</li>
+</ol>
+<p>JDK1.8的ConcurrentHashMap解决了JDK1.7中并发度受限于Segment数量的问题，通过取消Segment的概念，提高了并发度。同时，JDK1.8的ConcurrentHashMap在处理哈希冲突时，引入了红黑树，提高了在高哈希冲突时的性能。</p>
+<ol start="5">
+<li>ConcurrentHashMap JDK1.7实现的原理是什么？</li>
+</ol>
+<p>JDK1.7的ConcurrentHashMap使用分段锁机制，内部使用一个Segment数组，每个Segment对象持有一个锁，每个Segment内部包含一个HashEntry数组，每个HashEntry对象就是一个键值对。对不同的Segment的操作可以并发进行，每个Segment的操作是互斥的。</p>
+<ol start="6">
+<li>ConcurrentHashMap JDK1.8实现的原理是什么？</li>
+</ol>
+<p>JDK1.8的ConcurrentHashMap取消了Segment的概念，直接使用Node数组和CAS操作来实现并发操作。对Node数组的不同部分可以并发操作，每个Node就是一个键值对。在处理哈希冲突时，如果链表长度超过一定阈值（默认为8），链表会转化为红黑树，提高查找效率。</p>
+<ol start="7">
+<li>ConcurrentHashMap JDK1.7中Segment数(concurrencyLevel)默认值是多少？</li>
+</ol>
+<p>JDK1.7中ConcurrentHashMap的默认并发级别（concurrencyLevel）是16，也就是说默认会创建16个Segment。</p>
+<ol start="8">
+<li>为何一旦初始化就不可再扩容？</li>
+</ol>
+<p>Segment数组的长度一旦初始化，就不能再进行扩容，这是因为Segment数组的长度决定了ConcurrentHashMap的并发度，如果允许扩容，那么在扩容过程中，需要重新分配键到新的Segment，这会带来较大的性能开销，并且在扩容过程中，需要锁定整个ConcurrentHashMap，降低并发性能。</p>
+<ol start="9">
+<li>ConcurrentHashMap JDK1.7说说其put的机制？</li>
+</ol>
+<p>JDK1.7中ConcurrentHashMap的put操作首先会定位到具体的Segment（通过hash值），然后对该Segment加锁，接着在Segment内部的HashEntry数组中查找是否已经存在该键，如果存在则更新值，如果不存在则在数组对应的位置创建新的HashEntry。</p>
+<ol start="10">
+<li>ConcurrentHashMap JDK1.7是如何扩容的？</li>
+</ol>
+<p>JDK1.7中ConcurrentHashMap的扩容是针对Segment内部的HashEntry数组进行的，当数组的元素数量超过阈值时，会触发扩容操作，扩容后数组的长度是原来的两倍。扩容操作需要对Segment加锁，保证扩容操作的线程安全。</p>
+<ol start="11">
+<li>ConcurrentHashMap JDK1.8是如何扩容的？</li>
+</ol>
+<p>JDK1.8中ConcurrentHashMap的扩容是针对整个Node数组进行的，当数组的元素数量超过阈值时，会触发扩容操作，扩容后数组的长度是原来的两倍。扩容操作使用CAS操作，无需锁定整个数组，提高了并发性能。</p>
+<ol start="12">
+<li>ConcurrentHashMap JDK1.8链表转红黑树的时机是什么？临界值为什么是8？</li>
+</ol>
+<p>当链表的长度超过阈值（默认为8）时，链表会转化为红黑树。这个阈值是通过经验得出的，当链表长度超过8时，链表的查找性能开始下降，而红黑树的查找性能则优于链表。</p>
+<ol start="13">
+<li>ConcurrentHashMap JDK1.8是如何进行数据迁移的？</li>
+</ol>
+<p>JDK1.8中ConcurrentHashMap的数据迁移是在扩容时进行的。在扩容过程中，会创建一个新的Node数组，然后将旧数组的元素迁移到新数组中。迁移操作使用CAS操作，无需锁定整个数组，提高了并发性能。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Java面试题</div>
+      <div>https://sugayoiya.github.io/posts/53971.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年4月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/8012.html" title="Synchronized 锁升级">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Synchronized 锁升级</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/11363.html" title="Java 内存对象布局">
+                        <span class="hidden-mobile">Java 内存对象布局</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

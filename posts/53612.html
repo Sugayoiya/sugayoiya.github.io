@@ -1,0 +1,954 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="用户画像">
+  
+    <meta name="description" content="不管在任何公司，我们都需要努力了解我们的用户，以便为他们提供更优质的服务。APP内容推荐需要根据用户特征来决定推送内容；促销活动需要针对不同的用户群体设计不同的活动方案；线上产品售卖也需要了解用户喜好，才能更好地把产品卖给用户。 为了实现这些目标，我建立了一个用户画像平台。本文将首先探讨平台的功能需求和标签体系定位，然后介绍平台的架构和具体功能实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用户画像平台设计">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/53612.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="不管在任何公司，我们都需要努力了解我们的用户，以便为他们提供更优质的服务。APP内容推荐需要根据用户特征来决定推送内容；促销活动需要针对不同的用户群体设计不同的活动方案；线上产品售卖也需要了解用户喜好，才能更好地把产品卖给用户。 为了实现这些目标，我建立了一个用户画像平台。本文将首先探讨平台的功能需求和标签体系定位，然后介绍平台的架构和具体功能实现。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sugayoiya.github.io/img/post/(87952624)2019-2020miku2_p6.jpg">
+<meta property="article:published_time" content="2024-01-01T09:55:31.000Z">
+<meta property="article:modified_time" content="2024-02-29T04:23:05.459Z">
+<meta property="article:author" content="Sugayoiya">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Clickhouse">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sugayoiya.github.io/img/post/(87952624)2019-2020miku2_p6.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>用户画像平台设计 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>妖怪の山</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>紅魔館</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>雾之湖</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>人間の里</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>永遠亭</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post/(87951954)UcyUu_p7.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="用户画像平台设计"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-01-01 17:55" pubdate>
+          2024年1月1日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">用户画像平台设计</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>不管在任何公司，我们都需要努力了解我们的用户，以便为他们提供更优质的服务。APP内容推荐需要根据用户特征来决定推送内容；促销活动需要针对不同的用户群体设计不同的活动方案；线上产品售卖也需要了解用户喜好，才能更好地把产品卖给用户。</p>
+<p>为了实现这些目标，我建立了一个用户画像平台。本文将首先探讨平台的功能需求和标签体系定位，然后介绍平台的架构和具体功能实现。</p>
+<span id="more"></span>
+
+<h4 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h4><p>用户画像平台主要关注分析场景，主要的使用者是公司各个业务线的运营人员和数据分析师。在平台的第一阶段，主要支持以下几个功能：</p>
+<ol>
+<li>标签定义：标签是描述用户的一个属性，比如「使用的设备类型」、「居住地」或「年龄范围」等。</li>
+<li>用户群体选择：选择一组用户标签及其相应的标签值，找出符合条件的用户群体。比如，寻找「居住在上海，且使用安卓设备」的用户。</li>
+<li>用户画像：对于选定的用户群体，查看其标签分布。例如，查看「居住在上海，且使用安卓设备」的用户的年龄范围分布。</li>
+</ol>
+<h4 id="标签体系"><a href="#标签体系" class="headerlink" title="标签体系"></a>标签体系</h4><p>在明确用户画像平台的使用场景和主要功能后，我们进一步回溯并确定用户标签体系。用户标签可以从两个方面进行分类：标签的实时性和标签的值类型。</p>
+<p>首先考虑标签的实时性。由于用户画像平台的主要功能是「用户群体筛选」和「用户画像查看」，这两个功能并不需要极高的实时性，因此实时标签的优势并不明显。T+1的非实时标签完全能够满足数据分析师和运营人员的需求。</p>
+<p>接着考虑标签的值类型，也就是标签是枚举的还是非枚举的。枚举标签，顾名思义，指的是标签值可以列举的标签，例如设备类型、网络类型、国家、城市等，这类标签在用户群体筛选中发挥了重要作用。非枚举标签则指标签值可以无限增长的标签，比如活跃天数、注册日期等，这类标签主要用于展示用户信息。考虑到「用户群体筛选」是各业务线最急迫的需求，我们在第一阶段决定不支持非枚举标签功能。</p>
+<p>因此，我们确定了用户画像平台的第一阶段标签体系为非实时的枚举标签，主要为「用户群体筛选」和「用户画像查看」这两个查询功能服务。</p>
+<h4 id="架构与实现"><a href="#架构与实现" class="headerlink" title="架构与实现"></a>架构与实现</h4><p>在架构上，用户画像平台分为两个模块：数据写入，分析查询。</p>
+<h5 id="Roaringbitmap简介"><a href="#Roaringbitmap简介" class="headerlink" title="Roaringbitmap简介"></a><strong>Roaringbitmap</strong>简介</h5><p>接下来，我将简要介绍一种高效的位图压缩方法——Roaringbitmap。首先，我们来看一个问题：</p>
+<p>假设我们有一个包含40亿个不重复且位于[0,2^32-1]范围内的整数集合，如何快速判断一个数是否在这个集合中？</p>
+<p>如果我们直接存储这40亿个数，需要消耗约14.9GB的内存，这显然是不可接受的。因此，我们可以使用位图（bitmap）进行存储，即第0位表示数字0，第1位表示数字1，以此类推。如果一个数在原集合中，我们就将其对应的位图位设置为1，否则保持为0。这样，我们可以方便地查询结果，只需要占用512MB的内存，仅为原来的3.4%。但这种方法也存在缺点：例如，如果我们需要存储从1到5000万的5000万个连续整数，使用普通的位图仍需要消耗512MB的存储，显然，对于这种情况，我们有很大的优化空间。2016年，S. Chambi、D. Lemire、O. Kaser等人在论文《Better bitmap performance with Roaring bitmaps》和《Consistently faster and smaller compressed bitmaps with Roaring》中提出了Roaringbitmap，<strong>其主要特性是可以大幅度节省存储并提供快速的位图计算，因此，我们可以考虑使用它进行优化。对于前面提到的存储连续的5000万个整数，只需要几十KB</strong>。</p>
+<p>Roaringbitmap的主要思想是：将32位无符号整数按照高16位进行分桶，即最多可能有2^16&#x3D;65536个桶，论文中称之为container。</p>
+<p><img src="/posts/53612/2023-11-27-18-28XABB227qjVY0rlXL-20240228182643277.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在存储数据时，根据数据的高16位找到对应的container（如果找不到，就会新建一个)，然后将低16位放入container中。换句话说，一个Roaringbitmap就是许多container的集合，具体的细节可以参阅 <a target="_blank" rel="noopener" href="https://roaringbitmap.org/">https://roaringbitmap.org/</a></p>
+<h5 id="数据写入"><a href="#数据写入" class="headerlink" title="数据写入"></a>数据写入</h5><p>我们的原始数据主要分为：</p>
+<ul>
+<li><strong>用户操作行为数据table_oper_raw</strong><br>这包括操作时间(oper_datetime)、用户标识ID(user_id)以及用户操作行为名称(oper_name)。例如，”2024-02-24 14:31:09|o4fdG4-Tm6-SO4fz9p3fiIQoK6a0|点击首页banner” 表示在2024-02-24 14:31:09，用户o4fdG4-Tm6-SO4fz9p3fiIQoK6a0点击了首页的banner</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">user_id</th>
+<th align="left">oper_name</th>
+<th align="left">oper_datetime</th>
+<th align="left">…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">o4fdG4-Tm6-SO4fz9p3fiIQoK6a0</td>
+<td align="left">click_banner</td>
+<td align="left">2024-02-24 14:31:09</td>
+<td align="left">…</td>
+</tr>
+<tr>
+<td align="left">o4fdG4-Tm6-SO4fz9p3fiIQoK6a0</td>
+<td align="left">click_banner</td>
+<td align="left">2024-02-24 14:32:20</td>
+<td align="left">…</td>
+</tr>
+<tr>
+<td align="left">o4fdG4-Tm6-SO4fz9p3fiIQoK6a0</td>
+<td align="left">close_game</td>
+<td align="left">2024-02-24 14:44:12</td>
+<td align="left">…</td>
+</tr>
+<tr>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>用户属性数据table_attribute_raw</strong><br>这表示用户在产品或用户画像中的属性，包含时间(datetime)、用户标识(user_id)以及各类用户属性字段（可能包括用户的新进渠道、所在地区等），例如“2024-02-24 14:31:09|o4fdG4-Tm6-SO4fz9p3fiIQoK6a0|小米商店|广东省”</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">user_id</th>
+<th align="left">country</th>
+<th align="left">city</th>
+<th align="left">device_type</th>
+<th align="left">age</th>
+<th align="left">…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">o4fdG4-Tm6-SO4fz9p3fiIQoK6a0</td>
+<td align="left">China</td>
+<td align="left">Beijing</td>
+<td align="left">IOS</td>
+<td align="left">10</td>
+<td align="left">…</td>
+</tr>
+<tr>
+<td align="left">o4fdG4-cZVBIUGtbOYvOPDKTxXLU</td>
+<td align="left">China</td>
+<td align="left">Shanghai</td>
+<td align="left">Android</td>
+<td align="left">5</td>
+<td align="left">…</td>
+</tr>
+<tr>
+<td align="left">o4fdG479Ln6OURYtGdZIYfQHMBHg</td>
+<td align="left">United States</td>
+<td align="left">New York</td>
+<td align="left">Android</td>
+<td align="left">12</td>
+<td align="left">…</td>
+</tr>
+<tr>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left">…</td>
+</tr>
+</tbody></table>
+<p>然后，将大宽表的数据进行”转置”，然后批量导入到 ClickHouse，如下表所示。表中的每一行代表一个标签实例（也就是标签和标签值的组合），例如”city &#x3D; Beijing”。此外，这一行还需要保存用户 id，这个 id 需要进行<strong>编码</strong>，将每个用户映射成<strong>唯一的id</strong>（32位的无符号整型），因为 Roaringbitmap 只能接受整型</p>
+<table>
+<thead>
+<tr>
+<th align="left">tag</th>
+<th align="left">tag_item</th>
+<th align="left">users</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">country</td>
+<td align="left">China</td>
+<td align="left">1</td>
+</tr>
+<tr>
+<td align="left">country</td>
+<td align="left">United States</td>
+<td align="left">10</td>
+</tr>
+<tr>
+<td align="left">city</td>
+<td align="left">Beijing</td>
+<td align="left">2</td>
+</tr>
+<tr>
+<td align="left">city</td>
+<td align="left">Shanghai</td>
+<td align="left">1002</td>
+</tr>
+<tr>
+<td align="left">…</td>
+<td align="left">…</td>
+<td align="left">…</td>
+</tr>
+</tbody></table>
+<p>建表语句为：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> table_user_tag<br>(<br>    `tag`         String comment <span class="hljs-string">&#x27;标签类别&#x27;</span>,<br>    `tag_item`    String comment <span class="hljs-string">&#x27;标签项&#x27;</span>,<br>    `p_day`       <span class="hljs-type">Date</span> comment <span class="hljs-string">&#x27;日期&#x27;</span>,<br>    `origin_user` String comment <span class="hljs-string">&#x27;用户 ID&#x27;</span><br>)<br>    ENGINE <span class="hljs-operator">=</span> MergeTree<br>        <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> toYYYYMMDD(p_day)<br>        <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> (tag, tag_item)<br>        SETTINGS index_granularity <span class="hljs-operator">=</span> <span class="hljs-number">8192</span><br>        COMMENT <span class="hljs-string">&#x27;用户标签表&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<h5 id="Roaringbitmap压缩"><a href="#Roaringbitmap压缩" class="headerlink" title="Roaringbitmap压缩"></a><strong>Roaringbitmap</strong>压缩</h5><p>对于用户的属性&#x2F;操作数据，先建一个可以存放 bitmap 的表 table_user_tag_bitmap，根据使用场景，我设计 ClickHouse 表结构如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">TABLE</span> table_user_tag_bitmap<br>(<br>    `tag`      String comment <span class="hljs-string">&#x27;标签类别&#x27;</span>,<br>    `tag_item` String comment <span class="hljs-string">&#x27;标签项&#x27;</span>,<br>    `p_day`    <span class="hljs-type">Date</span> comment <span class="hljs-string">&#x27;日期&#x27;</span>,<br>    `users` AggregateFunction(groupBitmap, UInt64) comment <span class="hljs-string">&#x27;内部用户bitmap&#x27;</span><br>)<br>    ENGINE <span class="hljs-operator">=</span> AggregatingMergeTree<br>        <span class="hljs-keyword">PARTITION</span> <span class="hljs-keyword">BY</span> toYYYYMMDD(p_day)<br>        <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> (p_day, tag, tag_item)<br>        SETTINGS index_granularity <span class="hljs-operator">=</span> <span class="hljs-number">8192</span><br>        COMMENT <span class="hljs-string">&#x27;用户标签bitmap表&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>当然这里面还可以增加其他字段以区分更细的粒度，比如 app_id 等用来区分不同应用，这里简化</p>
+<p>然后，看表包含的字段</p>
+<ul>
+<li><code>tag</code> 代表标签， <code>tag_item</code> 代表标签值。因为在标签的圈选查询中，经常有 <code>tag = &quot;city&quot; AND tag_item = &quot;beijing&quot;</code> 的语句，我们将 <code>(tag, tag_item)</code> 作为主键，以提高查询效率。</li>
+<li><code>p_day</code> 代表数据写入的日期，也作为 ClickHouse 的分片键。因为每天的标签数据都是全量导入，p_day 不仅可以用来区分标签版本，也方便我们批量删除历史数据。</li>
+<li><code>users</code> 用来存放根据 <code>(tag, tag_item)</code> 聚合得到用户人群</li>
+</ul>
+<p>接着用聚合函数 <code>groupBitmapState</code> 对用户id进行压缩写入到 <code>table_user_tag_bitmap</code> 表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT</span> <span class="hljs-keyword">INTO</span> table_user_tag_bitmap<br><span class="hljs-keyword">SELECT</span> tag, tag_item, toDate(<span class="hljs-string">&#x27;2024-02-28&#x27;</span>), groupBitmapState(origin_user) <span class="hljs-keyword">as</span> users<br><span class="hljs-keyword">FROM</span> table_user_tag<br><span class="hljs-keyword">WHERE</span> p_day <span class="hljs-operator">=</span> toDate(<span class="hljs-string">&#x27;2024-02-28&#x27;</span>)<br><span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> tag, tag_item;<br></code></pre></td></tr></table></figure>
+
+<p>这样原本很庞大的数据就被压缩成了几十行数据，每行包括标签和对应的用户id形成的bitmap：</p>
+<p><img src="/posts/53612/image-20240228190040062.png" srcset="/img/loading.gif" lazyload alt="image-20240228190040062"></p>
+<h5 id="数据查询"><a href="#数据查询" class="headerlink" title="数据查询"></a>数据查询</h5><p>首先，简要地介绍下方案中常用的bitmap函数：</p>
+<ul>
+<li><p><strong>bitmapCardinality</strong><br>返回一个UInt64类型的数值，表示bitmap对象的基数。用来计算不同条件下的用户数，可以粗略理解为count(distinct)</p>
+</li>
+<li><p><strong>bitmapAnd</strong><br>为两个bitmap对象进行与操作，返回一个新的bitmap对象。可以理解为用来满足两个条件之间的and，但是参数只能是两个bitmap</p>
+</li>
+<li><p><strong>bitmapOr</strong><br>为两个bitmap对象进行或操作，返回一个新的bitmap对象。可以理解为用来满足两个条件之间的or，但是参数也同样只能是两个bitmap。</p>
+</li>
+</ul>
+<p>如果是多个的情况，可以尝试使用groupBitmapMergeState，组合不同标签，圈选出用户人群。例如，我们想找出城市为北京、性别为女的用户。</p>
+<p>我们只需首先找到城市为北京的用户人群（用 bitmap 表示），然后找到性别为女的用户人群，然后对它们进行 AND 操作即可。具体查询如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">WITH</span><br>    (<br>        <span class="hljs-keyword">SELECT</span> groupBitmapAndState(users)<br>        <span class="hljs-keyword">FROM</span> table_user_tag_bitmap<br>        <span class="hljs-keyword">WHERE</span> <br>          <span class="hljs-keyword">AND</span> tag <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;city&#x27;</span><br>          <span class="hljs-keyword">AND</span> tag_item <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;beijing&#x27;</span><br>          <span class="hljs-keyword">AND</span> p_day <span class="hljs-operator">=</span> toDate(<span class="hljs-string">&#x27;2024-02-28&#x27;</span>)<br>    ) <span class="hljs-keyword">AS</span> user_group_1,<br>    (<br>        <span class="hljs-keyword">SELECT</span> groupBitmapAndState(users)<br>        <span class="hljs-keyword">FROM</span> table_user_tag_bitmap<br>        <span class="hljs-keyword">WHERE</span> <br>          <span class="hljs-keyword">AND</span> tag <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;gender&#x27;</span><br>          <span class="hljs-keyword">AND</span> tag_item <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;female&#x27;</span><br>          <span class="hljs-keyword">AND</span> p_day <span class="hljs-operator">=</span> toDate(<span class="hljs-string">&#x27;2024-02-28&#x27;</span>)<br>    ) <span class="hljs-keyword">AS</span> user_group_2<br><span class="hljs-keyword">SELECT</span> bitmapToArray(bitmapOr(user_group_1, user_group_2));<br></code></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="/posts/53612/image-20240228192441076.png" srcset="/img/loading.gif" lazyload alt="image-20240228192441076"></p>
+<p>其中，groupBitmapMergeState 函数对通过 WHERE 筛除得到的任意个数的 bitmap (users) 进行 AND 操作，而 bitmapAnd&#x2F;bitmapOr 只能对两个 bitmap 进行操作。</p>
+<h5 id="查看用户画像"><a href="#查看用户画像" class="headerlink" title="查看用户画像"></a>查看用户画像</h5><p>假如需要选取”北京的女性用户”这个人群，我们想要了解这个人群中使用设备的 benchmarkLevel。这种标签分布信息就是我们所说的用户画像。</p>
+<p>这个查询的实现方式也是直观的。</p>
+<ol>
+<li>使用和上一节相同的步骤，得到”北京的女性用户”这个bitmap。</li>
+<li>对这个人群进行分组，分别得到各个benchmarkLevel的bitmap。我们在这一步会得到更多的bitmap。</li>
+<li>将步骤2中的每一个bitmap与步骤1中的bitmap进行AND操作，就可以得到”北京的女性用户”在”设备benchmarkLevel”上的分布情况。</li>
+</ol>
+<p>具体的实现方式如下查询所示。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">WITH</span><br>(<br>    <span class="hljs-keyword">SELECT</span> groupBitmapMergeState(users)<br>    <span class="hljs-keyword">FROM</span> table_user_tag_bitmap<br>    <span class="hljs-keyword">WHERE</span> p_day <span class="hljs-operator">=</span> toDate(<span class="hljs-string">&#x27;2024-02-28&#x27;</span>) <span class="hljs-keyword">AND</span> tag <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;city&#x27;</span> <span class="hljs-keyword">AND</span> tag_item <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;beijing&#x27;</span><br>) <span class="hljs-keyword">AS</span> user_group_1,<br>(<br>    <span class="hljs-keyword">SELECT</span> groupBitmapMergeState(users)<br>    <span class="hljs-keyword">FROM</span> table_user_tag_bitmap<br>    <span class="hljs-keyword">WHERE</span> p_day <span class="hljs-operator">=</span> toDate(<span class="hljs-string">&#x27;2024-02-28&#x27;</span>) <span class="hljs-keyword">AND</span> tag <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;gender&#x27;</span> <span class="hljs-keyword">AND</span> tag_item <span class="hljs-operator">=</span> <span class="hljs-string">&#x27;female&#x27;</span><br>) <span class="hljs-keyword">AS</span> user_group_2,<br>(<br>    <span class="hljs-comment">-- 北京的女性用户</span><br>    <span class="hljs-keyword">SELECT</span> bitmapAnd(user_group_1, user_group_2)<br>) <span class="hljs-keyword">AS</span> filter_users<br><span class="hljs-keyword">SELECT</span><br>    bitmapCardinality(bitmapAnd(filter_users, group_by_users)) <span class="hljs-keyword">AS</span> count,<br>    tag,<br>    tag_item<br><span class="hljs-keyword">FROM</span><br>(<span class="hljs-keyword">SELECT</span><br>    groupBitmapMergeState(users) <span class="hljs-keyword">AS</span> group_by_users,<br>    tag,<br>    tag_item<br><span class="hljs-keyword">FROM</span> table_user_tag_bitmap<br><span class="hljs-keyword">WHERE</span> tag <span class="hljs-operator">=</span> &quot;device_type&quot;<br><span class="hljs-keyword">GROUP</span> <span class="hljs-keyword">BY</span> (tag, tag_item));<br></code></pre></td></tr></table></figure>
+
+<p><img src="/posts/53612/image-20240229110703638.png" srcset="/img/loading.gif" lazyload alt="image-20240229110703638"></p>
+<h4 id="总结和反思"><a href="#总结和反思" class="headerlink" title="总结和反思"></a>总结和反思</h4><p>总的来看，这个方案的优势包括：</p>
+<ol>
+<li>存储体积小，极大地节省了存储空间；</li>
+<li>查询速度快，通过使用bitmapCardinality、bitmapAnd、bitmapOr等位图函数，可以快速计算用户数量和满足某些条件的查询，将耗时的join操作转变为位图之间的计算；</li>
+<li>适合进行灵活天数的标签查询；</li>
+<li>更新方便，用户行为数据和用户属性数据分开存储，便于后续属性的添加和数据的回滚。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/system-design/" class="category-chain-item">system design</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+        <a href="/tags/Clickhouse/" class="print-no-link">#Clickhouse</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>用户画像平台设计</div>
+      <div>https://sugayoiya.github.io/posts/53612.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年1月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/45405.html" title="事件分析平台设计">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">事件分析平台设计</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/6760.html" title="Mysql面试题">
+                        <span class="hidden-mobile">Mysql面试题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

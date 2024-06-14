@@ -1,0 +1,1429 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="Java">
+  
+    <meta name="description" content="1.什么是JVM?JVM——Java虚拟机，它是Java实现平台无关性的基石。 Java程序运行的时候，编译器将Java文件编译成平台无关的Java字节码文件（.class）,接下来对应平台JVM对字节码文件进行解释，翻译成对应平台匹配的机器指令并运行。 Java语言编译运行 同时JVM也是一个跨语言的平台，和语言无关，只和class的文件格式关联，任何语言，只要能翻译成符合规范的字节码文件，都能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM面试五十问">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/55776.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="1.什么是JVM?JVM——Java虚拟机，它是Java实现平台无关性的基石。 Java程序运行的时候，编译器将Java文件编译成平台无关的Java字节码文件（.class）,接下来对应平台JVM对字节码文件进行解释，翻译成对应平台匹配的机器指令并运行。 Java语言编译运行 同时JVM也是一个跨语言的平台，和语言无关，只和class的文件格式关联，任何语言，只要能翻译成符合规范的字节码文件，都能">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sugayoiya.github.io/img/post/(87952624)2019-2020miku2_p6.jpg">
+<meta property="article:published_time" content="2022-05-12T04:30:01.000Z">
+<meta property="article:modified_time" content="2024-03-21T07:27:31.827Z">
+<meta property="article:author" content="Sugayoiya">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="JVM">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sugayoiya.github.io/img/post/(87952624)2019-2020miku2_p6.jpg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>JVM面试五十问 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>妖怪の山</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>紅魔館</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>雾之湖</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>人間の里</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>永遠亭</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post/(87951954)UcyUu_p7.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="JVM面试五十问"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-05-12 12:30" pubdate>
+          2022年5月12日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          39k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          65 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">JVM面试五十问</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="1-什么是JVM"><a href="#1-什么是JVM" class="headerlink" title="1.什么是JVM?"></a>1.什么是JVM?</h2><p>JVM——Java虚拟机，它是Java实现平台无关性的基石。</p>
+<p>Java程序运行的时候，编译器将Java文件编译成平台无关的Java字节码文件（.class）,接下来对应平台JVM对字节码文件进行解释，翻译成对应平台匹配的机器指令并运行。</p>
+<p><img src="/posts/55776/640.png" srcset="/img/loading.gif" lazyload alt="图片">Java语言编译运行</p>
+<p>同时JVM也是一个跨语言的平台，和语言无关，只和class的文件格式关联，任何语言，只要能翻译成符合规范的字节码文件，都能被JVM运行。</p>
+<p><img src="/posts/55776/640-20240321152409506.png" srcset="/img/loading.gif" lazyload alt="图片">JVM跨语言</p>
+<h1 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h1><h2 id="2-能说一下JVM的内存区域吗？"><a href="#2-能说一下JVM的内存区域吗？" class="headerlink" title="2.能说一下JVM的内存区域吗？"></a>2.能说一下JVM的内存区域吗？</h2><p>JVM内存区域最粗略的划分可以分为<code>堆</code>和<code>栈</code>，当然，按照虚拟机规范，可以划分为以下几个区域：</p>
+<p><img src="/posts/55776/640-20240321152409541.png" srcset="/img/loading.gif" lazyload alt="图片">Java虚拟机运行时数据区</p>
+<p>JVM内存分为线程私有区和线程共享区，其中<code>方法区</code>和<code>堆</code>是线程共享区，<code>虚拟机栈</code>、<code>本地方法栈</code>和<code>程序计数器</code>是线程隔离的数据区。</p>
+<p><strong>1、程序计数器</strong></p>
+<p>程序计数器（Program Counter Register）也被称为PC寄存器，是一块较小的内存空间。</p>
+<p>它可以看作是当前线程所执行的字节码的行号指示器。</p>
+<p><strong>2、Java虚拟机栈</strong></p>
+<p>Java虚拟机栈（Java Virtual Machine Stack）也是线程私有的，它的生命周期与线程相同。</p>
+<p>Java虚拟机栈描述的是Java方法执行的线程内存模型：方法执行时，JVM会同步创建一个栈帧，用来存储局部变量表、操作数栈、动态连接等。</p>
+<p><img src="/posts/55776/640-20240321152409574.png" srcset="/img/loading.gif" lazyload alt="图片">Java虚拟机栈</p>
+<p><strong>3、本地方法栈</strong></p>
+<p>本地方法栈（Native Method Stacks）与虚拟机栈所发挥的作用是非常相似的，其区别只是虚拟机栈为虚拟机执行Java方法（也就是字节码）服务，而本地方法栈则是为虚拟机使用到的本地（Native）方法服务。</p>
+<p>Java 虚拟机规范允许本地方法栈被实现成固定大小的或者是根据计算动态扩展和收缩的。</p>
+<p><strong>4、Java堆</strong></p>
+<p>对于Java应用程序来说，Java堆（Java Heap）是虚拟机所管理的内存中最大的一块。Java堆是被所有线程共享的一块内存区域，在虚拟机启动时创建。此内存区域的唯一目的就是存放对象实例，Java里“<strong>几乎</strong>”所有的对象实例都在这里分配内存。</p>
+<p>Java堆是垃圾收集器管理的内存区域，因此一些资料中它也被称作“GC堆”（Garbage Collected Heap，）。从回收内存的角度看，由于现代垃圾收集器大部分都是基于分代收集理论设计的，所以Java堆中经常会出现<code>新生代</code>、<code>老年代</code>、<code>Eden空间</code>、<code>From Survivor空间</code>、<code>To Survivor空间</code>等名词，需要注意的是这种划分只是根据垃圾回收机制来进行的划分，不是Java虚拟机规范本身制定的。</p>
+<p><img src="/posts/55776/640-20240321152409490.png" srcset="/img/loading.gif" lazyload alt="图片">Java 堆内存结构</p>
+<p><strong>5.方法区</strong></p>
+<p>方法区是比较特别的一块区域，和堆类似，它也是各个线程共享的内存区域，用于存储已被虚拟机加载的类型信息、常量、静态变量、即时编译器编译后的代码缓存等数据。</p>
+<p>它特别在Java虚拟机规范对它的约束非常宽松，所以方法区的具体实现历经了许多变迁，例如jdk1.7之前使用永久代作为方法区的实现。</p>
+<h2 id="3-说一下JDK1-6、1-7、1-8内存区域的变化？"><a href="#3-说一下JDK1-6、1-7、1-8内存区域的变化？" class="headerlink" title="3.说一下JDK1.6、1.7、1.8内存区域的变化？"></a>3.说一下JDK1.6、1.7、1.8内存区域的变化？</h2><p>JDK1.6、1.7&#x2F;1.8内存区域发生了变化，主要体现在方法区的实现：</p>
+<ul>
+<li>JDK1.6使用永久代实现方法区：</li>
+</ul>
+<p><img src="/posts/55776/640-20240321152409563.png" srcset="/img/loading.gif" lazyload alt="图片">JDK 1.6内存区域</p>
+<ul>
+<li>JDK1.7时发生了一些变化，将字符串常量池、静态变量，存放在堆上</li>
+</ul>
+<p><img src="/posts/55776/640-20240321152409579.png" srcset="/img/loading.gif" lazyload alt="图片">JDK 1.7内存区域</p>
+<ul>
+<li><p>在JDK1.8时彻底干掉了永久代，而在直接内存中划出一块区域作为<strong>元空间</strong>，运行时常量池、类常量池都移动到元空间。</p>
+<p><img src="/posts/55776/640-20240321152409560-1005849.png" srcset="/img/loading.gif" lazyload alt="图片">JDK 1.8内存区域</p>
+</li>
+</ul>
+<h2 id="4-为什么使用元空间替代永久代作为方法区的实现？"><a href="#4-为什么使用元空间替代永久代作为方法区的实现？" class="headerlink" title="4.为什么使用元空间替代永久代作为方法区的实现？"></a>4.为什么使用元空间替代永久代作为方法区的实现？</h2><p>Java虚拟机规范规定的方法区只是换种方式实现。有客观和主观两个原因。</p>
+<ul>
+<li>客观上使用永久代来实现方法区的决定的设计导致了Java应用更容易遇到内存溢出的问题（永久代有-XX：MaxPermSize的上限，即使不设置也有默认大小，而J9和JRockit只要没有触碰到进程可用内存的上限，例如32位系统中的4GB限制，就不会出问题），而且有极少数方法 （例如String::intern()）会因永久代的原因而导致不同虚拟机下有不同的表现。</li>
+<li>主观上当Oracle收购BEA获得了JRockit的所有权后，准备把JRockit中的优秀功能，譬如Java Mission Control管理工具，移植到HotSpot 虚拟机时，但因为两者对方法区实现的差异而面临诸多困难。考虑到HotSpot未来的发展，在JDK 6的 时候HotSpot开发团队就有放弃永久代，逐步改为采用本地内存（Native Memory）来实现方法区的计划了，到了JDK 7的HotSpot，已经把原本放在永久代的字符串常量池、静态变量等移出，而到了 JDK 8，终于完全废弃了永久代的概念，改用与JRockit、J9一样在本地内存中实现的元空间（Meta-space）来代替，把JDK 7中永久代还剩余的内容（主要是类型信息）全部移到元空间中。</li>
+</ul>
+<h2 id="5-对象创建的过程了解吗？"><a href="#5-对象创建的过程了解吗？" class="headerlink" title="5.对象创建的过程了解吗？"></a>5.对象创建的过程了解吗？</h2><p>在JVM中对象的创建，我们从一个new指令开始：</p>
+<ul>
+<li>首先检查这个指令的参数是否能在常量池中定位到一个类的符号引用</li>
+<li>检查这个符号引用代表的类是否已被加载、解析和初始化过。如果没有，就先执行相应的类加载过程</li>
+<li>类加载检查通过后，接下来虚拟机将为新生对象分配内存。</li>
+<li>内存分配完成之后，虚拟机将分配到的内存空间（但不包括对象头）都初始化为零值。</li>
+<li>接下来设置对象头，请求头里包含了对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象的GC分代年龄等信息。</li>
+</ul>
+<p>这个过程大概图示如下：</p>
+<p><img src="/posts/55776/640-20240321152409540.png" srcset="/img/loading.gif" lazyload alt="图片">对象创建过程</p>
+<h2 id="6-什么是指针碰撞？什么是空闲列表？"><a href="#6-什么是指针碰撞？什么是空闲列表？" class="headerlink" title="6.什么是指针碰撞？什么是空闲列表？"></a>6.什么是指针碰撞？什么是空闲列表？</h2><p>内存分配有两种方式，<strong>指针碰撞</strong>（Bump The Pointer）、<strong>空闲列表</strong>（Free List）。</p>
+<p><img src="/posts/55776/640-20240321152409567.png" srcset="/img/loading.gif" lazyload alt="图片">指针碰撞和空闲列表</p>
+<ul>
+<li>指针碰撞：假设Java堆中内存是绝对规整的，所有被使用过的内存都被放在一边，空闲的内存被放在另一边，中间放着一个指针作为分界点的指示器，那所分配内存就仅仅是把那个指针向空闲空间方向挪动一段与对象大小相等的距离，这种分配方式称为“指针碰撞”。</li>
+<li>空闲列表：如果Java堆中的内存并不是规整的，已被使用的内存和空闲的内存相互交错在一起，那就没有办法简单地进行指针碰撞了，虚拟机就必须维护一个列表，记录上哪些内存块是可用的，在分配的时候从列表中找到一块足够大的空间划分给对象实例，并更新列表上的记录，这种分配方式称为“空闲列表”。</li>
+<li>两种方式的选择由Java堆是否规整决定，Java堆是否规整是由选择的垃圾收集器是否具有压缩整理能力决定的。</li>
+</ul>
+<h2 id="7-JVM-里-new-对象时，堆会发生抢占吗？JVM是怎么设计来保证线程安全的？"><a href="#7-JVM-里-new-对象时，堆会发生抢占吗？JVM是怎么设计来保证线程安全的？" class="headerlink" title="7.JVM 里 new 对象时，堆会发生抢占吗？JVM是怎么设计来保证线程安全的？"></a>7.JVM 里 new 对象时，堆会发生抢占吗？JVM是怎么设计来保证线程安全的？</h2><p>会，假设JVM虚拟机上，每一次new 对象时，指针就会向右移动一个对象size的距离，一个线程正在给A对象分配内存，指针还没有来的及修改，另一个为B对象分配内存的线程，又引用了这个指针来分配内存，这就发生了抢占。</p>
+<p>有两种可选方案来解决这个问题：</p>
+<p><img src="/posts/55776/640-20240321152409560.png" srcset="/img/loading.gif" lazyload alt="图片">堆抢占和解决方案</p>
+<ul>
+<li><p>采用CAS分配重试的方式来保证更新操作的原子性</p>
+</li>
+<li><p>每个线程在Java堆中预先分配一小块内存，也就是本地线程分配缓冲（Thread Local Allocation</p>
+<p>Buffer，TLAB），要分配内存的线程，先在本地缓冲区中分配，只有本地缓冲区用完了，分配新的缓存区时才需要同步锁定。</p>
+</li>
+</ul>
+<h2 id="8-能说一下对象的内存布局吗？"><a href="#8-能说一下对象的内存布局吗？" class="headerlink" title="8.能说一下对象的内存布局吗？"></a>8.能说一下对象的内存布局吗？</h2><p>在HotSpot虚拟机里，对象在堆内存中的存储布局可以划分为三个部分：对象头（Header）、实例数据（Instance Data）和对齐填充（Padding）。</p>
+<p><img src="/posts/55776/640-20240321152409724.png" srcset="/img/loading.gif" lazyload alt="图片">对象的存储布局</p>
+<p><strong>对象头</strong>主要由两部分组成：</p>
+<ul>
+<li>第一部分存储对象自身的运行时数据：哈希码、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等，官方称它为Mark Word，它是个动态的结构，随着对象状态变化。</li>
+<li>第二部分是类型指针，指向对象的类元数据类型（即对象代表哪个类）。</li>
+<li>此外，如果对象是一个Java数组，那还应该有一块用于记录数组长度的数据</li>
+</ul>
+<p><strong>实例数据</strong>用来存储对象真正的有效信息，也就是我们在程序代码里所定义的各种类型的字段内容，无论是从父类继承的，还是自己定义的。</p>
+<p><strong>对齐填充</strong>不是必须的，没有特别含义，仅仅起着占位符的作用。</p>
+<h2 id="9-对象怎么访问定位？"><a href="#9-对象怎么访问定位？" class="headerlink" title="9.对象怎么访问定位？"></a>9.对象怎么访问定位？</h2><p>Java程序会通过栈上的reference数据来操作堆上的具体对象。由于reference类型在《Java虚拟机规范》里面只规定了它是一个指向对象的引用，并没有定义这个引用应该通过什么方式去定位、访问到堆中对象的具体位置，所以对象访问方式也是由虚拟机实现而定的，主流的访问方式主要有使用句柄和直接指针两种：</p>
+<ul>
+<li>如果使用句柄访问的话，Java堆中将可能会划分出一块内存来作为句柄池，reference中存储的就是对象的句柄地址，而句柄中包含了对象实例数据与类型数据各自具体的地址信息，其结构如图所示：</li>
+</ul>
+<p><img src="/posts/55776/640-20240321152409808.png" srcset="/img/loading.gif" lazyload alt="图片">通过句柄访问对象</p>
+<ul>
+<li>如果使用直接指针访问的话，Java堆中对象的内存布局就必须考虑如何放置访问类型数据的相关信息，reference中存储的直接就是对象地址，如果只是访问对象本身的话，就不需要多一次间接访问的开销，如图所示：</li>
+</ul>
+<p><img src="/posts/55776/640-20240321152409690.png" srcset="/img/loading.gif" lazyload alt="图片">通过直接指针访问对象</p>
+<p>这两种对象访问方式各有优势，使用句柄来访问的最大好处就是reference中存储的是稳定句柄地址，在对象被移动（垃圾收集时移动对象是非常普遍的行为）时只会改变句柄中的实例数据指针，而reference本身不需要被修改。</p>
+<p>使用直接指针来访问最大的好处就是速度更快，它节省了一次指针定位的时间开销，由于对象访问在Java中非常频繁，因此这类开销积少成多也是一项极为可观的执行成本。</p>
+<p>HotSpot虚拟机主要使用直接指针来进行对象访问。</p>
+<h2 id="10-内存溢出和内存泄漏是什么意思？"><a href="#10-内存溢出和内存泄漏是什么意思？" class="headerlink" title="10.内存溢出和内存泄漏是什么意思？"></a>10.内存溢出和内存泄漏是什么意思？</h2><p>内存泄露就是申请的内存空间没有被正确释放，导致内存被白白占用。</p>
+<p>内存溢出就是申请的内存超过了可用内存，内存不够了。</p>
+<p>两者关系：内存泄露可能会导致内存溢出。</p>
+<p>用一个有味道的比喻，内存溢出就是排队去蹲坑，发现没坑位了，内存泄漏，就是有人占着茅坑不拉屎，占着茅坑不拉屎的多了可能会导致坑位不够用。</p>
+<p><img src="/posts/55776/640-20240321152409706.png" srcset="/img/loading.gif" lazyload alt="图片">内存泄漏、内存溢出</p>
+<h2 id="11-能手写内存溢出的例子吗？"><a href="#11-能手写内存溢出的例子吗？" class="headerlink" title="11.能手写内存溢出的例子吗？"></a>11.能手写内存溢出的例子吗？</h2><p>在JVM的几个内存区域中，除了程序计数器外，其他几个运行时区域都有发生内存溢出（OOM）异常的可能，重点关注堆和栈。</p>
+<ul>
+<li>Java堆溢出</li>
+</ul>
+<p>Java堆用于储存对象实例，只要不断创建不可被回收的对象，比如静态对象，那么随着对象数量的增加，总容量触及最大堆的容量限制后就会产生内存溢出异常（OutOfMemoryError）。</p>
+<p>这就相当于一个房子里，不断堆积不能被收走的杂物，那么房子很快就会被堆满了。</p>
+<figure class="highlight haxe"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs haxe"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * VM参数： -Xms20m -Xmx20m -XX:+HeapDumpOnOutOfMemoryError</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HeapOOM</span> </span>&#123;<br>    <span class="hljs-keyword">static</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">OOMObject</span> </span>&#123;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> void main(<span class="hljs-keyword">String</span>[] args) &#123;<br>        List&lt;OOMObject&gt; list = <span class="hljs-keyword">new</span> <span class="hljs-type">ArrayList</span>&lt;OOMObject&gt;();<br>        <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>            list.add(<span class="hljs-keyword">new</span> <span class="hljs-type">OOMObject</span>());<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>虚拟机栈.OutOfMemoryError</li>
+</ul>
+<p>JDK使用的HotSpot虚拟机的栈内存大小是固定的，我们可以把栈的内存设大一点，然后不断地去创建线程，因为操作系统给每个进程分配的内存是有限的，所以到最后，也会发生OutOfMemoryError异常。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * vm参数：-Xss2M</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">JavaVMStackOOM</span> &#123;<br>    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">dontStop</span>()</span> &#123;<br>        <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">stackLeakByThread</span>()</span> &#123;<br>        <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) &#123;<br>            Thread thread = <span class="hljs-keyword">new</span> Thread(<span class="hljs-keyword">new</span> Runnable() &#123;<br>                <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span>()</span> &#123;<br>                    dontStop();<br>                &#125;<br>            &#125;);<br>            thread.start();<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span>(<span class="hljs-params">String[] args</span>) throws Throwable</span> &#123;<br>        JavaVMStackOOM oom = <span class="hljs-keyword">new</span> JavaVMStackOOM();<br>        oom.stackLeakByThread();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="12-内存泄漏可能由哪些原因导致呢？"><a href="#12-内存泄漏可能由哪些原因导致呢？" class="headerlink" title="12.内存泄漏可能由哪些原因导致呢？"></a>12.内存泄漏可能由哪些原因导致呢？</h2><p>内存泄漏可能的原因有很多种：</p>
+<p><img src="/posts/55776/640-20240321152409613.png" srcset="/img/loading.gif" lazyload alt="图片">内存泄漏可能原因</p>
+<p><strong>静态集合类引起内存泄漏</strong></p>
+<p>静态集合的生命周期和 JVM 一致，所以静态集合引用的对象不能被释放。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">OOM</span> &#123;<br> <span class="hljs-keyword">static</span> <span class="hljs-title class_">List</span> list = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>();<br><br> <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">oomTests</span>(<span class="hljs-params"></span>)&#123;<br>   <span class="hljs-title class_">Object</span> obj = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>();<br><br>   list.<span class="hljs-title function_">add</span>(obj);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>单例模式</strong></p>
+<p>和上面的例子原理类似，单例对象在初始化后会以静态变量的方式在 JVM 的整个生命周期中存在。如果单例对象持有外部的引用，那么这个外部对象将不能被 GC 回收，导致内存泄漏。</p>
+<p><strong>数据连接、IO、Socket等连接</strong></p>
+<p>创建的连接不再使用时，需要调用 <strong>close</strong> 方法关闭连接，只有连接被关闭后，GC 才会回收对应的对象（Connection，Statement，ResultSet，Session）。忘记关闭这些资源会导致持续占有内存，无法被 GC 回收。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">try</span> &#123;<br>    <span class="hljs-type">Connection</span> <span class="hljs-variable">conn</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>    Class.forName(<span class="hljs-string">&quot;com.mysql.jdbc.Driver&quot;</span>);<br>    conn = DriverManager.getConnection(<span class="hljs-string">&quot;url&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>    <span class="hljs-type">Statement</span> <span class="hljs-variable">stmt</span> <span class="hljs-operator">=</span> conn.createStatement();<br>    <span class="hljs-type">ResultSet</span> <span class="hljs-variable">rs</span> <span class="hljs-operator">=</span> stmt.executeQuery(<span class="hljs-string">&quot;....&quot;</span>);<br>  &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123; <br>   <br>  &#125;<span class="hljs-keyword">finally</span> &#123;<br>    <span class="hljs-comment">//不关闭连接</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>变量不合理的作用域</strong></p>
+<p>一个变量的定义作用域大于其使用范围，很可能存在内存泄漏；或不再使用对象没有及时将对象设置为 null，很可能导致内存泄漏的发生。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Simple</span> &#123;<br>    <span class="hljs-title class_">Object</span> <span class="hljs-built_in">object</span>;<br>    <span class="hljs-keyword">public</span> <span class="hljs-built_in">void</span> <span class="hljs-title function_">method1</span>(<span class="hljs-params"></span>)&#123;<br>        <span class="hljs-built_in">object</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Object</span>();<br>        <span class="hljs-comment">//...其他代码</span><br>        <span class="hljs-comment">//由于作用域原因，method1执行完成之后，object 对象所分配的内存不会马上释放</span><br>        <span class="hljs-built_in">object</span> = <span class="hljs-literal">null</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>hash值发生变化</strong></p>
+<p>对象Hash值改变，使用HashMap、HashSet等容器中时候，由于对象修改之后的Hah值和存储进容器时的Hash值不同，所以无法找到存入的对象，自然也无法单独删除了，这也会造成内存泄漏。说句题外话，这也是为什么String类型被设置成了不可变类型。</p>
+<p><strong>ThreadLocal使用不当</strong></p>
+<p>ThreadLocal的弱引用导致内存泄漏也是个老生常谈的话题了，使用完ThreadLocal一定要记得使用remove方法来进行清除。</p>
+<h2 id="13-如何判断对象仍然存活？"><a href="#13-如何判断对象仍然存活？" class="headerlink" title="13.如何判断对象仍然存活？"></a>13.如何判断对象仍然存活？</h2><p>有两种方式，<strong>引用计数算法（reference counting）</strong>和可达性分析算法。</p>
+<ul>
+<li><strong>引用计数算法</strong></li>
+</ul>
+<p>引用计数器的算法是这样的：在对象中添加一个引用计数器，每当有一个地方引用它时，计数器值就加一；当引用失效时，计数器值就减一；任何时刻计数器为零的对象就是不可能再被使用的。</p>
+<p><img src="/posts/55776/640-20240321152409590.png" srcset="/img/loading.gif" lazyload alt="图片">引用计数算法</p>
+<ul>
+<li><strong>可达性分析算法</strong></li>
+</ul>
+<p>目前 Java 虚拟机的主流垃圾回收器采取的是可达性分析算法。这个算法的实质在于将一系列 GC Roots 作为初始的存活对象合集（Gc Root Set），然后从该合集出发，探索所有能够被该集合引用到的对象，并将其加入到该集合中，这个过程我们也称之为标记（mark）。最终，未被探索到的对象便是死亡的，是可以回收的。<img src="/posts/55776/640-20240321152409632.png" srcset="/img/loading.gif" lazyload alt="图片"></p>
+<h2 id="14-Java中可作为GC-Roots的对象有哪几种？"><a href="#14-Java中可作为GC-Roots的对象有哪几种？" class="headerlink" title="14.Java中可作为GC Roots的对象有哪几种？"></a>14.Java中可作为GC Roots的对象有哪几种？</h2><p>可以作为GC Roots的主要有四种对象：</p>
+<ul>
+<li>虚拟机栈(栈帧中的本地变量表)中引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中JNI引用的对象</li>
+</ul>
+<h2 id="15-说一下对象有哪几种引用？"><a href="#15-说一下对象有哪几种引用？" class="headerlink" title="15.说一下对象有哪几种引用？"></a>15.说一下对象有哪几种引用？</h2><p>Java中的引用有四种，分为强引用（Strongly Reference）、软引用（Soft Reference）、弱引用（Weak Reference）和虚引用（Phantom Reference）4种，这4种引用强度依次逐渐减弱。</p>
+<ul>
+<li>强引用是最传统的<code>引用</code>的定义，是指在程序代码之中普遍存在的引用赋值，无论任何情况下，只要强引用关系还存在，垃圾收集器就永远不会回收掉被引用的对象。</li>
+</ul>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coffeescript"><span class="hljs-built_in">Object</span> obj =<span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>();<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>软引用是用来描述一些还有用，但非必须的对象。只被软引用关联着的对象，在系统将要发生内存溢出异常前，会把这些对象列进回收范围之中进行第二次回收，如果这次回收还没有足够的内存， 才会抛出内存溢出异常。在JDK 1.2版之后提供了SoftReference类来实现软引用。</li>
+</ul>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">Object obj = <span class="hljs-keyword">new</span> <span class="hljs-constructor">Object()</span>;<br>ReferenceQueue queue = <span class="hljs-keyword">new</span> <span class="hljs-constructor">ReferenceQueue()</span>;<br>SoftReference reference = <span class="hljs-keyword">new</span> <span class="hljs-constructor">SoftReference(<span class="hljs-params">obj</span>, <span class="hljs-params">queue</span>)</span>;<br><span class="hljs-comment">//强引用对象滞空，保留软引用</span><br>obj = null;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>弱引用也是用来描述那些非必须对象，但是它的强度比软引用更弱一些，被弱引用关联的对象只能生存到下一次垃圾收集发生为止。当垃圾收集器开始工作，无论当前内存是否足够，都会回收掉只被弱引用关联的对象。在JDK 1.2版之后提供了WeakReference类来实现弱引用。</li>
+</ul>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">Object obj = <span class="hljs-keyword">new</span> <span class="hljs-constructor">Object()</span>;<br>ReferenceQueue queue = <span class="hljs-keyword">new</span> <span class="hljs-constructor">ReferenceQueue()</span>;<br>WeakReference reference = <span class="hljs-keyword">new</span> <span class="hljs-constructor">WeakReference(<span class="hljs-params">obj</span>, <span class="hljs-params">queue</span>)</span>;<br><span class="hljs-comment">//强引用对象滞空，保留软引用</span><br>obj = null;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>虚引用也称为“幽灵引用”或者“幻影引用”，它是最弱的一种引用关系。一个对象是否有虚引用的存在，完全不会对其生存时间构成影响，也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用关联的唯一目的只是为了能在这个对象被收集器回收时收到一个系统通知。在JDK 1.2版之后提供了PhantomReference类来实现虚引用。</li>
+</ul>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">Object obj = <span class="hljs-keyword">new</span> <span class="hljs-constructor">Object()</span>;<br>ReferenceQueue queue = <span class="hljs-keyword">new</span> <span class="hljs-constructor">ReferenceQueue()</span>;<br>PhantomReference reference = <span class="hljs-keyword">new</span> <span class="hljs-constructor">PhantomReference(<span class="hljs-params">obj</span>, <span class="hljs-params">queue</span>)</span>;<br><span class="hljs-comment">//强引用对象滞空，保留软引用</span><br>obj = null;<br></code></pre></td></tr></table></figure>
+
+<p><img src="/posts/55776/640-20240321152409653.png" srcset="/img/loading.gif" lazyload alt="图片">四种引用总结</p>
+<h2 id="16-finalize-方法了解吗？有什么作用？"><a href="#16-finalize-方法了解吗？有什么作用？" class="headerlink" title="16.finalize()方法了解吗？有什么作用？"></a>16.finalize()方法了解吗？有什么作用？</h2><p>用一个不太贴切的比喻，垃圾回收就是古代的秋后问斩，finalize()就是刀下留人，在人犯被处决之前，还要做最后一次审计，青天大老爷看看有没有什么冤情，需不需要刀下留人。</p>
+<p><img src="/posts/55776/640-20240321152409635.png" srcset="/img/loading.gif" lazyload alt="图片">刀下留人</p>
+<p>如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那它将会被第一次标记，随后进行一次筛选，筛选的条件是此对象是否有必要执行finalize()方法。如果对象在在finalize()中成功拯救自己——只要重新与引用链上的任何一个对象建立关联即可，譬如把自己 （this关键字）赋值给某个类变量或者对象的成员变量，那在第二次标记时它就”逃过一劫“；但是如果没有抓住这个机会，那么对象就真的要被回收了。</p>
+<h2 id="17-Java堆的内存分区了解吗？"><a href="#17-Java堆的内存分区了解吗？" class="headerlink" title="17.Java堆的内存分区了解吗？"></a>17.Java堆的内存分区了解吗？</h2><p>按照垃圾收集，将Java堆划分为<strong>新生代 （Young Generation）</strong>和<strong>老年代（Old Generation）</strong>两个区域，新生代存放存活时间短的对象，而每次回收后存活的少量对象，将会逐步晋升到老年代中存放。</p>
+<p>而新生代又可以分为三个区域，eden、from、to，比例是8：1：1，而新生代的内存分区同样是从垃圾收集的角度来分配的。</p>
+<p><img src="/posts/55776/640-20240321152409700.png" srcset="/img/loading.gif" lazyload alt="图片">Java堆内存划分</p>
+<h2 id="18-垃圾收集算法了解吗？"><a href="#18-垃圾收集算法了解吗？" class="headerlink" title="18.垃圾收集算法了解吗？"></a>18.垃圾收集算法了解吗？</h2><p>垃圾收集算法主要有三种：</p>
+<ol>
+<li><strong>标记-清除算法</strong></li>
+</ol>
+<p>见名知义，<code>标记-清除</code>（Mark-Sweep）算法分为两个阶段：</p>
+<ul>
+<li><strong>标记</strong> : 标记出所有需要回收的对象</li>
+<li><strong>清除</strong>：回收所有被标记的对象</li>
+</ul>
+<p><img src="/posts/55776/640-20240321152409693.png" srcset="/img/loading.gif" lazyload alt="图片">标记-清除算法</p>
+<p>标记-清除算法比较基础，但是主要存在两个缺点：</p>
+<ul>
+<li>执行效率不稳定，如果Java堆中包含大量对象，而且其中大部分是需要被回收的，这时必须进行大量标记和清除的动作，导致标记和清除两个过程的执行效率都随对象数量增长而降低。</li>
+<li>内存空间的碎片化问题，标记、清除之后会产生大量不连续的内存碎片，空间碎片太多可能会导致当以后在程序运行过程中需要分配较大对象时无法找到足够的连续内存而不得不提前触发另一次垃圾收集动作。</li>
+</ul>
+<ol>
+<li><strong>标记-复制算法</strong></li>
+</ol>
+<p>标记-复制算法解决了标记-清除算法面对大量可回收对象时执行效率低的问题。</p>
+<p>过程也比较简单：将可用内存按容量划分为大小相等的两块，每次只使用其中的一块。当这一块的内存用完了，就将还存活着的对象复制到另外一块上面，然后再把已使用过的内存空间一次清理掉。</p>
+<p><img src="/posts/55776/640-20240321152409676.png" srcset="/img/loading.gif" lazyload alt="图片">标记-复制算法</p>
+<p>这种算法存在一个明显的缺点：一部分空间没有使用，存在空间的浪费。</p>
+<p>新生代垃圾收集主要采用这种算法，因为新生代的存活对象比较少，每次复制的只是少量的存活对象。当然，实际新生代的收集不是按照这个比例。</p>
+<ol>
+<li><strong>标记-整理算法</strong></li>
+</ol>
+<p>为了降低内存的消耗，引入一种针对性的算法：<code>标记-整理</code>（Mark-Compact）算法。</p>
+<p>其中的标记过程仍然与“标记-清除”算法一样，但后续步骤不是直接对可回收对象进行清理，而是让所有存活的对象都向内存空间一端移动，然后直接清理掉边界以外的内存。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)标记-整理算法</p>
+<p>标记-整理算法主要用于老年代，移动存活对象是个极为负重的操作，而且这种操作需要Stop The World才能进行，只是从整体的吞吐量来考量，老年代使用标记-整理算法更加合适。</p>
+<h2 id="19-说一下新生代的区域划分？"><a href="#19-说一下新生代的区域划分？" class="headerlink" title="19.说一下新生代的区域划分？"></a>19.说一下新生代的区域划分？</h2><p>新生代的垃圾收集主要采用标记-复制算法，因为新生代的存活对象比较少，每次复制少量的存活对象效率比较高。</p>
+<p>基于这种算法，虚拟机将内存分为一块较大的Eden空间和两块较小的 Survivor空间，每次分配内存只使用Eden和其中一块Survivor。发生垃圾收集时，将Eden和Survivor中仍然存活的对象一次性复制到另外一块Survivor空间上，然后直接清理掉Eden和已用过的那块Survivor空间。默认Eden和Survivor的大小比例是8∶1。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)新生代内存划分</p>
+<h2 id="20-Minor-GC-Young-GC、Major-GC-Old-GC、Mixed-GC、Full-GC都是什么意思？"><a href="#20-Minor-GC-Young-GC、Major-GC-Old-GC、Mixed-GC、Full-GC都是什么意思？" class="headerlink" title="20.Minor GC&#x2F;Young GC、Major GC&#x2F;Old GC、Mixed GC、Full GC都是什么意思？"></a>20.Minor GC&#x2F;Young GC、Major GC&#x2F;Old GC、Mixed GC、Full GC都是什么意思？</h2><p><strong>部分收集</strong>（Partial GC）：指目标不是完整收集整个Java堆的垃圾收集，其中又分为：</p>
+<ul>
+<li>新生代收集（Minor GC&#x2F;Young GC）：指目标只是新生代的垃圾收集。</li>
+<li>老年代收集（Major GC&#x2F;Old GC）：指目标只是老年代的垃圾收集。目前<strong>只有</strong>CMS收集器会有单独收集老年代的行为。</li>
+<li>混合收集（Mixed GC）：指目标是收集整个新生代以及部分老年代的垃圾收集。目前只有G1收集器会有这种行为。</li>
+</ul>
+<p><strong>整堆收集</strong>（Full GC）：收集整个Java堆和方法区的垃圾收集。</p>
+<h2 id="21-Minor-GC-Young-GC什么时候触发？"><a href="#21-Minor-GC-Young-GC什么时候触发？" class="headerlink" title="21.Minor GC&#x2F;Young GC什么时候触发？"></a>21.Minor GC&#x2F;Young GC什么时候触发？</h2><p>新创建的对象优先在新生代Eden区进行分配，如果Eden区没有足够的空间时，就会触发Young GC来清理新生代。</p>
+<h2 id="22-什么时候会触发Full-GC？"><a href="#22-什么时候会触发Full-GC？" class="headerlink" title="22.什么时候会触发Full GC？"></a>22.什么时候会触发Full GC？</h2><p>这个触发条件稍微有点多，往下看：</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)Full GC触发条件</p>
+<ul>
+<li><strong>Young GC之前检查老年代</strong>：在要进行 Young GC 的时候，发现<code>老年代可用的连续内存空间</code> &lt; <code>新生代历次Young GC后升入老年代的对象总和的平均大小</code>，说明本次Young GC后可能升入老年代的对象大小，可能超过了老年代当前可用内存空间,那就会触发 Full GC。</li>
+<li><strong>Young GC之后老年代空间不足</strong>：执行Young GC之后有一批对象需要放入老年代，此时老年代就是没有足够的内存空间存放这些对象了，此时必须立即触发一次Full GC</li>
+<li><strong>老年代空间不足</strong>，老年代内存使用率过高，达到一定比例，也会触发Full GC。</li>
+<li><strong>空间分配担保失败</strong>（ Promotion Failure），新生代的 To 区放不下从 Eden 和 From 拷贝过来对象，或者新生代对象 GC 年龄到达阈值需要晋升这两种情况，老年代如果放不下的话都会触发 Full GC。</li>
+<li><strong>方法区内存空间不足</strong>：如果方法区由永久代实现，永久代空间不足 Full GC。</li>
+<li><strong>System.gc()等命令触发</strong>：System.gc()、jmap -dump 等命令会触发 full gc。</li>
+</ul>
+<h2 id="23-对象什么时候会进入老年代？"><a href="#23-对象什么时候会进入老年代？" class="headerlink" title="23.对象什么时候会进入老年代？"></a>23.对象什么时候会进入老年代？</h2><p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)对象进入老年代</p>
+<p><strong>长期存活的对象将进入老年代</strong></p>
+<p>在对象的对象头信息中存储着对象的迭代年龄,迭代年龄会在每次YoungGC之后对象的移区操作中增加,每一次移区年龄加一.当这个年龄达到15(默认)之后,这个对象将会被移入老年代。</p>
+<p>可以通过这个参数设置这个年龄值。</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-bullet">- </span>XX:MaxTenuringThreshold<br></code></pre></td></tr></table></figure>
+
+<p><strong>大对象直接进入老年代</strong></p>
+<p>有一些占用大量连续内存空间的对象在被加载就会直接进入老年代.这样的大对象一般是一些数组,长字符串之类的对。</p>
+<p>HotSpot虚拟机提供了这个参数来设置。</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs diff"><span class="hljs-deletion">-XX：PretenureSizeThreshold</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>动态对象年龄判定</strong></p>
+<p>为了能更好地适应不同程序的内存状况，HotSpot虚拟机并不是永远要求对象的年龄必须达到- XX：MaxTenuringThreshold才能晋升老年代，如果在Survivor空间中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代。</p>
+<p><strong>空间分配担保</strong></p>
+<p>假如在Young GC之后，新生代仍然有大量对象存活，就需要老年代进行分配担保，把Survivor无法容纳的对象直接送入老年代。</p>
+<h2 id="24-知道有哪些垃圾收集器吗？"><a href="#24-知道有哪些垃圾收集器吗？" class="headerlink" title="24.知道有哪些垃圾收集器吗？"></a>24.知道有哪些垃圾收集器吗？</h2><p>主要垃圾收集器如下，图中标出了它们的工作区域、垃圾收集算法，以及配合关系。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)HotSpot虚拟机垃圾收集器</p>
+<p>这些收集器里，面试的重点是两个——<strong>CMS</strong>和<strong>G1</strong>。</p>
+<ul>
+<li>Serial收集器</li>
+</ul>
+<p>Serial收集器是最基础、历史最悠久的收集器。</p>
+<p>如同它的名字（串行），它是一个单线程工作的收集器，使用一个处理器或一条收集线程去完成垃圾收集工作。并且进行垃圾收集时，必须暂停其他所有工作线程，直到垃圾收集结束——这就是所谓的“Stop The World”。</p>
+<p>Serial&#x2F;Serial Old收集器的运行过程如图：</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)Serial&#x2F;Serial Old收集器运行示意图</p>
+<ul>
+<li>ParNew</li>
+</ul>
+<p>ParNew收集器实质上是Serial收集器的多线程并行版本，使用多条线程进行垃圾收集。</p>
+<p>ParNew&#x2F;Serial Old收集器运行示意图如下：</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)ParNew&#x2F;Serial Old收集器运行示意图</p>
+<ul>
+<li>Parallel Scavenge</li>
+</ul>
+<p>Parallel Scavenge收集器是一款新生代收集器，基于标记-复制算法实现，也能够并行收集。和ParNew有些类似，但Parallel Scavenge主要关注的是垃圾收集的吞吐量——所谓吞吐量，就是CPU用于运行用户代码的时间和总消耗时间的比值，比值越大，说明垃圾收集的占比越小。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)吞吐量</p>
+<ul>
+<li>Serial Old</li>
+</ul>
+<p>Serial Old是Serial收集器的老年代版本，它同样是一个单线程收集器，使用标记-整理算法。</p>
+<ul>
+<li>Parallel Old</li>
+</ul>
+<p>Parallel Old是Parallel Scavenge收集器的老年代版本，支持多线程并发收集，基于标记-整理算法实现。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)Parallel Scavenge&#x2F;Parallel Old收集器运行示意图</p>
+<ul>
+<li>CMS收集器</li>
+</ul>
+<p>CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时间为目标的收集器，同样是老年代的收集器，采用标记-清除算法。</p>
+<ul>
+<li>Garbage First收集器</li>
+</ul>
+<p>Garbage First（简称G1）收集器是垃圾收集器的一个颠覆性的产物，它开创了局部收集的设计思路和基于Region的内存布局形式。</p>
+<h2 id="25-什么是Stop-The-World-什么是-OopMap-？什么是安全点？"><a href="#25-什么是Stop-The-World-什么是-OopMap-？什么是安全点？" class="headerlink" title="25.什么是Stop The World ? 什么是 OopMap ？什么是安全点？"></a>25.什么是Stop The World ? 什么是 OopMap ？什么是安全点？</h2><p>进行垃圾回收的过程中，会涉及对象的移动。为了保证对象引用更新的正确性，必须暂停所有的用户线程，像这样的停顿，虚拟机设计者形象描述为<code>Stop The World</code>。也简称为STW。</p>
+<p>在HotSpot中，有个数据结构（映射表）称为<code>OopMap</code>。一旦类加载动作完成的时候，HotSpot就会把对象内什么偏移量上是什么类型的数据计算出来，记录到OopMap。在即时编译过程中，也会在<code>特定的位置</code>生成 OopMap，记录下栈上和寄存器里哪些位置是引用。</p>
+<p>这些特定的位置主要在：</p>
+<ul>
+<li>1.循环的末尾（非 counted 循环）</li>
+<li>2.方法临返回前 &#x2F; 调用方法的call指令后</li>
+<li>3.可能抛异常的位置</li>
+</ul>
+<p>这些位置就叫作<strong>安全点(safepoint)。</strong> 用户程序执行时并非在代码指令流的任意位置都能够在停顿下来开始垃圾收集，而是必须是执行到安全点才能够暂停。</p>
+<p>用通俗的比喻，假如老王去拉车，车上东西很重，老王累的汗流浃背，但是老王不能在上坡或者下坡休息，只能在平地上停下来擦擦汗，喝口水。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)老王拉车只能在平路休息</p>
+<h2 id="26-能详细说一下CMS收集器的垃圾收集过程吗？"><a href="#26-能详细说一下CMS收集器的垃圾收集过程吗？" class="headerlink" title="26.能详细说一下CMS收集器的垃圾收集过程吗？"></a>26.能详细说一下CMS收集器的垃圾收集过程吗？</h2><p>CMS收集齐的垃圾收集分为四步：</p>
+<ul>
+<li><strong>初始标记</strong>（CMS initial mark）：单线程运行，需要Stop The World，标记GC Roots能直达的对象。</li>
+<li><strong>并发标记</strong>（（CMS concurrent mark）：无停顿，和用户线程同时运行，从GC Roots直达对象开始遍历整个对象图。</li>
+<li><strong>重新标记</strong>（CMS remark）：多线程运行，需要Stop The World，标记并发标记阶段产生对象。</li>
+<li><strong>并发清除</strong>（CMS concurrent sweep）：无停顿，和用户线程同时运行，清理掉标记阶段标记的死亡的对象。</li>
+</ul>
+<p>Concurrent Mark Sweep收集器运行示意图如下：</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)Concurrent Mark Sweep收集器运行示意图</p>
+<h2 id="27-G1垃圾收集器了解吗？"><a href="#27-G1垃圾收集器了解吗？" class="headerlink" title="27.G1垃圾收集器了解吗？"></a>27.G1垃圾收集器了解吗？</h2><p>Garbage First（简称G1）收集器是垃圾收集器的一个颠覆性的产物，它开创了局部收集的设计思路和基于Region的内存布局形式。</p>
+<p>虽然G1也仍是遵循分代收集理论设计的，但其堆内存的布局与其他收集器有非常明显的差异。以前的收集器分代是划分新生代、老年代、持久代等。</p>
+<p>G1把连续的Java堆划分为多个大小相等的独立区域（Region），每一个Region都可以根据需要，扮演新生代的Eden空间、Survivor空间，或者老年代空间。收集器能够对扮演不同角色的Region采用不同的策略去处理。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)G1 Heap Regions</p>
+<p>这样就避免了收集整个堆，而是按照若干个Region集进行收集，同时维护一个优先级列表，跟踪各个Region回收的“价值，优先收集价值高的Region。</p>
+<p>G1收集器的运行过程大致可划分为以下四个步骤：</p>
+<ul>
+<li><strong>初始标记</strong>（initial mark），标记了从GC Root开始直接关联可达的对象。STW（Stop the World）执行。</li>
+<li><strong>并发标记</strong>（concurrent marking），和用户线程并发执行，从GC Root开始对堆中对象进行可达性分析，递归扫描整个堆里的对象图，找出要回收的对象、</li>
+<li><strong>最终标记</strong>（Remark），STW，标记再并发标记过程中产生的垃圾。</li>
+<li><strong>筛选回收</strong>（Live Data Counting And Evacuation），制定回收计划，选择多个Region 构成回收集，把回收集中Region的存活对象复制到空的Region中，再清理掉整个旧 Region的全部空间。需要STW。</li>
+</ul>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)G1收集器运行示意图</p>
+<h2 id="28-有了CMS，为什么还要引入G1？"><a href="#28-有了CMS，为什么还要引入G1？" class="headerlink" title="28.有了CMS，为什么还要引入G1？"></a>28.有了CMS，为什么还要引入G1？</h2><p>优点：CMS最主要的优点在名字上已经体现出来——并发收集、低停顿。</p>
+<p>缺点：CMS同样有三个明显的缺点。</p>
+<ul>
+<li>Mark Sweep算法会导致内存碎片比较多</li>
+<li>CMS的并发能力比较依赖于CPU资源，并发回收时垃圾收集线程可能会抢占用户线程的资源，导致用户程序性能下降。</li>
+<li>并发清除阶段，用户线程依然在运行，会产生所谓的理“浮动垃圾”（Floating Garbage），本次垃圾收集无法处理浮动垃圾，必须到下一次垃圾收集才能处理。如果浮动垃圾太多，会触发新的垃圾回收，导致性能降低。</li>
+</ul>
+<p>G1主要解决了内存碎片过多的问题。</p>
+<h2 id="29-你们线上用的什么垃圾收集器？为什么要用它？"><a href="#29-你们线上用的什么垃圾收集器？为什么要用它？" class="headerlink" title="29.你们线上用的什么垃圾收集器？为什么要用它？"></a>29.你们线上用的什么垃圾收集器？为什么要用它？</h2><p>怎么说呢，虽然调优说的震天响，但是我们一般都是用默认。管你Java怎么升，我用8，那么JDK1.8默认用的是什么呢？</p>
+<p>可以使用命令：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby">java -<span class="hljs-variable constant_">XX</span><span class="hljs-symbol">:+PrintCommandLineFlags</span> -version<br></code></pre></td></tr></table></figure>
+
+<p>可以看到有这么一行：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby">-<span class="hljs-variable constant_">XX</span><span class="hljs-symbol">:+UseParallelGC</span><br></code></pre></td></tr></table></figure>
+
+<p><code>UseParallelGC</code> &#x3D; <code>Parallel Scavenge + Parallel Old</code>，表示的是新生代用的<code>Parallel Scavenge</code>收集器，老年代用的是<code>Parallel Old</code> 收集器。</p>
+<p>那为什么要用这个呢？默认的呗。</p>
+<p>当然面试肯定不能这么答。</p>
+<p>Parallel Scavenge的特点是什么？</p>
+<p>高吞吐，我们可以回答：因为我们系统是业务相对复杂，但并发并不是非常高，所以希望尽可能的利用处理器资源，出于提高吞吐量的考虑采用<code>Parallel Scavenge + Parallel Old</code>的组合。</p>
+<p>当然，这个默认虽然也有说法，但不太讨喜。</p>
+<p>还可以说：</p>
+<p>采用<code>Parallel New</code>+<code>CMS</code>的组合，我们比较关注服务的响应速度，所以采用了CMS来降低停顿时间。</p>
+<p>或者一步到位：</p>
+<p>我们线上采用了设计比较优秀的G1垃圾收集器，因为它不仅满足我们低停顿的要求，而且解决了CMS的浮动垃圾问题、内存碎片问题。</p>
+<h2 id="30-垃圾收集器应该如何选择？"><a href="#30-垃圾收集器应该如何选择？" class="headerlink" title="30.垃圾收集器应该如何选择？"></a>30.垃圾收集器应该如何选择？</h2><p>垃圾收集器的选择需要权衡的点还是比较多的——例如运行应用的基础设施如何？使用JDK的发行商是什么？等等……</p>
+<p>这里简单地列一下上面提到的一些收集器的适用场景：</p>
+<ul>
+<li>Serial ：如果应用程序有一个很小的内存空间（大约100 MB）亦或它在没有停顿时间要求的单线程处理器上运行。</li>
+<li>Parallel：如果优先考虑应用程序的峰值性能，并且没有时间要求要求，或者可以接受1秒或更长的停顿时间。</li>
+<li>CMS&#x2F;G1：如果响应时间比吞吐量优先级高，或者垃圾收集暂停必须保持在大约1秒以内。</li>
+<li>ZGC：如果响应时间是高优先级的，或者堆空间比较大。</li>
+</ul>
+<h2 id="31-对象一定分配在堆中吗？有没有了解逃逸分析技术？"><a href="#31-对象一定分配在堆中吗？有没有了解逃逸分析技术？" class="headerlink" title="31.对象一定分配在堆中吗？有没有了解逃逸分析技术？"></a>31.对象一定分配在堆中吗？有没有了解逃逸分析技术？</h2><p><strong>对象一定分配在堆中吗？</strong> 不一定的。</p>
+<p>随着JIT编译期的发展与逃逸分析技术逐渐成熟，所有的对象都分配到堆上也渐渐变得不那么“绝对”了。其实，在编译期间，JIT会对代码做很多优化。其中有一部分优化的目的就是减少内存堆分配压力，其中一种重要的技术叫做逃逸分析。</p>
+<p><strong>什么是逃逸分析？</strong></p>
+<p><strong>逃逸分析</strong>是指分析指针动态范围的方法，它同编译器优化原理的指针分析和外形分析相关联。当变量（或者对象）在方法中分配后，其指针有可能被返回或者被全局引用，这样就会被其他方法或者线程所引用，这种现象称作指针（或者引用）的逃逸(Escape)。</p>
+<p>通俗点讲，当一个对象被new出来之后，它可能被外部所调用，如果是作为参数传递到外部了，就称之为方法逃逸。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)逃逸</p>
+<p>除此之外，如果对象还有可能被外部线程访问到，例如赋值给可以在其它线程中访问的实例变量，这种就被称为线程逃逸。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)逃逸强度</p>
+<p><strong>逃逸分析的好处</strong></p>
+<ul>
+<li>栈上分配</li>
+</ul>
+<p>如果确定一个对象不会逃逸到线程之外，那么久可以考虑将这个对象在栈上分配，对象占用的内存随着栈帧出栈而销毁，这样一来，垃圾收集的压力就降低很多。</p>
+<ul>
+<li><strong>同步消除</strong></li>
+</ul>
+<p>线程同步本身是一个相对耗时的过程，如果逃逸分析能够确定一个变量不会逃逸出线程，无法被其他线程访问，那么这个变量的读写肯定就不会有竞争， 对这个变量实施的同步措施也就可以安全地消除掉。</p>
+<ul>
+<li><strong>标量替换</strong></li>
+</ul>
+<p>如果一个数据是基本数据类型，不可拆分，它就被称之为标量。把一个Java对象拆散，将其用到的成员变量恢复为原始类型来访问，这个过程就称为标量替换。假如逃逸分析能够证明一个对象不会被方法外部访问，并且这个对象可以被拆散，那么可以不创建对象，直接用创建若干个成员变量代替，可以让对象的成员变量在栈上分配和读写。</p>
+<h1 id="JVM调优"><a href="#JVM调优" class="headerlink" title="JVM调优"></a>JVM调优</h1><h2 id="32-有哪些常用的命令行性能监控和故障处理工具？"><a href="#32-有哪些常用的命令行性能监控和故障处理工具？" class="headerlink" title="32.有哪些常用的命令行性能监控和故障处理工具？"></a>32.有哪些常用的命令行性能监控和故障处理工具？</h2><ul>
+<li>操作系统工具<ul>
+<li>top：显示系统整体资源使用情况</li>
+<li>vmstat：监控内存和CPU</li>
+<li>iostat：监控IO使用</li>
+<li>netstat：监控网络使用</li>
+</ul>
+</li>
+<li>JDK性能监控工具<ul>
+<li>jps：虚拟机进程查看</li>
+<li>jstat：虚拟机运行时信息查看</li>
+<li>jinfo：虚拟机配置查看</li>
+<li>jmap：内存映像（导出）</li>
+<li>jhat：堆转储快照分析</li>
+<li>jstack：Java堆栈跟踪</li>
+<li>jcmd：实现上面除了jstat外所有命令的功能</li>
+</ul>
+</li>
+</ul>
+<h2 id="33-了解哪些可视化的性能监控和故障处理工具？"><a href="#33-了解哪些可视化的性能监控和故障处理工具？" class="headerlink" title="33.了解哪些可视化的性能监控和故障处理工具？"></a>33.了解哪些可视化的性能监控和故障处理工具？</h2><p>以下是一些JDK自带的可视化性能监控和故障处理工具：</p>
+<ul>
+<li>JConsole</li>
+</ul>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)JConsole概览</p>
+<ul>
+<li>VisualVM</li>
+</ul>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)VisualVM安装插件</p>
+<ul>
+<li>Java Mission Control</li>
+</ul>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)JMC主要界面</p>
+<p>除此之外，还有一些第三方的工具：</p>
+<ul>
+<li><strong>MAT</strong></li>
+</ul>
+<p>Java 堆内存分析工具。</p>
+<ul>
+<li><strong>GChisto</strong></li>
+</ul>
+<p>GC 日志分析工具。</p>
+<ul>
+<li><strong>GCViewer</strong></li>
+</ul>
+<p><code>GC</code> 日志分析工具。</p>
+<ul>
+<li><strong>JProfiler</strong></li>
+</ul>
+<p>商用的性能分析利器。</p>
+<ul>
+<li><strong>arthas</strong></li>
+</ul>
+<p>阿里开源诊断工具。</p>
+<ul>
+<li><strong>async-profiler</strong></li>
+</ul>
+<p>Java 应用性能分析工具，开源、火焰图、跨平台。</p>
+<h2 id="34-JVM的常见参数配置知道哪些？"><a href="#34-JVM的常见参数配置知道哪些？" class="headerlink" title="34.JVM的常见参数配置知道哪些？"></a>34.JVM的常见参数配置知道哪些？</h2><p>一些常见的参数配置：</p>
+<p><strong>堆配置：</strong></p>
+<ul>
+<li>-Xms:初始堆大小</li>
+<li>-Xms：最大堆大小</li>
+<li>-XX:NewSize&#x3D;n:设置年轻代大小</li>
+<li>-XX:NewRatio&#x3D;n:设置年轻代和年老代的比值。如：为3表示年轻代和年老代比值为1：3，年轻代占整个年轻代年老代和的1&#x2F;4</li>
+<li>-XX:SurvivorRatio&#x3D;n:年轻代中Eden区与两个Survivor区的比值。注意Survivor区有两个。如3表示Eden：3 Survivor：2，一个Survivor区占整个年轻代的1&#x2F;5</li>
+<li>-XX:MaxPermSize&#x3D;n:设置持久代大小</li>
+</ul>
+<p><strong>收集器设置：</strong></p>
+<ul>
+<li>-XX:+UseSerialGC:设置串行收集器</li>
+<li>-XX:+UseParallelGC:设置并行收集器</li>
+<li>-XX:+UseParalledlOldGC:设置并行年老代收集器</li>
+<li>-XX:+UseConcMarkSweepGC:设置并发收集器</li>
+</ul>
+<p><strong>并行收集器设置</strong></p>
+<ul>
+<li>-XX:ParallelGCThreads&#x3D;n:设置并行收集器收集时使用的CPU数。并行收集线程数</li>
+<li>-XX:MaxGCPauseMillis&#x3D;n:设置并行收集最大的暂停时间（如果到这个时间了，垃圾回收器依然没有回收完，也会停止回收）</li>
+<li>-XX:GCTimeRatio&#x3D;n:设置垃圾回收时间占程序运行时间的百分比。公式为：1&#x2F;(1+n)</li>
+<li>-XX:+CMSIncrementalMode:设置为增量模式。适用于单CPU情况</li>
+<li>-XX:ParallelGCThreads&#x3D;n:设置并发收集器年轻代手机方式为并行收集时，使用的CPU数。并行收集线程数</li>
+</ul>
+<p><strong>打印GC回收的过程日志信息</strong></p>
+<ul>
+<li>-XX:+PrintGC</li>
+<li>-XX:+PrintGCDetails</li>
+<li>-XX:+PrintGCTimeStamps</li>
+<li>-Xloggc:filename</li>
+</ul>
+<h2 id="35-有做过JVM调优吗？"><a href="#35-有做过JVM调优吗？" class="headerlink" title="35.有做过JVM调优吗？"></a>35.有做过JVM调优吗？</h2><p>JVM调优是一件很严肃的事情，不是拍脑门就开始调优的，需要有严密的分析和监控机制，大概的一个JVM调优流程图：</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)JVM调优大致流程图</p>
+<p>实际上，JVM调优是不得已而为之，有那功夫，好好把烂代码重构一下不比瞎调JVM强。</p>
+<p>但是，面试官非要问怎么办？可以从处理问题的角度来回答（对应图中事后），这是一个中规中矩的案例：电商公司的运营后台系统，偶发性的引发OOM异常，堆内存溢出。</p>
+<p>1、因为是偶发性的，所以第一次简单的认为就是堆内存不足导致，单方面的加大了堆内存从4G调整到8G  -Xms8g。</p>
+<p>2、但是问题依然没有解决，只能从堆内存信息下手，通过开启了-XX:+HeapDumpOnOutOfMemoryError参数 获得堆内存的dump文件。</p>
+<p>3、用JProfiler 对  堆dump文件进行分析，通过JProfiler查看到占用内存最大的对象是String对象，本来想跟踪着String对象找到其引用的地方，但dump文件太大，跟踪进去的时候总是卡死，而String对象占用比较多也比较正常，最开始也没有认定就是这里的问题，于是就从线程信息里面找突破点。</p>
+<p>4、通过线程进行分析，先找到了几个正在运行的业务线程，然后逐一跟进业务线程看了下代码，有个方法引起了我的注意，<code>导出订单信息</code>。</p>
+<p>5、因为订单信息导出这个方法可能会有几万的数据量，首先要从数据库里面查询出来订单信息，然后把订单信息生成excel，这个过程会产生大量的String对象。</p>
+<p>6、为了验证自己的猜想，于是准备登录后台去测试下，结果在测试的过程中发现导出订单的按钮前端居然没有做点击后按钮置灰交互事件，后端也没有做防止重复提交，因为导出订单数据本来就非常慢，使用的人员可能发现点击后很久后页面都没反应，然后就一直点，结果就大量的请求进入到后台，堆内存产生了大量的订单对象和EXCEL对象，而且方法执行非常慢，导致这一段时间内这些对象都无法被回收，所以最终导致内存溢出。</p>
+<p>7、知道了问题就容易解决了，最终没有调整任何JVM参数，只是做了两个处理：</p>
+<ul>
+<li>在前端的导出订单按钮上加上了置灰状态，等后端响应之后按钮才可以进行点击</li>
+<li>后端代码加分布式锁，做防重处理</li>
+</ul>
+<p>这样双管齐下，保证导出的请求不会一直打到服务端，问题解决！</p>
+<h2 id="36-线上服务CPU占用过高怎么排查？"><a href="#36-线上服务CPU占用过高怎么排查？" class="headerlink" title="36.线上服务CPU占用过高怎么排查？"></a>36.线上服务CPU占用过高怎么排查？</h2><p>问题分析：CPU高一定是某个程序长期占用了CPU资源。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)CPU飙高</p>
+<p>1、所以先需要找出那个进程占用CPU高。</p>
+<ul>
+<li>top  列出系统各个进程的资源占用情况。</li>
+</ul>
+<p>2、然后根据找到对应进行里哪个线程占用CPU高。</p>
+<ul>
+<li>top -Hp 进程ID  列出对应进程里面的线程占用资源情况</li>
+</ul>
+<p>3、找到对应线程ID后，再打印出对应线程的堆栈信息</p>
+<ul>
+<li>printf “%x\n”  PID   把线程ID转换为16进制。</li>
+<li>jstack PID 打印出进程的所有线程信息，从打印出来的线程信息中找到上一步转换为16进制的线程ID对应的线程信息。</li>
+</ul>
+<p>4、最后根据线程的堆栈信息定位到具体业务方法,从代码逻辑中找到问题所在。</p>
+<p>查看是否有线程长时间的watting 或blocked，如果线程长期处于watting状态下， 关注watting on xxxxxx，说明线程在等待这把锁，然后根据锁的地址找到持有锁的线程。</p>
+<h2 id="37-内存飙高问题怎么排查？"><a href="#37-内存飙高问题怎么排查？" class="headerlink" title="37.内存飙高问题怎么排查？"></a>37.内存飙高问题怎么排查？</h2><p>分析：内存飚高如果是发生在java进程上，一般是因为创建了大量对象所导致，持续飚高说明垃圾回收跟不上对象创建的速度，或者内存泄露导致对象无法回收。</p>
+<p>1、先观察垃圾回收的情况</p>
+<ul>
+<li>jstat -gc PID 1000 查看GC次数，时间等信息，每隔一秒打印一次。</li>
+<li>jmap -histo PID | head -20  查看堆内存占用空间最大的前20个对象类型,可初步查看是哪个对象占用了内存。</li>
+</ul>
+<p>如果每次GC次数频繁，而且每次回收的内存空间也正常，那说明是因为对象创建速度快导致内存一直占用很高；如果每次回收的内存非常少，那么很可能是因为内存泄露导致内存一直无法被回收。</p>
+<p>2、导出堆内存文件快照</p>
+<ul>
+<li>jmap -dump:live,format&#x3D;b,file&#x3D;&#x2F;home&#x2F;myheapdump.hprof PID  dump堆内存信息到文件。</li>
+</ul>
+<p>3、使用visualVM对dump文件进行离线分析，找到占用内存高的对象，再找到创建该对象的业务代码位置，从代码和业务场景中定位具体问题。</p>
+<h2 id="38-频繁-minor-gc-怎么办？"><a href="#38-频繁-minor-gc-怎么办？" class="headerlink" title="38.频繁 minor gc 怎么办？"></a>38.频繁 minor gc 怎么办？</h2><p>优化Minor GC频繁问题：通常情况下，由于新生代空间较小，Eden区很快被填满，就会导致频繁Minor  GC，因此可以通过增大新生代空间<code>-Xmn</code>来降低Minor GC的频率。</p>
+<h2 id="39-频繁Full-GC怎么办？"><a href="#39-频繁Full-GC怎么办？" class="headerlink" title="39.频繁Full GC怎么办？"></a>39.频繁Full GC怎么办？</h2><p>Full GC的排查思路大概如下：</p>
+<ol>
+<li>清楚从程序角度，有哪些原因导致FGC？</li>
+</ol>
+<ul>
+<li><strong>大对象</strong>：系统一次性加载了过多数据到内存中（比如SQL查询未做分页），导致大对象进入了老年代。</li>
+<li><strong>内存泄漏</strong>：频繁创建了大量对象，但是无法被回收（比如IO对象使用完后未调用close方法释放资源），先引发FGC，最后导致OOM.</li>
+<li>程序频繁生成一些<strong>长生命周期的对象</strong>，当这些对象的存活年龄超过分代年龄时便会进入老年代，最后引发FGC. （即本文中的案例）</li>
+<li><strong>程序BUG</strong></li>
+<li>代码中<strong>显式调用了gc</strong>方法，包括自己的代码甚至框架中的代码。</li>
+<li>JVM参数设置问题：包括总内存大小、新生代和老年代的大小、Eden区和S区的大小、元空间大小、垃圾回收算法等等。</li>
+</ul>
+<ol>
+<li>清楚排查问题时能使用哪些工具</li>
+</ol>
+<ul>
+<li>公司的监控系统：大部分公司都会有，可全方位监控JVM的各项指标。</li>
+<li>JDK的自带工具，包括jmap、jstat等常用命令：</li>
+</ul>
+<figure class="highlight tcl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs tcl"><span class="hljs-comment"># 查看堆内存各区域的使用率以及GC情况</span><br>jstat -gcutil -h20 <span class="hljs-keyword">pid</span> <span class="hljs-number">1000</span><br><span class="hljs-comment"># 查看堆内存中的存活对象，并按空间排序</span><br>jmap -histo <span class="hljs-keyword">pid</span> | head -n20<br><span class="hljs-comment"># dump堆内存文件</span><br>jmap -dump:<span class="hljs-keyword">format</span>=b,<span class="hljs-keyword">file</span>=heap <span class="hljs-keyword">pid</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>可视化的堆内存分析工具：JVisualVM、MAT等</li>
+</ul>
+<ol>
+<li>排查指南</li>
+</ol>
+<ul>
+<li>查看监控，以了解出现问题的时间点以及当前FGC的频率（可对比正常情况看频率是否正常）</li>
+<li>了解该时间点之前有没有程序上线、基础组件升级等情况。</li>
+<li>了解JVM的参数设置，包括：堆空间各个区域的大小设置，新生代和老年代分别采用了哪些垃圾收集器，然后分析JVM参数设置是否合理。</li>
+<li>再对步骤1中列出的可能原因做排除法，其中元空间被打满、内存泄漏、代码显式调用gc方法比较容易排查。</li>
+<li>针对大对象或者长生命周期对象导致的FGC，可通过 jmap -histo 命令并结合dump堆内存文件作进一步分析，需要先定位到可疑对象。</li>
+<li>通过可疑对象定位到具体代码再次分析，这时候要结合GC原理和JVM参数设置，弄清楚可疑对象是否满足了进入到老年代的条件才能下结论。</li>
+</ul>
+<h2 id="40-有没有处理过内存泄漏问题？是如何定位的？"><a href="#40-有没有处理过内存泄漏问题？是如何定位的？" class="headerlink" title="40.有没有处理过内存泄漏问题？是如何定位的？"></a>40.有没有处理过内存泄漏问题？是如何定位的？</h2><p>内存泄漏是内在病源，外在病症表现可能有：</p>
+<ul>
+<li>应用程序长时间连续运行时性能严重下降</li>
+<li>CPU 使用率飙升，甚至到 100%</li>
+<li>频繁 Full GC，各种报警，例如接口超时报警等</li>
+<li>应用程序抛出 <code>OutOfMemoryError</code> 错误</li>
+<li>应用程序偶尔会耗尽连接对象</li>
+</ul>
+<p>严重<strong>内存泄漏</strong>往往伴随频繁的 <strong>Full GC</strong>，所以分析排查内存泄漏问题首先还得从查看 Full GC 入手。主要有以下操作步骤：</p>
+<ol>
+<li><p>使用 <code>jps</code> 查看运行的 Java 进程 ID</p>
+</li>
+<li><p>使用<code>top -p [pid]</code> 查看进程使用 CPU 和 MEM 的情况</p>
+</li>
+<li><p>使用 <code>top -Hp [pid]</code> 查看进程下的所有线程占 CPU 和 MEM 的情况</p>
+</li>
+<li><p>将线程 ID 转换为 16 进制：<code>printf &quot;%x\n&quot; [pid]</code>，输出的值就是线程栈信息中的 <strong>nid</strong>。</p>
+<p>例如：<code>printf &quot;%x\n&quot; 29471</code>，换行输出 <strong>731f</strong>。</p>
+</li>
+<li><p>抓取线程栈：<code>jstack 29452 &gt; 29452.txt</code>，可以多抓几次做个对比。</p>
+<p>在线程栈信息中找到对应线程号的 16 进制值，如下是 <strong>731f</strong> 线程的信息。线程栈分析可使用 Visualvm 插件 <strong>TDA</strong>。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-string">&quot;Service Thread&quot;</span> #7 daemon <span class="hljs-attribute">prio</span>=9 <span class="hljs-attribute">os_prio</span>=0 <span class="hljs-attribute">tid</span>=0x00007fbe2c164000 <span class="hljs-attribute">nid</span>=0x731f runnable [0x0000000000000000]<br>   java.lang.Thread.State: RUNNABLE<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>jstat -gcutil [pid] 5000 10</code> 每隔 5 秒输出 GC 信息，输出 10 次，查看 <strong>YGC</strong> 和 <strong>Full GC</strong> 次数。通常会出现 YGC 不增加或增加缓慢，而 Full GC 增加很快。</p>
+<p>或使用 <code>jstat -gccause [pid] 5000</code> ，同样是输出 GC 摘要信息。</p>
+<p>或使用 <code>jmap -heap [pid]</code> 查看堆的摘要信息，关注老年代内存使用是否达到阀值，若达到阀值就会执行 Full GC。</p>
+</li>
+<li><p>如果发现 <code>Full GC</code> 次数太多，就很大概率存在内存泄漏了</p>
+</li>
+<li><p>使用 <code>jmap -histo:live [pid]</code> 输出每个类的对象数量，内存大小(字节单位)及全限定类名。</p>
+</li>
+<li><p>生成 <code>dump</code> 文件，借助工具分析哪 个对象非常多，基本就能定位到问题在那了</p>
+<p>使用 jmap 生成 dump 文件：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs gradle"># jmap -<span class="hljs-keyword">dump</span>:live,format=b,<span class="hljs-keyword">file</span>=<span class="hljs-number">29471</span>.<span class="hljs-keyword">dump</span> <span class="hljs-number">29471</span><br>Dumping heap to <span class="hljs-regexp">/root/</span><span class="hljs-keyword">dump</span> ...<br>Heap <span class="hljs-keyword">dump</span> <span class="hljs-keyword">file</span> created<br></code></pre></td></tr></table></figure>
+
+<p>可以使用 <strong>jhat</strong> 命令分析：<code>jhat -port 8000 29471.dump</code>，浏览器访问 jhat 服务，端口是 8000。</p>
+<p>通常使用图形化工具分析，如 JDK 自带的 <strong>jvisualvm</strong>，从菜单 &gt; 文件 &gt; 装入 dump 文件。</p>
+<p>或使用第三方式具分析的，如 <strong>JProfiler</strong> 也是个图形化工具，<strong>GCViewer</strong> 工具。Eclipse 或以使用 MAT 工具查看。或使用在线分析平台 <strong>GCEasy</strong>。</p>
+<p>注意：如果 dump 文件较大的话，分析会占比较大的内存。</p>
+<p>基本上就可以定位到代码层的逻辑了。</p>
+<ol>
+<li>在 dump 文析结果中查找存在大量的对象，再查对其的引用。</li>
+<li>dump 文件分析</li>
+</ol>
+</li>
+</ol>
+<h2 id="41-有没有处理过内存溢出问题？"><a href="#41-有没有处理过内存溢出问题？" class="headerlink" title="41.有没有处理过内存溢出问题？"></a>41.有没有处理过内存溢出问题？</h2><p>内存泄漏和内存溢出二者关系非常密切，内存溢出可能会有很多原因导致，内存泄漏最可能的罪魁祸首之一。</p>
+<p>排查过程和排查内存泄漏过程类似。</p>
+<h1 id="虚拟机执行"><a href="#虚拟机执行" class="headerlink" title="虚拟机执行"></a>虚拟机执行</h1><h2 id="42-能说一下类的生命周期吗？"><a href="#42-能说一下类的生命周期吗？" class="headerlink" title="42.能说一下类的生命周期吗？"></a>42.能说一下类的生命周期吗？</h2><p>一个类从被加载到虚拟机内存中开始，到从内存中卸载，整个生命周期需要经过七个阶段：加载 （Loading）、验证（Verification）、准备（Preparation）、解析（Resolution）、初始化 （Initialization）、使用（Using）和卸载（Unloading），其中验证、准备、解析三个部分统称为连接（Linking）。</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)类的生命周期</p>
+<h2 id="43-类加载的过程知道吗？"><a href="#43-类加载的过程知道吗？" class="headerlink" title="43.类加载的过程知道吗？"></a>43.类加载的过程知道吗？</h2><p>加载是JVM加载的起点，具体什么时候开始加载，《Java虚拟机规范》中并没有进行强制约束，可以交给虚拟机的具体实现来自由把握。</p>
+<p>在加载过程，JVM要做三件事情：</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)加载</p>
+<ul>
+<li>1）通过一个类的全限定名来获取定义此类的二进制字节流。</li>
+<li>2）将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构。</li>
+<li>3）在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的访问入口。</li>
+</ul>
+<p>加载阶段结束后，Java虚拟机外部的二进制字节流就按照虚拟机所设定的格式存储在方法区之中了，方法区中的数据存储格式完全由虚拟机实现自行定义，《Java虚拟机规范》未规定此区域的具体数据结构。</p>
+<p>类型数据妥善安置在方法区之后，会在Java堆内存中实例化一个java.lang.Class类的对象， 这个对象将作为程序访问方法区中的类型数据的外部接口。</p>
+<h2 id="44-类加载器有哪些？"><a href="#44-类加载器有哪些？" class="headerlink" title="44.类加载器有哪些？"></a>44.类加载器有哪些？</h2><p>主要有四种类加载器:</p>
+<ul>
+<li><strong>启动类加载器</strong>(Bootstrap ClassLoader)用来加载java核心类库，无法被java程序直接引用。</li>
+<li><strong>扩展类加载器</strong>(extensions class loader):它用来加载 Java 的扩展库。Java 虚拟机的实现会提供一个扩展库目录。该类加载器在此目录里面查找并加载 Java 类。</li>
+<li><strong>系统类加载器</strong>（system class loader）：它根据 Java 应用的类路径（CLASSPATH）来加载Java 类。一般来说，Java 应用的类都是由它来完成加载的。可以通过ClassLoader.getSystemClassLoader()来获取它。</li>
+<li><strong>用户自定义类加载器</strong> (user class loader)，用户通过继承 java.lang.ClassLoader类的方式自行实现的类加载器。</li>
+</ul>
+<h2 id="45-什么是双亲委派机制？"><a href="#45-什么是双亲委派机制？" class="headerlink" title="45.什么是双亲委派机制？"></a>45.什么是双亲委派机制？</h2><p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)双亲委派模型</p>
+<p>双亲委派模型的工作过程：如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器去完成，每一个层次的类加载器都是如此，因此所有的加载请求最终都应该传送到最顶层的启动类加载器中，只有当父加载器反馈自己无法完成这个加载请求时，子加载器才会尝试自己去完成加载。</p>
+<h2 id="46-为什么要用双亲委派机制？"><a href="#46-为什么要用双亲委派机制？" class="headerlink" title="46.为什么要用双亲委派机制？"></a>46.为什么要用双亲委派机制？</h2><p>答案是为了保证应用程序的稳定有序。</p>
+<p>例如类java.lang.Object，它存放在rt.jar之中，通过双亲委派机制，保证最终都是委派给处于模型最顶端的启动类加载器进行加载，保证Object的一致。反之，都由各个类加载器自行去加载的话，如果用户自己也编写了一个名为java.lang.Object的类，并放在程序的 ClassPath中，那系统中就会出现多个不同的Object类。</p>
+<h2 id="47-如何破坏双亲委派机制？"><a href="#47-如何破坏双亲委派机制？" class="headerlink" title="47.如何破坏双亲委派机制？"></a>47.如何破坏双亲委派机制？</h2><p>如果不想打破双亲委派模型，就重写ClassLoader类中的fifindClass()方法即可，无法被父类加载器加载的类最终会通过这个方法被加载。而如果想打破双亲委派模型则需要重写loadClass()方法。</p>
+<h2 id="48-历史上有哪几次双亲委派机制的破坏？"><a href="#48-历史上有哪几次双亲委派机制的破坏？" class="headerlink" title="48.历史上有哪几次双亲委派机制的破坏？"></a>48.历史上有哪几次双亲委派机制的破坏？</h2><p>双亲委派机制在历史上主要有三次破坏：</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)双亲委派模型的三次破坏</p>
+<blockquote>
+<p><strong>第一次破坏</strong></p>
+</blockquote>
+<p>双亲委派模型的第一次“被破坏”其实发生在双亲委派模型出现之前——即JDK 1.2面世以前的“远古”时代。</p>
+<p>由于双亲委派模型在JDK 1.2之后才被引入，但是类加载器的概念和抽象类  java.lang.ClassLoader则在Java的第一个版本中就已经存在，为了向下兼容旧代码，所以无法以技术手段避免loadClass()被子类覆盖的可能性，只能在JDK 1.2之后的java.lang.ClassLoader中添加一个新的  protected方法findClass()，并引导用户编写的类加载逻辑时尽可能去重写这个方法，而不是在 loadClass()中编写代码。</p>
+<blockquote>
+<p><strong>第二次破坏</strong></p>
+</blockquote>
+<p>双亲委派模型的第二次“被破坏”是由这个模型自身的缺陷导致的，如果有基础类型又要调用回用户的代码，那该怎么办呢？</p>
+<p>例如我们比较熟悉的JDBC:</p>
+<p>各个厂商各有不同的JDBC的实现，Java在核心包<code>\lib</code>里定义了对应的SPI，那么这个就毫无疑问由<code>启动类加载器</code>加载器加载。</p>
+<p>但是各个厂商的实现，是没办法放在核心包里的，只能放在<code>classpath</code>里，只能被<code>应用类加载器</code>加载。那么，问题来了，启动类加载器它就加载不到厂商提供的SPI服务代码。</p>
+<p>为了解决这个问题，引入了一个不太优雅的设计：线程上下文类加载器 （Thread Context ClassLoader）。这个类加载器可以通过java.lang.Thread类的setContext-ClassLoader()方法进行设置，如果创建线程时还未设置，它将会从父线程中继承一个，如果在应用程序的全局范围内都没有设置过的话，那这个类加载器默认就是应用程序类加载器。</p>
+<p>JNDI服务使用这个线程上下文类加载器去加载所需的SPI服务代码，这是一种父类加载器去请求子类加载器完成类加载的行为。</p>
+<blockquote>
+<p><strong>第三次破坏</strong></p>
+</blockquote>
+<p>双亲委派模型的第三次“被破坏”是由于用户对程序动态性的追求而导致的，例如代码热替换（Hot Swap）、模块热部署（Hot Deployment）等。</p>
+<p>OSGi实现模块化热部署的关键是它自定义的类加载器机制的实现，每一个程序模块（OSGi中称为 Bundle）都有一个自己的类加载器，当需要更换一个Bundle时，就把Bundle连同类加载器一起换掉以实现代码的热替换。在OSGi环境下，类加载器不再双亲委派模型推荐的树状结构，而是进一步发展为更加复杂的网状结构。</p>
+<h2 id="49-你觉得应该怎么实现一个热部署功能？"><a href="#49-你觉得应该怎么实现一个热部署功能？" class="headerlink" title="49.你觉得应该怎么实现一个热部署功能？"></a>49.你觉得应该怎么实现一个热部署功能？</h2><p>我们已经知道了Java类的加载过程。一个Java类文件到虚拟机里的对象，要经过如下过程:首先通过Java编译器，将Java文件编译成class字节码，类加载器读取class字节码，再将类转化为实例，对实例newInstance就可以生成对象。</p>
+<p>类加载器ClassLoader功能，也就是将class字节码转换到类的实例。在Java应用中，所有的实例都是由类加载器，加载而来。</p>
+<p>一般在系统中，类的加载都是由系统自带的类加载器完成，而且对于同一个全限定名的java类（如com.csiar.soc.HelloWorld），只能被加载一次，而且无法被卸载。</p>
+<p>这个时候问题就来了，如果我们希望将java类卸载，并且替换更新版本的java类，该怎么做呢？</p>
+<p>既然在类加载器中，Java类只能被加载一次，并且无法卸载。那么我们是不是可以直接把Java类加载器干掉呢？答案是可以的，我们可以自定义类加载器，并重写ClassLoader的findClass方法。</p>
+<p>想要实现热部署可以分以下三个步骤：</p>
+<ol>
+<li>销毁原来的自定义ClassLoader</li>
+<li>更新class类文件</li>
+<li>创建新的ClassLoader去加载更新后的class类文件。</li>
+</ol>
+<p>到此，一个热部署的功能就这样实现了。</p>
+<h2 id="50-Tomcat的类加载机制了解吗？"><a href="#50-Tomcat的类加载机制了解吗？" class="headerlink" title="50.Tomcat的类加载机制了解吗？"></a>50.Tomcat的类加载机制了解吗？</h2><p>Tomcat是主流的Java Web服务器之一，为了实现一些特殊的功能需求，自定义了一些类加载器。</p>
+<p>Tomcat类加载器如下：</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)Tomcat类加载器</p>
+<p>Tomcat实际上也是破坏了双亲委派模型的。</p>
+<p>Tomact是web容器，可能需要部署多个应用程序。不同的应用程序可能会依赖同一个第三方类库的不同版本，但是不同版本的类库中某一个类的全路径名可能是一样的。如多个应用都要依赖hollis.jar，但是A应用需要依赖1.0.0版本，但是B应用需要依赖1.0.1版本。这两个版本中都有一个类是com.hollis.Test.class。如果采用默认的双亲委派类加载机制，那么无法加载多个相同的类。</p>
+<p>所以，Tomcat破坏了<strong>双亲委派原则</strong>，提供隔离的机制，为每个web容器单独提供一个WebAppClassLoader加载器。每一个WebAppClassLoader负责加载本身的目录下的class文件，加载不到时再交CommonClassLoader加载，这和双亲委派刚好相反。</p>
+<hr>
+<p><strong>参考：</strong></p>
+<p>[1].《深入理解Java虚拟机》</p>
+<p>[2].《不看后悔》38个JVM精选问答，让你变成专家！:<a target="_blank" rel="noopener" href="https://juejin.cn/post/6936390496122044423">https://juejin.cn/post/6936390496122044423</a></p>
+<p>[3]. 《不看后悔》超赞！来一份常见 JVM 面试题+“答案”！:<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/7ZaLMI1LYHBEL7Q2gOrGKQ">https://mp.weixin.qq.com/s/7ZaLMI1LYHBEL7Q2gOrGKQ</a></p>
+<p>[4]. JVM性能优化–类加载器,手动实现类的热加载:<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904029357604877#heading-17">https://juejin.cn/post/6844904029357604877#heading-17</a></p>
+<p>[5]. 炸了！一口气问了我18个JVM问!:<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/M7f8_QHlvQGw_hH7K0If7A">https://mp.weixin.qq.com/s/M7f8_QHlvQGw_hH7K0If7A</a></p>
+<p>[6]. 从实际案例聊聊Java应用的GC优化:<a target="_blank" rel="noopener" href="https://tech.meituan.com/2017/12/29/jvm-optimize.html">https://tech.meituan.com/2017/12/29/jvm-optimize.html</a></p>
+<p>[7]. JVM系列(二)：JVM 内存泄漏与内存溢出及问题排查:<a target="_blank" rel="noopener" href="http://www.gxitsky.com/article/1603347575608495">http://www.gxitsky.com/article/1603347575608495</a></p>
+<p>[8] .《实战Java虚拟机性能优化》</p>
+<p>[9]. 再清楚不过了，JVM逃逸分析，你一定得知道:<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1761785">https://cloud.tencent.com/developer/article/1761785</a></p>
+<p>[10].【JVM进阶之路】十：JVM调优总结<a target="_blank" rel="noopener" href="https://fighter3.blog.csdn.net/article/details/115600737">https://fighter3.blog.csdn.net/article/details/115600737</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Java/JVM/" class="category-chain-item">JVM</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+        <a href="/tags/JVM/" class="print-no-link">#JVM</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>JVM面试五十问</div>
+      <div>https://sugayoiya.github.io/posts/55776.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年5月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/6760.html" title="Mysql面试题">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Mysql面试题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/234.html" title="Java并发六十问">
+                        <span class="hidden-mobile">Java并发六十问</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

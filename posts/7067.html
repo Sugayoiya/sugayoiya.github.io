@@ -1,0 +1,926 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="@Async 是 Spring 框架中用于实现异步方法调用的注解。通过在方法上添加 @Async 注解，可以告诉 Spring 将该方法的执行放到一个独立的线程中，使得方法可以异步执行，而不会阻塞当前线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Async 原理">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/7067.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="@Async 是 Spring 框架中用于实现异步方法调用的注解。通过在方法上添加 @Async 注解，可以告诉 Spring 将该方法的执行放到一个独立的线程中，使得方法可以异步执行，而不会阻塞当前线程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sugayoiya.github.io/img/post/87952141_p0.jpeg">
+<meta property="article:published_time" content="2021-08-29T12:17:45.000Z">
+<meta property="article:modified_time" content="2023-07-25T14:37:40.000Z">
+<meta property="article:author" content="Sugayoiya">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Aysnc">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sugayoiya.github.io/img/post/87952141_p0.jpeg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Async 原理 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>妖怪の山</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>紅魔館</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>雾之湖</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>人間の里</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>永遠亭</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post/87952141_p9.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Async 原理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-29 20:17" pubdate>
+          2021年8月29日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          19k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Async 原理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><code>@Async</code> 是 Spring 框架中用于实现异步方法调用的注解。通过在方法上添加 <code>@Async</code> 注解，可以告诉 Spring 将该方法的执行放到一个独立的线程中，使得方法可以异步执行，而不会阻塞当前线程</p>
+<span id="more"></span>
+
+<p>在传统的同步方法调用中，当一个方法被调用时，调用者会一直等待方法执行完成，然后才能继续执行后续的操作。而使用 <code>@Async</code> 注解后，方法的执行将变为异步的，调用者可以继续执行后续操作，而方法的执行会在另一个线程中进行</p>
+<h3 id="Async"><a href="#Async" class="headerlink" title="Async"></a>Async</h3><p>使用 <code>@Async</code> 注解的步骤：</p>
+<ol>
+<li><p>在 Spring 配置文件中开启异步支持或者在启动类上标注 <code>@EnableAsync</code></p>
+</li>
+<li><p>在需要异步执行的方法上添加 <code>@Async</code> 注解</p>
+</li>
+</ol>
+<p>示例代码如下：</p>
+<ol>
+<li>启用异步支持：</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">beans</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">xmlns:task</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/task&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://www.springframework.org/schema/beans</span></span><br><span class="hljs-string"><span class="hljs-tag">    http://www.springframework.org/schema/beans/spring-beans.xsd</span></span><br><span class="hljs-string"><span class="hljs-tag">    http://www.springframework.org/schema/task</span></span><br><span class="hljs-string"><span class="hljs-tag">    http://www.springframework.org/schema/task/spring-task.xsd&quot;</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">task:annotation-driven</span> /&gt;</span><br>    <span class="hljs-comment">&lt;!-- 配置其他相关信息 --&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">beans</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在方法上添加 <code>@Async</code> 注解：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> org.springframework.scheduling.annotation.Async;<br><span class="hljs-keyword">import</span> org.springframework.stereotype.Service;<br><br><span class="hljs-meta">@Service</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyService</span> &#123;<br><br>    <span class="hljs-meta">@Async</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">asyncMethod</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// 异步执行的方法逻辑</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在上面的示例中，<code>asyncMethod</code> 方法被 <code>@Async</code> 注解标记，表示该方法会异步执行。当调用 <code>asyncMethod</code> 方法时，Spring 将会在一个独立的线程中执行这个方法，而不会阻塞当前线程</p>
+<h4 id="EnableAsync"><a href="#EnableAsync" class="headerlink" title="@EnableAsync"></a><code>@EnableAsync</code></h4><p>与<code>@EnableTransactionManagement</code> 类似，向 Spring 导入了 <code>AsyncConfigurationSelector.class</code> 组件，同样属于 <code>ImportSelector</code> 类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Target(ElementType.TYPE)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-meta">@Documented</span><br><span class="hljs-meta">@Import(AsyncConfigurationSelector.class)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> EnableAsync &#123;<br><br>	Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Annotation</span>&gt; annotation() <span class="hljs-keyword">default</span> Annotation.class;<br><br>	<span class="hljs-type">boolean</span> <span class="hljs-title function_">proxyTargetClass</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-literal">false</span>;<br><br>	AdviceMode <span class="hljs-title function_">mode</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> AdviceMode.PROXY;<br><br>	<span class="hljs-type">int</span> <span class="hljs-title function_">order</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> Ordered.LOWEST_PRECEDENCE;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>AsyncConfigurationSelector</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AsyncConfigurationSelector</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AdviceModeImportSelector</span>&lt;EnableAsync&gt; &#123;<br><br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-meta">@Nullable</span><br>	<span class="hljs-keyword">public</span> String[] selectImports(AdviceMode adviceMode) &#123;<br>		<span class="hljs-keyword">switch</span> (adviceMode) &#123;<br>			<span class="hljs-keyword">case</span> PROXY:<br>				<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[] &#123;ProxyAsyncConfiguration.class.getName()&#125;;<br>			<span class="hljs-keyword">case</span> ASPECTJ:<br>				<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>[] &#123;ASYNC_EXECUTION_ASPECT_CONFIGURATION_CLASS_NAME&#125;;<br>			<span class="hljs-keyword">default</span>:<br>				<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>一般使用时默认未修改 <code>AdviceMode</code>，故 <code>AsyncConfigurationSelector</code> 向 Spring 容器添加了名为 <code>ProxyAsyncConfiguration</code> 的 bean</p>
+<h5 id="ProxyAsyncConfiguration"><a href="#ProxyAsyncConfiguration" class="headerlink" title="ProxyAsyncConfiguration"></a><code>ProxyAsyncConfiguration</code></h5><p><img src="/posts/7067/image-20230725160122790.png" srcset="/img/loading.gif" lazyload alt="image-20230725160122790"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration(proxyBeanMethods = false)</span><br><span class="hljs-meta">@Role(BeanDefinition.ROLE_INFRASTRUCTURE)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ProxyAsyncConfiguration</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">AbstractAsyncConfiguration</span> &#123;<br><br>	<span class="hljs-meta">@Bean(name = TaskManagementConfigUtils.ASYNC_ANNOTATION_PROCESSOR_BEAN_NAME)</span><br>	<span class="hljs-meta">@Role(BeanDefinition.ROLE_INFRASTRUCTURE)</span><br>	<span class="hljs-keyword">public</span> AsyncAnnotationBeanPostProcessor <span class="hljs-title function_">asyncAdvisor</span><span class="hljs-params">()</span> &#123;<br>		Assert.notNull(<span class="hljs-built_in">this</span>.enableAsync, <span class="hljs-string">&quot;@EnableAsync annotation metadata was not injected&quot;</span>);<br>		<span class="hljs-type">AsyncAnnotationBeanPostProcessor</span> <span class="hljs-variable">bpp</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AsyncAnnotationBeanPostProcessor</span>();<br>		bpp.configure(<span class="hljs-built_in">this</span>.executor, <span class="hljs-built_in">this</span>.exceptionHandler);<br>		Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Annotation</span>&gt; customAsyncAnnotation = <span class="hljs-built_in">this</span>.enableAsync.getClass(<span class="hljs-string">&quot;annotation&quot;</span>);<br>		<span class="hljs-keyword">if</span> (customAsyncAnnotation != AnnotationUtils.getDefaultValue(EnableAsync.class, <span class="hljs-string">&quot;annotation&quot;</span>)) &#123;<br>			bpp.setAsyncAnnotationType(customAsyncAnnotation);<br>		&#125;<br>		bpp.setProxyTargetClass(<span class="hljs-built_in">this</span>.enableAsync.getBoolean(<span class="hljs-string">&quot;proxyTargetClass&quot;</span>));<br>		bpp.setOrder(<span class="hljs-built_in">this</span>.enableAsync.&lt;Integer&gt;getNumber(<span class="hljs-string">&quot;order&quot;</span>));<br>		<span class="hljs-keyword">return</span> bpp;<br>	&#125;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>ProxyAsyncConfiguration</code> 向容器中注入了一个 <code>AsyncAnnotationBeanPostProcessor</code></p>
+<p><code>AbstractAsyncConfiguration</code> 是 <code>ProxyAsyncConfiguration</code> 的父类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AbstractAsyncConfiguration</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ImportAware</span> &#123;<br>	<span class="hljs-meta">@Nullable</span><br>	<span class="hljs-keyword">protected</span> AnnotationAttributes enableAsync;<br>	<span class="hljs-meta">@Nullable</span><br>	<span class="hljs-keyword">protected</span> Supplier&lt;Executor&gt; executor;<br>	<span class="hljs-meta">@Nullable</span><br>	<span class="hljs-keyword">protected</span> Supplier&lt;AsyncUncaughtExceptionHandler&gt; exceptionHandler;<br>	<span class="hljs-comment">/**</span><br><span class="hljs-comment">	 * 实现了ImportAware.setImportMetadata</span><br><span class="hljs-comment">	 * 在ProxyAsyncConfiguration初始化后被调用</span><br><span class="hljs-comment">	 * <span class="hljs-doctag">@param</span> importMetadata</span><br><span class="hljs-comment">	 */</span><br>	<span class="hljs-meta">@Override</span><br>	<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setImportMetadata</span><span class="hljs-params">(AnnotationMetadata importMetadata)</span> &#123;<br>		<span class="hljs-comment">// 取得@EnableAsync注解</span><br>		<span class="hljs-built_in">this</span>.enableAsync = AnnotationAttributes.fromMap(<br>				importMetadata.getAnnotationAttributes(EnableAsync.class.getName(), <span class="hljs-literal">false</span>));<br>		<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.enableAsync == <span class="hljs-literal">null</span>) &#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalArgumentException</span>(<br>					<span class="hljs-string">&quot;@EnableAsync is not present on importing class &quot;</span> + importMetadata.getClassName());<br>		&#125;<br>	&#125;<br>  <br>	<span class="hljs-meta">@Autowired(required = false)</span><br>	<span class="hljs-keyword">void</span> <span class="hljs-title function_">setConfigurers</span><span class="hljs-params">(Collection&lt;AsyncConfigurer&gt; configurers)</span> &#123;<br>		<span class="hljs-comment">// configurers默认为空，除非手动注入AsyncConfigurer</span><br>		<span class="hljs-keyword">if</span> (CollectionUtils.isEmpty(configurers)) &#123;<br>			<span class="hljs-keyword">return</span>;<br>		&#125;<br>		<span class="hljs-keyword">if</span> (configurers.size() &gt; <span class="hljs-number">1</span>) &#123;<br>			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalStateException</span>(<span class="hljs-string">&quot;Only one AsyncConfigurer may exist&quot;</span>);<br>		&#125;<br>		<span class="hljs-type">AsyncConfigurer</span> <span class="hljs-variable">configurer</span> <span class="hljs-operator">=</span> configurers.iterator().next();<br>		<span class="hljs-built_in">this</span>.executor = configurer::getAsyncExecutor;<br>		<span class="hljs-built_in">this</span>.exceptionHandler = configurer::getAsyncUncaughtExceptionHandler;<br>	&#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>从这里可以看出，可以通过向spring容器中注入<code>AsyncConfigurer</code> 来配置执行异步任务的线程池和异常处理器</p>
+<h5 id="AsyncAnnotationBeanPostProcessor"><a href="#AsyncAnnotationBeanPostProcessor" class="headerlink" title="AsyncAnnotationBeanPostProcessor"></a><code>AsyncAnnotationBeanPostProcessor</code></h5><p><img src="/posts/7067/image-20230725161425842.png" srcset="/img/loading.gif" lazyload alt="image-20230725161425842"></p>
+<p><code>AsyncAnnotationBeanPostProcessor</code> 主要实现了 <strong>BeanFactoryAware</strong> 和 <strong>BeanPostProcessor</strong> 接口</p>
+<blockquote>
+<p> <code>org.springframework.scheduling.annotation.AsyncAnnotationBeanPostProcessor#setBeanFactory</code></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setBeanFactory</span><span class="hljs-params">(BeanFactory beanFactory)</span> &#123;<br>	<span class="hljs-built_in">super</span>.setBeanFactory(beanFactory);<br>	<span class="hljs-comment">// 实例化Advisor</span><br>	<span class="hljs-type">AsyncAnnotationAdvisor</span> <span class="hljs-variable">advisor</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AsyncAnnotationAdvisor</span>(<span class="hljs-built_in">this</span>.executor, <span class="hljs-built_in">this</span>.exceptionHandler);<br>	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.asyncAnnotationType != <span class="hljs-literal">null</span>) &#123;<br>		advisor.setAsyncAnnotationType(<span class="hljs-built_in">this</span>.asyncAnnotationType);<br>	&#125;<br>	advisor.setBeanFactory(beanFactory);<br>	<span class="hljs-built_in">this</span>.advisor = advisor;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在 <code>AsyncAnnotationBeanPostProcessor</code> 实例化时实例化了切面 <code>AsyncAnnotationAdvisor</code></p>
+<p>每个 bean 实例化完后都会调用 <code>AsyncAnnotationBeanPostProcessor.postProcessAfterInitialization()</code>判断是否要生成代理对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">postProcessAfterInitialization</span><span class="hljs-params">(Object bean, String beanName)</span> &#123;<br>	... <span class="hljs-comment">// 省略</span><br>	<br>	<span class="hljs-comment">// isEligible会判断哪些bean要生成代理</span><br>	<span class="hljs-comment">// 就是使用advisor中的pointcut进行匹配</span><br>	<span class="hljs-keyword">if</span> (isEligible(bean, beanName)) &#123;<br>		<span class="hljs-comment">// 创建代理</span><br>		<span class="hljs-type">ProxyFactory</span> <span class="hljs-variable">proxyFactory</span> <span class="hljs-operator">=</span> prepareProxyFactory(bean, beanName);<br>		<span class="hljs-keyword">if</span> (!proxyFactory.isProxyTargetClass()) &#123;<br>			evaluateProxyInterfaces(bean.getClass(), proxyFactory);<br>		&#125;<br>		proxyFactory.addAdvisor(<span class="hljs-built_in">this</span>.advisor);<br>		customizeProxyFactory(proxyFactory);<br>		<span class="hljs-keyword">return</span> proxyFactory.getProxy(getProxyClassLoader());<br>	&#125;<br>	<span class="hljs-comment">// No proxy needed.</span><br>	<span class="hljs-keyword">return</span> bean;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="AsyncAnnotationAdvisor"><a href="#AsyncAnnotationAdvisor" class="headerlink" title="AsyncAnnotationAdvisor"></a><code>AsyncAnnotationAdvisor</code></h5><p>切面 <code>AsyncAnnotationAdvisor</code> 包括通知 <code>AnnotationAsyncExecutionInterceptor</code> 和切点<code>ComposablePointcut</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-title function_">AsyncAnnotationAdvisor</span><span class="hljs-params">(</span><br><span class="hljs-params">		<span class="hljs-meta">@Nullable</span> Supplier&lt;Executor&gt; executor, <span class="hljs-meta">@Nullable</span> Supplier&lt;AsyncUncaughtExceptionHandler&gt; exceptionHandler)</span> &#123;<br>	Set&lt;Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Annotation</span>&gt;&gt; asyncAnnotationTypes = <span class="hljs-keyword">new</span> <span class="hljs-title class_">LinkedHashSet</span>&lt;&gt;(<span class="hljs-number">2</span>);<br>	asyncAnnotationTypes.add(Async.class);<br>	<span class="hljs-keyword">try</span> &#123;<br>		asyncAnnotationTypes.add((Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Annotation</span>&gt;)<br>				ClassUtils.forName(<span class="hljs-string">&quot;javax.ejb.Asynchronous&quot;</span>, AsyncAnnotationAdvisor.class.getClassLoader()));<br>	&#125;<br>	<span class="hljs-keyword">catch</span> (ClassNotFoundException ex) &#123;<br>		<span class="hljs-comment">// If EJB 3.1 API not present, simply ignore.</span><br>	&#125;<br>  <span class="hljs-comment">// 创建AnnotationAsyncExecutionInterceptor</span><br>	<span class="hljs-built_in">this</span>.advice = buildAdvice(executor, exceptionHandler); <br>  <span class="hljs-comment">// 创建ComposablePointcut</span><br>	<span class="hljs-built_in">this</span>.pointcut = buildPointcut(asyncAnnotationTypes); <br>&#125;<br><span class="hljs-keyword">protected</span> Advice <span class="hljs-title function_">buildAdvice</span><span class="hljs-params">(</span><br><span class="hljs-params"><span class="hljs-meta">@Nullable</span> Supplier&lt;Executor&gt; executor, <span class="hljs-meta">@Nullable</span> Supplier&lt;AsyncUncaughtExceptionHandler&gt; exceptionHandler)</span> &#123;<br>	<span class="hljs-type">AnnotationAsyncExecutionInterceptor</span> <span class="hljs-variable">interceptor</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AnnotationAsyncExecutionInterceptor</span>(<span class="hljs-literal">null</span>);<br>	interceptor.configure(executor, exceptionHandler);<br>	<span class="hljs-keyword">return</span> interceptor;<br>&#125;<br><span class="hljs-keyword">protected</span> Pointcut <span class="hljs-title function_">buildPointcut</span><span class="hljs-params">(Set&lt;Class&lt;? extends Annotation&gt;&gt; asyncAnnotationTypes)</span> &#123;<br>	<span class="hljs-type">ComposablePointcut</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> <span class="hljs-literal">null</span>;<br>	<span class="hljs-keyword">for</span> (Class&lt;? <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Annotation</span>&gt; asyncAnnotationType : asyncAnnotationTypes) &#123;<br>		<span class="hljs-type">Pointcut</span> <span class="hljs-variable">cpc</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AnnotationMatchingPointcut</span>(asyncAnnotationType, <span class="hljs-literal">true</span>); <span class="hljs-comment">// 类</span><br>		<span class="hljs-type">Pointcut</span> <span class="hljs-variable">mpc</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AnnotationMatchingPointcut</span>(<span class="hljs-literal">null</span>, asyncAnnotationType, <span class="hljs-literal">true</span>); <span class="hljs-comment">// 方法</span><br>		<span class="hljs-keyword">if</span> (result == <span class="hljs-literal">null</span>) &#123;<br>			result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ComposablePointcut</span>(cpc);<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			result.union(cpc); <span class="hljs-comment">// 类和方法的组合切点</span><br>		&#125;<br>		result = result.union(mpc);<br>	&#125;<br>	<span class="hljs-keyword">return</span> (result != <span class="hljs-literal">null</span> ? result : Pointcut.TRUE);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>AnnotationMatchingPointcut</code> 切面其实就是查看类或者方法上面有没有 <code>@Async</code> 注解。</p>
+<h5 id="AnnotationAsyncExecutionInterceptor"><a href="#AnnotationAsyncExecutionInterceptor" class="headerlink" title="AnnotationAsyncExecutionInterceptor"></a><code>AnnotationAsyncExecutionInterceptor</code></h5><p><code>AnnotationAsyncExecutionInterceptor</code> 类主要负责增强逻辑的实现，继承了 <code>AsyncExecutionInterceptor</code>，其中的 <code>invoke()</code> 实现了增强逻辑</p>
+<blockquote>
+<p> <code>org.springframework.aop.interceptor.AsyncExecutionInterceptor#invoke</code></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">invoke</span><span class="hljs-params">(<span class="hljs-keyword">final</span> MethodInvocation invocation)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>	Class&lt;?&gt; targetClass = (invocation.getThis() != <span class="hljs-literal">null</span> ? AopUtils.getTargetClass(invocation.getThis()) : <span class="hljs-literal">null</span>);<br>	<span class="hljs-type">Method</span> <span class="hljs-variable">specificMethod</span> <span class="hljs-operator">=</span> ClassUtils.getMostSpecificMethod(invocation.getMethod(), targetClass);<br>	<span class="hljs-keyword">final</span> <span class="hljs-type">Method</span> <span class="hljs-variable">userDeclaredMethod</span> <span class="hljs-operator">=</span> BridgeMethodResolver.findBridgedMethod(specificMethod);<br>	<span class="hljs-comment">// 判断执行方法的特定线程池，见下</span><br>	<span class="hljs-type">AsyncTaskExecutor</span> <span class="hljs-variable">executor</span> <span class="hljs-operator">=</span> determineAsyncExecutor(userDeclaredMethod);<br>	<span class="hljs-keyword">if</span> (executor == <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalStateException</span>(<br>				<span class="hljs-string">&quot;No executor specified and no default executor set on AsyncExecutionInterceptor either&quot;</span>);<br>	&#125;<br>	<span class="hljs-comment">// 将目标方法的执行封装为Callable，方便提交到线程池</span><br>	Callable&lt;Object&gt; task = () -&gt; &#123;<br>		<span class="hljs-keyword">try</span> &#123;<br>			<span class="hljs-comment">// 执行目标方法</span><br>			<span class="hljs-type">Object</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> invocation.proceed();<br>			<span class="hljs-keyword">if</span> (result <span class="hljs-keyword">instanceof</span> Future) &#123;<br>				<span class="hljs-keyword">return</span> ((Future&lt;?&gt;) result).get();<br>			&#125;<br>		&#125;<br>		<span class="hljs-keyword">catch</span> (ExecutionException ex) &#123;<br>			handleError(ex.getCause(), userDeclaredMethod, invocation.getArguments());<br>		&#125;<br>		<span class="hljs-keyword">catch</span> (Throwable ex) &#123;<br>			handleError(ex, userDeclaredMethod, invocation.getArguments());<br>		&#125;<br>		<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>	&#125;;<br>	<span class="hljs-comment">// 提交任务</span><br>	<span class="hljs-keyword">return</span> oSubmit(task, executor, invocation.getMethod().getReturnType());<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p> <code>org.springframework.aop.interceptor.AsyncExecutionAspectSupport#determineAsyncExecutor</code></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> AsyncTaskExecutor <span class="hljs-title function_">determineAsyncExecutor</span><span class="hljs-params">(Method method)</span> &#123;<br>	<span class="hljs-type">AsyncTaskExecutor</span> <span class="hljs-variable">executor</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.executors.get(method);<br>	<span class="hljs-keyword">if</span> (executor == <span class="hljs-literal">null</span>) &#123;<br>		Executor targetExecutor;<br>		<span class="hljs-comment">/**</span><br><span class="hljs-comment">		 * <span class="hljs-doctag">@see</span> org.springframework.scheduling.annotation.AnnotationAsyncExecutionInterceptor#getExecutorQualifier(java.lang.reflect.Method)</span><br><span class="hljs-comment">		 */</span><br>		<span class="hljs-comment">// 获得@Async注解中的value属性中指定的taskExecutor名称</span><br>		<span class="hljs-type">String</span> <span class="hljs-variable">qualifier</span> <span class="hljs-operator">=</span> getExecutorQualifier(method);<br>		<span class="hljs-keyword">if</span> (StringUtils.hasLength(qualifier)) &#123;<br>			targetExecutor = findQualifiedExecutor(<span class="hljs-built_in">this</span>.beanFactory, qualifier);<br>		&#125;<br>		<span class="hljs-keyword">else</span> &#123;<br>			<span class="hljs-comment">// 获取默认的taskExecutor</span><br>			targetExecutor = <span class="hljs-built_in">this</span>.defaultExecutor.get();<br>		&#125;<br>		<span class="hljs-keyword">if</span> (targetExecutor == <span class="hljs-literal">null</span>) &#123;<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>		&#125;<br>		executor = (targetExecutor <span class="hljs-keyword">instanceof</span> AsyncListenableTaskExecutor ?<br>				(AsyncListenableTaskExecutor) targetExecutor : <span class="hljs-keyword">new</span> <span class="hljs-title class_">TaskExecutorAdapter</span>(targetExecutor));<br>		<span class="hljs-built_in">this</span>.executors.put(method, executor);<br>	&#125;<br>	<span class="hljs-keyword">return</span> executor;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>determineAsyncExecutor()</code> 负责获取异步任务执行的线程池，线程池的查找步骤如下：</p>
+<ol>
+<li>从Spring容器中寻找 <code>@Async</code> 注解中的value属性中指定的 <code>taskExecutor</code></li>
+<li>寻找默认的 <code>defaultExecutor</code></li>
+</ol>
+<p>默认的 <code>defaultExecutor</code> 来自于</p>
+<blockquote>
+<p> <code>org.springframework.aop.interceptor.AsyncExecutionAspectSupport#configure</code></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">configure</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> Supplier&lt;Executor&gt; defaultExecutor,</span><br><span class="hljs-params">		<span class="hljs-meta">@Nullable</span> Supplier&lt;AsyncUncaughtExceptionHandler&gt; exceptionHandler)</span> &#123;<br>	<span class="hljs-comment">// defaultExecutor默认为从beanFactory获取TaskExecutor或者bean名字为taskExecutor的Executor，beanFactory.getBean(TaskExecutor.class)</span><br>	<span class="hljs-built_in">this</span>.defaultExecutor = <span class="hljs-keyword">new</span> <span class="hljs-title class_">SingletonSupplier</span>&lt;&gt;(defaultExecutor, () -&gt; getDefaultExecutor(<span class="hljs-built_in">this</span>.beanFactory));<br>	<span class="hljs-comment">// exceptionHandler默认为SimpleAsyncUncaughtExceptionHandler</span><br>	<span class="hljs-built_in">this</span>.exceptionHandler = <span class="hljs-keyword">new</span> <span class="hljs-title class_">SingletonSupplier</span>&lt;&gt;(exceptionHandler, SimpleAsyncUncaughtExceptionHandler::<span class="hljs-keyword">new</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>defaultExecutor</code>首先取参数传入的<code>defaultExecutor</code>，这个参数来自接口<code>AsyncConfigurer.getAsyncExecutor()</code>，如果参数为null，那么就调用<code>getDefaultExecutor()</code>，注意这个方法子类<code>AsyncExecutionInterceptor</code>重写了：</p>
+<blockquote>
+<p> <code>org.springframework.aop.interceptor.AsyncExecutionInterceptor#getDefaultExecutor</code></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> Executor <span class="hljs-title function_">getDefaultExecutor</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> BeanFactory beanFactory)</span> &#123;<br>	<span class="hljs-type">Executor</span> <span class="hljs-variable">defaultExecutor</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">super</span>.getDefaultExecutor(beanFactory);<br>	<span class="hljs-keyword">return</span> (defaultExecutor != <span class="hljs-literal">null</span> ? defaultExecutor : <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleAsyncTaskExecutor</span>());<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果找不到<code>defaultExecutor</code>就会创建一个<code>SimpleAsyncTaskExecutor</code></p>
+<p>再来看看父类的 <code>AsyncExecutionAspectSupport#getDefaultExecutor</code>： </p>
+<blockquote>
+<p> <code>org.springframework.aop.interceptor.AsyncExecutionAspectSupport#getDefaultExecutor</code></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> Executor <span class="hljs-title function_">getDefaultExecutor</span><span class="hljs-params">(<span class="hljs-meta">@Nullable</span> BeanFactory beanFactory)</span> &#123;<br>	<span class="hljs-keyword">if</span> (beanFactory != <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-keyword">try</span> &#123;<br>			<span class="hljs-comment">// Search for TaskExecutor bean... not plain Executor since that would</span><br>			<span class="hljs-comment">// match with ScheduledExecutorService as well, which is unusable for</span><br>			<span class="hljs-comment">// our purposes here. TaskExecutor is more clearly designed for it.</span><br>			<span class="hljs-keyword">return</span> beanFactory.getBean(TaskExecutor.class);<br>		&#125;<br>		<span class="hljs-keyword">catch</span> (NoUniqueBeanDefinitionException ex) &#123;<br>			logger.debug(<span class="hljs-string">&quot;Could not find unique TaskExecutor bean&quot;</span>, ex);<br>			<span class="hljs-keyword">try</span> &#123;<br>				<span class="hljs-comment">// 找名为taskExecutor的Executor</span><br>				<span class="hljs-keyword">return</span> beanFactory.getBean(DEFAULT_TASK_EXECUTOR_BEAN_NAME, Executor.class);<br>			&#125;<br>			<span class="hljs-keyword">catch</span> (NoSuchBeanDefinitionException ex2) &#123;<br>				<span class="hljs-keyword">if</span> (logger.isInfoEnabled()) &#123;<br>					logger.info(<span class="hljs-string">&quot;More than one TaskExecutor bean found within the context, and none is named &quot;</span> +<br>							<span class="hljs-string">&quot;&#x27;taskExecutor&#x27;. Mark one of them as primary or name it &#x27;taskExecutor&#x27; (possibly &quot;</span> +<br>							<span class="hljs-string">&quot;as an alias) in order to use it for async processing: &quot;</span> + ex.getBeanNamesFound());<br>				&#125;<br>			&#125;<br>		&#125;<br>		<span class="hljs-keyword">catch</span> (NoSuchBeanDefinitionException ex) &#123;<br>			logger.debug(<span class="hljs-string">&quot;Could not find default TaskExecutor bean&quot;</span>, ex);<br>			<span class="hljs-keyword">try</span> &#123;<br>				<span class="hljs-keyword">return</span> beanFactory.getBean(DEFAULT_TASK_EXECUTOR_BEAN_NAME, Executor.class);<br>			&#125;<br>			<span class="hljs-keyword">catch</span> (NoSuchBeanDefinitionException ex2) &#123;<br>				logger.info(<span class="hljs-string">&quot;No task executor bean found for async processing: &quot;</span> +<br>						<span class="hljs-string">&quot;no bean of type TaskExecutor and no bean named &#x27;taskExecutor&#x27; either&quot;</span>);<br>			&#125;<br>			<span class="hljs-comment">// Giving up -&gt; either using local default executor or none at all...</span><br>		&#125;<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>先从<code>beanFactory</code>中获取<code>TaskExecutor</code>类型的对象，然后再找名为<code>taskExecutor</code>的<code>Executor</code>对象</p>
+<blockquote>
+<p><code>org.springframework.aop.interceptor.AsyncExecutionAspectSupport#doSubmit</code></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">protected</span> Object <span class="hljs-title function_">doSubmit</span><span class="hljs-params">(Callable&lt;Object&gt; task, AsyncTaskExecutor executor, Class&lt;?&gt; returnType)</span> &#123;<br>	<span class="hljs-comment">// 执行任务</span><br>	<span class="hljs-keyword">if</span> (CompletableFuture.class.isAssignableFrom(returnType)) &#123;<br>		<span class="hljs-keyword">return</span> CompletableFuture.supplyAsync(() -&gt; &#123;<br>			<span class="hljs-keyword">try</span> &#123;<br>				<span class="hljs-keyword">return</span> task.call();<br>			&#125;<br>			<span class="hljs-keyword">catch</span> (Throwable ex) &#123;<br>				<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">CompletionException</span>(ex);<br>			&#125;<br>		&#125;, executor);<br>	&#125;<br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (ListenableFuture.class.isAssignableFrom(returnType)) &#123;<br>		<span class="hljs-keyword">return</span> ((AsyncListenableTaskExecutor) executor).submitListenable(task);<br>	&#125;<br>	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (Future.class.isAssignableFrom(returnType)) &#123;<br>		<span class="hljs-keyword">return</span> executor.submit(task);<br>	&#125;<br>	<span class="hljs-keyword">else</span> &#123;<br>		executor.submit(task);<br>		<span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>doSubmit()</code> 负责将任务提交至线程池中，并对各种方法的返回值进行处理</p>
+<h4 id="Spring-定义的线程池类"><a href="#Spring-定义的线程池类" class="headerlink" title="Spring 定义的线程池类"></a>Spring 定义的线程池类</h4><p>Spring 已经定义的线程池类有如下一些：</p>
+<ul>
+<li><code>SimpleAsyncTaskExecutor</code>：不是真的线程池，这个类不重用线程，默认每次调用都会创建一个新的线程</li>
+<li><code>SyncTaskExecutor</code>：这个类没有实现异步调用，只是一个同步操作。只适用于不需要多线程的地方</li>
+<li><code>ConcurrentTaskExecutor：Executor</code>的适配类，不推荐使用。如果 <code>ThreadPoolTaskExecutor</code> 不满足要求时，才用考虑使用这个类</li>
+<li><code>SimpleThreadPoolTaskExecutor</code>：是Quartz的 <code>SimpleThreadPool</code> 的类。线程池同时被quartz和非quartz使用，才需要使用此类</li>
+<li><code>ThreadPoolTaskExecutor</code> ：最常使用，推荐。 其实质是对<code>java.util.concurrent.ThreadPoolExecutor</code> 的包装</li>
+</ul>
+<h4 id="配置自定义线程池"><a href="#配置自定义线程池" class="headerlink" title="配置自定义线程池"></a>配置自定义线程池</h4><h5 id="异步方法默认的线程池"><a href="#异步方法默认的线程池" class="headerlink" title="异步方法默认的线程池"></a>异步方法默认的线程池</h5><p>在 <code>@EnableAsync</code> 注解中有如下注释说明：</p>
+<blockquote>
+<p>By default, Spring will be searching for an associated thread pool definition:either a unique {@link org.springframework.core.task.TaskExecutor} bean in the context,or an {@link java.util.concurrent.Executor} bean named “taskExecutor” otherwise. Ifneither of the two is resolvable, a {@link org.springframework.core.task.SimpleAsyncTaskExecutor}will be used to process async method invocations.</p>
+</blockquote>
+<p>翻译一下就是：</p>
+<blockquote>
+<p>Spring首先会通过下面两种方式查找作为异步方法的默认线程池：<br>1、查找唯一的一个TaskExecutor类型的bean<br>2、或者是一个名称为“taskExecutor”的Executor类型的Bean。<br>如果上面两种方式都没有查找到，则使用SimpleAsyncTaskExecutor作为异步方法的默认线程池</p>
+</blockquote>
+<p>而 <code>SimpleAsyncTaskExecutor</code> 线程池去执行 <code>@Async</code> 标注的异步方法，由于该线程池不会重用线程，所以项目中推荐使用自定义的线程池。</p>
+<h5 id="配置异步方法默认自定义线程池"><a href="#配置异步方法默认自定义线程池" class="headerlink" title="配置异步方法默认自定义线程池"></a>配置异步方法默认自定义线程池</h5><p>配置 <code>@Async</code> 默认的线程池有多种方式：</p>
+<ol>
+<li>重新实现接口 <code>AsyncConfigurer</code></li>
+<li>继承 <code>AsyncConfigurerSupport</code></li>
+<li>自定义一个 <code>TaskExecutor</code> 类型的bean</li>
+<li>自定义一个名称为 <em>taskExecutor</em> 的Executor类型的Bean</li>
+</ol>
+<p><strong>实现接口</strong></p>
+<p>开发者可以通过实现 <code>AsyncConfigurer</code> 接口来自定义自己的线程池，以下是官方文档给的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span> <br><span class="hljs-meta">@EnableAsync</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AppConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">AsyncConfigurer</span> &#123;<br> <br>      <span class="hljs-meta">@Override</span><br>      <span class="hljs-keyword">public</span> Executor <span class="hljs-title function_">getAsyncExecutor</span><span class="hljs-params">()</span> &#123;<br>         <span class="hljs-type">ThreadPoolTaskExecutor</span> <span class="hljs-variable">executor</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadPoolTaskExecutor</span>();<br>          executor.setCorePoolSize(<span class="hljs-number">7</span>);<br>          executor.setMaxPoolSize(<span class="hljs-number">42</span>);<br>          executor.setQueueCapacity(<span class="hljs-number">11</span>);<br>          executor.setThreadNamePrefix(<span class="hljs-string">&quot;MyExecutor-&quot;</span>);<br>          executor.initialize();<br>          <span class="hljs-keyword">return</span> executor;<br>      &#125;<br> <br>      <span class="hljs-meta">@Override</span><br>      <span class="hljs-keyword">public</span> AsyncUncaughtExceptionHandler <span class="hljs-title function_">getAsyncUncaughtExceptionHandler</span><span class="hljs-params">()</span> &#123;<br>          <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MyAsyncUncaughtExceptionHandler</span>();<br>      &#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>继承类</strong></p>
+<p>通过继承 <code>AsyncConfigurerSupport</code> 类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span> <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AppConfig</span> extend AsyncConfigurerSupport &#123;<br> <br>      <span class="hljs-meta">@Override</span><br>      <span class="hljs-meta">@Bean</span><br>      <span class="hljs-keyword">public</span> Executor <span class="hljs-title function_">getAsyncExecutor</span><span class="hljs-params">()</span> &#123;<br>         <span class="hljs-type">ThreadPoolTaskExecutor</span> <span class="hljs-variable">executor</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadPoolTaskExecutor</span>();<br>          executor.setCorePoolSize(<span class="hljs-number">7</span>);<br>          executor.setMaxPoolSize(<span class="hljs-number">42</span>);<br>          executor.setQueueCapacity(<span class="hljs-number">11</span>);<br>          executor.setThreadNamePrefix(<span class="hljs-string">&quot;MyExecutor-&quot;</span>);<br>          executor.initialize();<br>          <span class="hljs-keyword">return</span> executor;<br>      &#125;<br> <br>      <span class="hljs-meta">@Override</span><br>      <span class="hljs-keyword">public</span> AsyncUncaughtExceptionHandler <span class="hljs-title function_">getAsyncUncaughtExceptionHandler</span><span class="hljs-params">()</span> &#123;<br>          <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MyAsyncUncaughtExceptionHandler</span>();<br>      &#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>配置自定义的TaskExecutor</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span> <br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AppConfig</span>  &#123;<br> <br>      <span class="hljs-meta">@Override</span><br>      <span class="hljs-meta">@Bean(name=AsyncExecutionAspectSupport.DEFAULT_TASK_EXECUTOR_BEAN_NAME)</span><br>      <span class="hljs-keyword">public</span> Executor <span class="hljs-title function_">taskExecutor</span><span class="hljs-params">()</span> &#123;<br>         <span class="hljs-type">ThreadPoolTaskExecutor</span> <span class="hljs-variable">executor</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadPoolTaskExecutor</span>();<br>          executor.setCorePoolSize(<span class="hljs-number">7</span>);<br>          executor.setMaxPoolSize(<span class="hljs-number">42</span>);<br>          executor.setQueueCapacity(<span class="hljs-number">11</span>);<br>          executor.setThreadNamePrefix(<span class="hljs-string">&quot;MyExecutor-&quot;</span>);<br>          executor.initialize();<br>          <span class="hljs-keyword">return</span> executor;<br>      &#125;<br> <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>不同异步方法配置不同线程池</strong></p>
+<p>有时候不同功能的异步方法需要配置不同的线程池，可以通过在 <code>@Async</code> 上指定线程池的名称来实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ExecutorConfig</span> &#123;<br>    <span class="hljs-meta">@Bean(&quot;customExecutor-1&quot;)</span><span class="hljs-comment">// 自定义线程池1</span><br>    <span class="hljs-keyword">public</span> Executor <span class="hljs-title function_">customExecutor1</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">ThreadPoolTaskExecutor</span> <span class="hljs-variable">executor</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadPoolTaskExecutor</span>();<br>        executor.setCorePoolSize(<span class="hljs-number">3</span>);<span class="hljs-comment">//核心池大小</span><br>        executor.setMaxPoolSize(<span class="hljs-number">6</span>);<span class="hljs-comment">//最大线程数</span><br>        executor.setKeepAliveSeconds(<span class="hljs-number">60</span>);<span class="hljs-comment">//线程空闲时间</span><br>        executor.setQueueCapacity(<span class="hljs-number">10</span>);<span class="hljs-comment">//队列程度</span><br>        executor.setThreadNamePrefix(<span class="hljs-string">&quot;customExecutor-1-&quot;</span>);<span class="hljs-comment">//线程前缀名称</span><br>        executor.setRejectedExecutionHandler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadPoolExecutor</span>.AbortPolicy());<span class="hljs-comment">//配置拒绝策略</span><br>        executor.setAllowCoreThreadTimeOut(<span class="hljs-literal">true</span>);<span class="hljs-comment">// 允许销毁核心线程</span><br>        executor.initialize();<br>        <span class="hljs-keyword">return</span> executor;<br>    &#125;<br><br>    <span class="hljs-meta">@Bean(&quot;customExecutor-2&quot;)</span><span class="hljs-comment">// 自定义线程池2</span><br>    <span class="hljs-keyword">public</span> Executor <span class="hljs-title function_">customExecutor2</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">ThreadPoolTaskExecutor</span> <span class="hljs-variable">executor</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadPoolTaskExecutor</span>();<br>        executor.setCorePoolSize(<span class="hljs-number">3</span>);<span class="hljs-comment">//核心池大小</span><br>        executor.setMaxPoolSize(<span class="hljs-number">6</span>);<span class="hljs-comment">//最大线程数</span><br>        executor.setKeepAliveSeconds(<span class="hljs-number">60</span>);<span class="hljs-comment">//线程空闲时间</span><br>        executor.setQueueCapacity(<span class="hljs-number">10</span>);<span class="hljs-comment">//队列程度</span><br>        executor.setThreadNamePrefix(<span class="hljs-string">&quot;customExecutor-2-&quot;</span>);<span class="hljs-comment">//线程前缀名称</span><br>        executor.setRejectedExecutionHandler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadPoolExecutor</span>.AbortPolicy());<span class="hljs-comment">//配置拒绝策略</span><br>        executor.setAllowCoreThreadTimeOut(<span class="hljs-literal">true</span>);<span class="hljs-comment">// 允许销毁核心线程</span><br>        executor.initialize();<br>        <span class="hljs-keyword">return</span> executor;<br>    &#125;<br>&#125;<br><br><span class="hljs-meta">@Async(&quot;customExecutor-1&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method1</span><span class="hljs-params">()</span>&#123;&#125;<br><br><span class="hljs-meta">@Async(&quot;customExecutor-2&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">method2</span><span class="hljs-params">()</span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="Async-异常处理"><a href="#Async-异常处理" class="headerlink" title="@Async 异常处理"></a><code>@Async</code> 异常处理</h4><p>当方法是带<code>Future</code>返回值的时候，<code>Future.get()</code>方法会抛出异常，所以异常捕获是没问题的。但是当方法是不带返回值的时候，那么此时主线程就不能捕获到异常，需要额外的配置来处理异常，可以有下面两种方式。</p>
+<ol>
+<li>通过<code>try-catch</code>处理异常</li>
+</ol>
+<p>直接在异步方法中使用 <code>try-catch</code> 来处理抛出的异常。这个方法也可以用于带 <code>Future</code> 返回值的异步方法。</p>
+<ol start="2">
+<li>通过实现 <code>AsyncUncaughtExceptionHandler</code> 接口</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-meta">@EnableAsync</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SpringAsyncConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">AsyncConfigurer</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> Executor <span class="hljs-title function_">getAsyncExecutor</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-comment">// 省略自定义线程池的代码</span><br>    &#125;<br><br>    <span class="hljs-comment">// 自定义异常处理</span><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> AsyncUncaughtExceptionHandler <span class="hljs-title function_">getAsyncUncaughtExceptionHandler</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AsyncUncaughtExceptionHandler</span>() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handleUncaughtException</span><span class="hljs-params">(Throwable throwable, Method method, Object... objects)</span> &#123;<br>                System.out.println(method.getName() + <span class="hljs-string">&quot;发生异常！异常原因：&quot;</span> + throwable.getMessage() );<br>            &#125;<br>        &#125;;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><ul>
+<li><p><code>@Async</code> 注解必须用在 <code>public</code> 访问级别的方法上，因为 Spring 使用代理来实现异步调用，所以只有 <code>public</code> 方法才能被代理</p>
+</li>
+<li><p>异步方法的返回值类型通常应该是 <code>void</code> 或 <code>java.util.concurrent.Future</code>。如果返回 <code>Future</code> 类型，则可以通过 <code>Future</code> 对象来获取异步方法的执行结果</p>
+</li>
+<li><p>异步方法应该在不同的类中调用，这样 Spring 能够正确地创建一个独立的线程来执行异步方法。</p>
+</li>
+<li><p>需要配置一个合适的 <code>TaskExecutor</code>，用于执行异步任务。如果没有配置，Spring 将使用默认的 <code>SimpleAsyncTaskExecutor</code></p>
+</li>
+</ul>
+<p>总结来说，<code>@Async</code> 注解是 Spring 框架中实现异步方法调用的一种方式，它提供了一种简单的方法来实现多线程处理，从而提高应用程序的并发能力和性能</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Java/Spring/" class="category-chain-item">Spring</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+        <a href="/tags/Spring/" class="print-no-link">#Spring</a>
+      
+        <a href="/tags/Aysnc/" class="print-no-link">#Aysnc</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Async 原理</div>
+      <div>https://sugayoiya.github.io/posts/7067.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/13119.html" title="AQS 原理分析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">AQS 原理分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/49928.html" title="Transactional 原理">
+                        <span class="hidden-mobile">Transactional 原理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

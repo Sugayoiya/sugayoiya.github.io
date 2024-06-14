@@ -1,0 +1,949 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="家庭 Nas 打造全自动追剧流程">
+  
+    <meta name="description" content="一套本地的追剧系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="家庭 Nas 打造全自动追剧流程">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/52833.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="一套本地的追剧系统">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sugayoiya.github.io/img/post/87952624_p0.jpeg">
+<meta property="article:published_time" content="2021-12-20T12:05:22.000Z">
+<meta property="article:modified_time" content="2023-07-25T14:40:39.000Z">
+<meta property="article:author" content="Sugayoiya">
+<meta property="article:tag" content="Nas">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sugayoiya.github.io/img/post/87952624_p0.jpeg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>家庭 Nas 打造全自动追剧流程 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>妖怪の山</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>紅魔館</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>雾之湖</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>人間の里</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>永遠亭</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post/87952624_p6.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="家庭 Nas 打造全自动追剧流程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-12-20 20:05" pubdate>
+          2021年12月20日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">家庭 Nas 打造全自动追剧流程</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>一套本地的追剧系统</strong></p>
+<span id="more"></span>
+
+<h3 id="Indexer-种子索引"><a href="#Indexer-种子索引" class="headerlink" title="Indexer 种子索引"></a>Indexer 种子索引</h3><h4 id="Jackett"><a href="#Jackett" class="headerlink" title="Jackett"></a>Jackett</h4><ul>
+<li>Docker: <a target="_blank" rel="noopener" href="https://hub.docker.com/r/linuxserver/jackett">linuxserver&#x2F;jackett:latest</a></li>
+</ul>
+<p><strong>Jackett</strong> 是一个流行的开源应用程序，用于充当多种种子站点（<em>Torrent</em>站点）的中央索引器，以便它们可以被<em>Sonarr</em>、<em>Radarr</em>、<em>Lidarr</em>、<em>CouchPotato</em>等自动下载工具使用。</p>
+<p>简而言之，Jackett允许你在流行的种子站点上进行搜索，并提供一个统一的API，使得你可以通过其他下载和媒体管理软件访问这些站点的内容。这对于那些希望将下载过程自动化的人来说非常有用，因为他们可以利用 <em>Jackett</em> 来连接这些站点，然后再将其与其他下载工具集成</p>
+<p>主要功能包括：</p>
+<ol>
+<li><p>多种子站点支持：Jackett 支持众多种子站点，包括一些受欢迎的私人和公共站点，使你可以通过单一的界面搜索这些站点。</p>
+</li>
+<li><p>API接口：Jackett 提供了一个RESTful API，允许其他应用程序通过HTTP请求来搜索种子站点和获取搜索结果。</p>
+</li>
+<li><p>配置灵活：你可以通过 Jackett 的Web界面轻松添加、删除或配置种子站点，这样可以根据你的喜好和需求定制索引列表。</p>
+</li>
+<li><p>安全代理：Jackett 可以充当安全代理，以便你可以通过它来访问私人种子站点，而无需将敏感凭据直接提供给其他应用程序。</p>
+</li>
+<li><p>开源：Jackett 是一个开源项目，这意味着任何人都可以查看其源代码，对其进行审查、修改和改进。</p>
+</li>
+</ol>
+<p>需要注意的是，Jackett本身并不提供种子下载功能，它只是一个搜索引擎，用于帮助你找到想要下载的内容，并将结果提供给其他下载工具处理</p>
+<p><img src="/posts/52833/image-20230725180625744.png" srcset="/img/loading.gif" lazyload alt="image-20230725180625744"></p>
+<h5 id="使用-Docker-部署-Jackett"><a href="#使用-Docker-部署-Jackett" class="headerlink" title="使用 Docker 部署 Jackett"></a>使用 Docker 部署 Jackett</h5><p>根据自身情况适当修改</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -d \<br>  --name=jackett \<br>  -e PUID=1000 \<br>  -e PGID=1000 \<br>  -e TZ=Asia/Shanghai \<br>  -e AUTO_UPDATE=true `#optional` \<br>  -p 9117:9117 \<br>  -v /share/Container/jackett/config:/config \<br>  -v /share/Container/jackett/torrent:/downloads \<br>  --restart unless-stopped \<br>  linuxserver/jackett:amd64-latest<br></code></pre></td></tr></table></figure>
+
+<p>部署完成后在本地的9117端口上就能看到 Jackett 的 web 页面（如上图）</p>
+<h5 id="添加-Index"><a href="#添加-Index" class="headerlink" title="添加 Index"></a>添加 Index</h5><p><img src="/posts/52833/image-20230725181407939.png" srcset="/img/loading.gif" lazyload alt="image-20230725181407939"></p>
+<p>因为我们追剧主要就是电视剧和动画片，个人比较推荐的就是</p>
+<p><img src="/posts/52833/image-20230725181535744.png" srcset="/img/loading.gif" lazyload alt="image-20230725181535744"></p>
+<p>其他的也可以自己去尝试，但是有些网站不能直接访问（需要魔法🪄）</p>
+<p>另外还有些是 Private 的 Indexer，一般需要登陆才能够访问，例如：</p>
+<p><img src="/posts/52833/image-20230725181708630.png" srcset="/img/loading.gif" lazyload alt="image-20230725181708630"></p>
+<p>需要在小扳手里填写自己的账号信息</p>
+<p>Jackett 中我们需要几个参数，<code>API KEY</code>，<code>category</code> 和 <code>index</code> 地址，这里面的 index 地址我们选择<strong>Torznab Feed</strong>，这是 <strong>Sonarr</strong> 和 <strong>Raddar</strong> 都支持的 API，点击 <code>Copy Torznab Feed</code> 后即可拿到 index 地址，之后有用</p>
+<p>获得 <code>category</code>，点击扳手获取</p>
+<p><img src="/posts/52833/image-20230725181937918.png" srcset="/img/loading.gif" lazyload alt="image-20230725181937918"></p>
+<h3 id="剧集管理"><a href="#剧集管理" class="headerlink" title="剧集管理"></a>剧集管理</h3><h4 id="Sonarr"><a href="#Sonarr" class="headerlink" title="Sonarr"></a>Sonarr</h4><ul>
+<li>Docker: <a target="_blank" rel="noopener" href="https://hub.docker.com/r/linuxserver/sonarr">linuxserver&#x2F;sonarr</a></li>
+</ul>
+<p><em>Sonarr</em> 是一个开源的电视剧系列自动下载工具，它允许用户自动搜索、下载和管理电视剧的新剧集</p>
+<p><em>Sonarr</em> 具有以下主要功能：</p>
+<ol>
+<li><p><strong>自动搜索和下载：</strong> Sonarr 可以定期检查你想要追踪的电视剧，一旦有新的剧集可用，它会自动搜索并下载这些剧集。用户可以配置 Sonarr 使用的种子站点和下载器，以便将下载任务发送到指定的下载客户端（如qBittorrent、Deluge、Transmission等）</p>
+</li>
+<li><p><strong>RSS Feed 支持：</strong> Sonarr 支持 RSS Feed，这意味着它可以通过订阅电视剧的 RSS Feed 来获取最新剧集的信息，并根据用户的设置自动下载新的剧集</p>
+</li>
+<li><p><strong>定制化：</strong> 用户可以根据自己的需求和喜好对 Sonarr 进行定制。你可以选择要监视哪些电视剧，设置下载质量和规则，选择下载器和种子站点等等</p>
+</li>
+<li><p><strong>质量管理：</strong> Sonarr 允许你设置首选的剧集质量，比如高清、标清、WEB-DL、Blu-ray等，然后它会尽量自动下载符合你要求的版本</p>
+</li>
+<li><p><strong>自动整理：</strong> Sonarr 可以将下载好的剧集自动整理到你指定的目录中，并根据设定的命名规则进行命名，以便更好地组织你的媒体文件库</p>
+</li>
+<li><p><strong>通知和提醒：</strong> Sonarr 支持各种通知和提醒方式，如电子邮件、Slack、Pushbullet等，这样你可以及时了解下载状态和新剧集的到来</p>
+</li>
+<li><p><strong>历史记录和统计：</strong> Sonarr 提供下载历史记录和统计信息，方便用户查看过去的下载活动和性能</p>
+</li>
+</ol>
+<p>Sonarr 的用户界面简洁友好，容易上手。它是一个功能强大且广受欢迎的自动下载工具，适用于那些喜欢追踪并自动获取电视剧的人</p>
+<h5 id="使用-Docker-部署"><a href="#使用-Docker-部署" class="headerlink" title="使用 Docker 部署"></a>使用 Docker 部署</h5><p>根据自身情况适当修改，所有的影视目录都需要这样分门别类的挂载，后面的 qBittorrent 也要这样，这里至关重要</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -d \<br>  --name=sonarr \<br>  -e PUID=1000 \<br>  -e PGID=1000 \<br>  -e TZ=Asia/Shanghai \<br>  -p 8989:8989 \<br>  -v /share/Container/sonarr/config:/config \<br>  -v /share/Multimedia/TVseries:/tv \<br>  -v /share/Multimedia/Movie:/movie \<br>  --restart unless-stopped \<br>  linuxserver/sonarr:amd64-latest<br></code></pre></td></tr></table></figure>
+
+<p>这里的 <code>/share/Multimedia/TVseries</code> 和 <code>/share/Multimedia/Movie</code> 就是之后存放剧集和电影的宿主机目录，<code>/tv</code> 和 <code>/movie</code> 是挂载的路径，也是之后配置中<strong>需要添加的目录</strong></p>
+<p>安装成功后可以在本地8989端口上看到 Sonarr 的 web 界面</p>
+<h5 id="Media-Management-配置"><a href="#Media-Management-配置" class="headerlink" title="Media Management 配置"></a>Media Management 配置</h5><p><img src="/posts/52833/image-20230725182845996.png" srcset="/img/loading.gif" lazyload alt="image-20230725182845996"></p>
+<p>打开 <code>Settings</code> - <code>Media Management</code>，选择 <code>Add Root Folder</code> 将之前的目录都添加上去</p>
+<h5 id="Profiles"><a href="#Profiles" class="headerlink" title="Profiles"></a>Profiles</h5><p><img src="/posts/52833/image-20230725183140921.png" srcset="/img/loading.gif" lazyload alt="image-20230725183140921"></p>
+<p><code>Any</code> 的配置根据自己的需要修改，表示了影片的质量，Upgrade Until 根据个人需要可开可不开，这个是在有更好质量的文件的时候会自动再下载更好质量的文件做替换</p>
+<p><code>Language Profiles</code> 语言这里只下美剧不用改，下动画片需要多加个中文</p>
+<h5 id="Indexers"><a href="#Indexers" class="headerlink" title="Indexers"></a>Indexers</h5><p>Index 我这里用了这几个，从 Jackett 中获取，可以根据个人需要增加&#x2F;减少</p>
+<p><img src="/posts/52833/image-20230725183440342.png" srcset="/img/loading.gif" lazyload alt="image-20230725183440342"></p>
+<p>点击 + 号添加一个新配置，选择 Torznab，将我们之前在 Jackett 中复制的链接复制进去</p>
+<p><img src="/posts/52833/image-20230725183608559.png" srcset="/img/loading.gif" lazyload alt="image-20230725183608559"></p>
+<p><strong>API key</strong> 在 Jackett web 页面的右上方</p>
+<p>关于 <strong>Categories</strong> 要填写对应的，电视剧就填写电视剧的，动画片就填写动画片的，用英文逗号做分隔符，添加完毕后可以点击下方的 <code>Test</code> 按钮测试，测试通过就行</p>
+<h5 id="Download-Clients"><a href="#Download-Clients" class="headerlink" title="Download Clients"></a>Download Clients</h5><p>我用的 <em>qBittorrent</em></p>
+<p><img src="/posts/52833/image-20230725183928292.png" srcset="/img/loading.gif" lazyload alt="image-20230725183928292"></p>
+<p>这里的配置在之后安装好了 qBittorrent 之后就懂了，Category 这个配置可配可不配</p>
+<p><strong>Sonarr</strong> 的基本设置就结束了</p>
+<h5 id="Sonarr-使用"><a href="#Sonarr-使用" class="headerlink" title="Sonarr 使用"></a>Sonarr 使用</h5><p><img src="/posts/52833/image-20230725184535580.png" srcset="/img/loading.gif" lazyload alt="image-20230725184535580"></p>
+<p>直接搜索即可，尽量用英文，或者用 TVDB ID 搜索，比如 tvdb:71663</p>
+<p><img src="/posts/52833/image-20230725184726020.png" srcset="/img/loading.gif" lazyload alt="image-20230725184726020"></p>
+<p><img src="/posts/52833/image-20230725184955435-0282196.png" srcset="/img/loading.gif" lazyload alt="image-20230725184955435"></p>
+<p><img src="/posts/52833/image-20230725185234880.png" srcset="/img/loading.gif" lazyload alt="image-20230725185234880"></p>
+<p><strong>monitor</strong> 常用的一般有两种，<code>All Episodes</code>，<code>Future Episodes</code></p>
+<ul>
+<li>All Episodes，下载已播出的全部剧集</li>
+<li>Future Episodes，将要更新的剧集，已播出的不下载</li>
+</ul>
+<p><img src="/posts/52833/image-20230725185304847.png" srcset="/img/loading.gif" lazyload alt="image-20230725185304847"></p>
+<p>添加成功后会自动搜索 Indexers 中的种子，然后调用 qBittorrent 下载，最重要的是 <strong>sonarr 会自动检测剧集更新</strong>，一旦更新会自动下载，然后将下载好的剧集移到对应位置</p>
+<p><img src="/posts/52833/image-20230725185832991.png" srcset="/img/loading.gif" lazyload alt="image-20230725185832991"></p>
+<p><strong>已播出剧集的剧集下载</strong></p>
+<p>在已播出的整季剧集上，点season栏的放大镜是自动搜索并下载，人像是交互式搜索选择自己想要的文件下载</p>
+<p><img src="/posts/52833/image-20230725190016563.png" srcset="/img/loading.gif" lazyload alt="image-20230725190016563"></p>
+<p>每一集剧情的小放大镜是那一集的自动搜索并下载，同理，小人像是那一集的交互式搜索选择自己想要的文件下载</p>
+<p><strong>导入剧集</strong></p>
+<p><img src="/posts/52833/image-20230725203519880.png" srcset="/img/loading.gif" lazyload alt="image-20230725203519880"></p>
+<p>将其他地方下载好的剧集目录放入之前挂载的目录下，比如 <code>新世纪福音战士.Neon.Genesis.Evangelion.1995.S01.1080p.NF.WEB-DL.H264.DDP5.1-YingWEB</code> 放到之前的 <code>/share/Multimedia/TVseries</code> 下，然后在 <code>Library Import</code> 中选择对应的 <code>/tv</code> 目录，会看到如上画面。</p>
+<p>Sonarr 会自动寻找匹配的剧集，如果不对可以自己在最后手动修改，然后点击下面 <code>Import 1 Series</code></p>
+<p>之后就在 Series 中看到导入的剧集</p>
+<p><img src="/posts/52833/image-20230725203953310.png" srcset="/img/loading.gif" lazyload alt="image-20230725203953310"></p>
+<p><img src="/posts/52833/image-20230725204016562.png" srcset="/img/loading.gif" lazyload alt="image-20230725204016562"></p>
+<p>上面选项 Preview Rename 可以按照统一格式修改文件命名，Refresh &amp; Scan 可以重新刷新&amp;扫描</p>
+<h3 id="BT下载工具"><a href="#BT下载工具" class="headerlink" title="BT下载工具"></a>BT下载工具</h3><blockquote>
+<p>qBittorrent下载，种子分类整理较好，但占用资源，内存较多</p>
+<p>Transmissoin种子整理分类远不如qBittorrent，但资源占用低</p>
+</blockquote>
+<h4 id="qBittorrent"><a href="#qBittorrent" class="headerlink" title="qBittorrent"></a>qBittorrent</h4><ul>
+<li>Docker：<a target="_blank" rel="noopener" href="https://hub.docker.com/r/linuxserver/qbittorrent">linuxserver&#x2F;qbittorrent</a></li>
+</ul>
+<p>qBittorrent 是一个开源的 <em>BitTorrent</em> 客户端，用于下载和共享种子文件，它是μTorrent（uTorrent）的一个替代选择</p>
+<p>qBittorrent 具有以下主要特点和功能：</p>
+<ol>
+<li><p><strong>免费且开源：</strong> qBittorrent是完全免费的，并且它是开源软件，这意味着任何人都可以查看、修改和贡献代码</p>
+</li>
+<li><p><strong>轻量级和跨平台：</strong> qBittorrent 软件本身体积较小且资源占用较少，因此可以在各种计算机和操作系统上运行，包括Windows、macOS、Linux以及FreeBSD等</p>
+</li>
+<li><p><strong>无广告：</strong> 与一些其他BitTorrent客户端不同，qBittorrent 不包含任何广告或附加软件，提供纯净的下载体验</p>
+</li>
+<li><p><strong>IP过滤和阻止：</strong> qBittorrent 允许用户使用IP过滤器来阻止某些IP地址或IP范围的连接，提高下载安全性和隐私保护</p>
+</li>
+<li><p><strong>优先级管理：</strong> 用户可以设置下载任务的优先级，以便调整下载顺序和速度</p>
+</li>
+<li><p><strong>种子管理：</strong> qBittorrent 提供直观的界面来管理种子文件，你可以暂停、取消、删除或重新检查种子的完整性</p>
+</li>
+<li><p><strong>Web界面：</strong> qBittorrent 还有一个基于Web的界面，让你可以通过浏览器远程管理和监控你的下载任务</p>
+</li>
+<li><p><strong>加密支持：</strong> qBittorrent 支持协议加密来保护用户的隐私和数据安全</p>
+</li>
+<li><p><strong>RSS订阅：</strong> qBittorrent 允许用户订阅RSS Feed，以便自动获取最新的种子和内容</p>
+</li>
+</ol>
+<p>总体而言，qBittorrent 是一个功能齐全、稳定可靠的BitTorrent客户端，提供了许多高级选项和配置，同时简单易用</p>
+<h5 id="使用-Docker-部署-1"><a href="#使用-Docker-部署-1" class="headerlink" title="使用 Docker 部署"></a>使用 Docker 部署</h5><p>建议用<strong>下面的</strong>，linuxserver 的 webUI 会401，网上的解决方法不太稳定</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker run -d \<br>  --name=qbittorrent \<br>  -e PUID=1000 \<br>  -e PGID=1000 \<br>  -e TZ=Asia/Shanghai \<br>  -e WEBUI_PORT=8081 \<br>  -p 8081:8080 \<br>  -p 6881:6881 \<br>  -p 6881:6881/udp \<br>  -v /share/Container/qbittorrent/config:/config \<br>  -v /share/Container/qbittorrent/data:/downloads \<br>  -v /share/Multimedia/Movie:/movie \<br>  -v /share/Multimedia/TVseries:/tv \<br>  --restart unless-stopped \<br>  linuxserver/qbittorrent:amd64-latest<br><br><br>docker run -d  \<br>    --name=qbittorrent  \<br>    -e WEBUIPORT=8081  \<br>    -e PUID=1000 \<br>    -e PGID=1000 \<br>    -e TZ=Asia/Shanghai \<br>    -p 6881:6881  \<br>    -p 6881:6881/udp  \<br>    -p 8081:8080  \<br>    -v /share/Container/qbittorrent/config:/config \<br>    -v /share/Container/qbittorrent/data:/downloads \<br>    -v /share/Multimedia/Movie:/movie \<br>    -v /share/Multimedia/TVseries:/tv \<br>    --restart unless-stopped \<br>    superng6/qbittorrent:latest<br></code></pre></td></tr></table></figure>
+
+<p>除了 config 和 data 文件夹之外， <strong>sonarr</strong> 挂载了什么目录，<strong>qBittorrent</strong> 就挂载什么目录，并且位置必须一致</p>
+<h5 id="qBittorrent-配置"><a href="#qBittorrent-配置" class="headerlink" title="qBittorrent 配置"></a>qBittorrent 配置</h5><p>打开本地8081端口可以看到 qBittorrent web 界面</p>
+<p>选择 <code>Tools</code> - <code>Options</code> - <code>WebUI</code>，将语言改成中文</p>
+<p><img src="/posts/52833/image-20230725192339628.png" srcset="/img/loading.gif" lazyload alt="image-20230725192339628"></p>
+<p>这里的配置填入到之前 Sonarr 的 [Download Clients](#Download Clients) 中</p>
+<p><img src="/posts/52833/image-20230725192442921.png" srcset="/img/loading.gif" lazyload alt="image-20230725192442921"></p>
+<p>将这个选项取消，qBittorrent 的配置基本完成</p>
+<h3 id="多媒体中心"><a href="#多媒体中心" class="headerlink" title="多媒体中心"></a>多媒体中心</h3><h4 id="Plex"><a href="#Plex" class="headerlink" title="Plex"></a>Plex</h4><ul>
+<li>Docker：<a target="_blank" rel="noopener" href="https://hub.docker.com/r/linuxserver/plex">linuxserver&#x2F;plex</a></li>
+</ul>
+<p>Plex 是一个流媒体服务器软件，它允许你将个人媒体文件（如电影、电视剧、音乐、照片等）存储在中央服务器上，并通过各种设备在家庭网络中进行流媒体传输和共享。Plex 提供了一个用户友好的界面，使你能够在多种设备上访问和播放你的媒体内容</p>
+<p>Plex 的主要特点和功能：</p>
+<ol>
+<li><p><strong>媒体服务器：</strong> Plex 提供了一个媒体服务器，你可以在其中组织和存储你的媒体文件。它支持多种媒体类型，包括视频、音乐、照片和播客等</p>
+</li>
+<li><p><strong>多平台支持：</strong> Plex 可以在各种平台上运行，包括Windows、macOS、Linux、iOS、Android、Apple TV、Roku、PlayStation、Xbox等。这样，你可以在不同的设备上访问和播放你的媒体</p>
+</li>
+<li><p><strong>美观的用户界面：</strong> Plex 提供了一个漂亮、直观的用户界面，使你能够轻松地浏览和搜索你的媒体库，并快速找到想要观看或收听的内容</p>
+</li>
+<li><p><strong>远程访问：</strong> 你可以通过Plex账号登录，在任何拥有互联网连接的设备上访问你的媒体库，无论你身在何处</p>
+</li>
+<li><p><strong>实时转码：</strong> Plex 可以根据你设备的性能和网络条件，实时对媒体文件进行转码，以确保流畅播放。这意味着你可以在不同设备上流畅地观看高清视频，无需为设备兼容性而担心</p>
+</li>
+<li><p><strong>共享库：</strong> 你可以创建多个用户，并为每个用户设置独立的访问权限，从而共享你的媒体库给家庭成员或朋友</p>
+</li>
+<li><p><strong>元数据和海报：</strong> Plex 自动从互联网数据库中获取元数据（如电影信息、剧集信息、歌曲信息等）和海报，为你的媒体内容增加美观的展示效果</p>
+</li>
+<li><p><strong>频道和插件：</strong> Plex 支持各种频道和插件，你可以通过它们获得来自互联网的额外内容，如在线视频、网络电视等</p>
+</li>
+</ol>
+<h5 id="使用-Docker-部署-2"><a href="#使用-Docker-部署-2" class="headerlink" title="使用 Docker 部署"></a>使用 Docker 部署</h5><p>根据自身情况适当修改</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -d \<br>  --name=plex \<br>  --net=host \<br>  -e PUID=1000 \<br>  -e PGID=1000 \<br>  -e TZ=Asia/Shanghai \<br>  -e VERSION=docker \<br>  -e PLEX_CLAIM= `<span class="hljs-comment">#optional` \</span><br>  -v /path/to/library:/config \<br>  -v /path/to/tvseries:/tv \<br>  -v /path/to/movies:/movies \<br>  --restart unless-stopped \<br>  lscr.io/linuxserver/plex:latest<br></code></pre></td></tr></table></figure>
+
+<p><code>/path/to/tvseries</code> 和 <code>/path/to/movies </code> 改为之前挂载的目录</p>
+<h5 id="安装插件（可选）"><a href="#安装插件（可选）" class="headerlink" title="安装插件（可选）"></a>安装插件（可选）</h5><ul>
+<li>XBMCnfoMoviesImporter</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://github.com/gboudreau/XBMCnfoMoviesImporter.bundle">https://github.com/gboudreau/XBMCnfoMoviesImporter.bundle</a></p>
+<p>下载插件<a target="_blank" rel="noopener" href="https://github.com/gboudreau/XBMCnfoMoviesImporter.bundle/archive/master.zip">压缩包</a>，解压出来重命名为<strong>XBMCnfoMoviesImporter.bundle</strong>，找到 Plex Media Server data 目录（找不到的可以看<a target="_blank" rel="noopener" href="https://support.plex.tv/articles/202915258-where-is-the-plex-media-server-data-directory-located/">这里</a>参考），将 .bundle 文件夹放进 Plug-ins 目录下重启 Plex</p>
+<p>注意事项：</p>
+<blockquote>
+<ol>
+<li>XBMCnfoMoviesImporter.bundle 不会出现在插件里面，媒体库代理里面安装成功后直接能用</li>
+<li>XBMCnfoMoviesImporter.bundle 安装后，能识别本地nfo里面的元数据</li>
+</ol>
+</blockquote>
+<h5 id="添加媒体库"><a href="#添加媒体库" class="headerlink" title="添加媒体库"></a>添加媒体库</h5><p>点击 Plex 右上角的扳手按钮，找到左边目录下的媒体库</p>
+<p><img src="/posts/52833/image-20230725202156430.png" srcset="/img/loading.gif" lazyload alt="image-20230725202156430"></p>
+<p>选择添加你自己的媒体库，比如之前 Sonarr 挂载的剧集和电影目录</p>
+<p><img src="/posts/52833/image-20230725202328051.png" srcset="/img/loading.gif" lazyload alt="image-20230725202328051"></p>
+<p>如果你要使用 Sonarr 刮削的剧集信息（也就是本地自己刮削的nfo信息），就在代理里选择XBMC插件的代理，电影资料选择 XBMCnfoMoviesImporter ，电视剧集选择 XBMCnfoTVImporter，也可以直接用 Plex 提供的 Plex moive 和 Plex TV Series</p>
+<p><img src="/posts/52833/image-20230725202641854.png" srcset="/img/loading.gif" lazyload alt="image-20230725202641854"></p>
+<p>等到扫描完成后，效果如图</p>
+<p><img src="/posts/52833/image-20230725203058018.png" srcset="/img/loading.gif" lazyload alt="image-20230725203058018"></p>
+<h4 id="Emby"><a href="#Emby" class="headerlink" title="Emby"></a>Emby</h4><h4 id="Jellyfin"><a href="#Jellyfin" class="headerlink" title="Jellyfin"></a>Jellyfin</h4><h3 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h3><h4 id="Home管理"><a href="#Home管理" class="headerlink" title="Home管理"></a>Home管理</h4><h5 id="homarr"><a href="#homarr" class="headerlink" title="homarr"></a>homarr</h5><h4 id="漫画管理"><a href="#漫画管理" class="headerlink" title="漫画管理"></a>漫画管理</h4><h5 id="mylar3"><a href="#mylar3" class="headerlink" title="mylar3"></a>mylar3</h5><h5 id="komga"><a href="#komga" class="headerlink" title="komga"></a>komga</h5><h5 id="manga"><a href="#manga" class="headerlink" title="manga"></a>manga</h5><h4 id="图书管理"><a href="#图书管理" class="headerlink" title="图书管理"></a>图书管理</h4><h5 id="readarr"><a href="#readarr" class="headerlink" title="readarr"></a>readarr</h5><h5 id="calibre"><a href="#calibre" class="headerlink" title="calibre"></a>calibre</h5><h4 id="Docker管理"><a href="#Docker管理" class="headerlink" title="Docker管理"></a>Docker管理</h4><h5 id="portainer"><a href="#portainer" class="headerlink" title="portainer"></a>portainer</h5>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Nas/" class="category-chain-item">Nas</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Nas/" class="print-no-link">#Nas</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>家庭 Nas 打造全自动追剧流程</div>
+      <div>https://sugayoiya.github.io/posts/52833.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年12月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/36493.html" title="Spring 常用扩展点">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Spring 常用扩展点</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/27273.html" title="Redis 基础">
+                        <span class="hidden-mobile">Redis 基础</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

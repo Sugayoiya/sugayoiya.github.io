@@ -1,0 +1,906 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在Web应用程序开发中，Filter和Interceptor是常用的拦截器机制，可以用于对请求和响应进行拦截和处理。它们都可以在请求到达目标资源之前或者离开目标资源之后，对请求和响应进行处理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="过滤器 Filter 和拦截器 Interceptor 的异同">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/41603.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="在Web应用程序开发中，Filter和Interceptor是常用的拦截器机制，可以用于对请求和响应进行拦截和处理。它们都可以在请求到达目标资源之前或者离开目标资源之后，对请求和响应进行处理。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sugayoiya.github.io/img/post/FwInjF1aQAAEsBw.jpeg">
+<meta property="article:published_time" content="2021-07-19T13:48:26.000Z">
+<meta property="article:modified_time" content="2023-07-25T08:56:25.000Z">
+<meta property="article:author" content="Sugayoiya">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="filter">
+<meta property="article:tag" content="interceptor">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://sugayoiya.github.io/img/post/FwInjF1aQAAEsBw.jpeg">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>过滤器 Filter 和拦截器 Interceptor 的异同 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>妖怪の山</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>紅魔館</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>雾之湖</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>人間の里</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>永遠亭</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/post/FwIoml1aYAIdQB2.jpeg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="过滤器 Filter 和拦截器 Interceptor 的异同"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-07-19 21:48" pubdate>
+          2021年7月19日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          12k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">过滤器 Filter 和拦截器 Interceptor 的异同</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>在Web应用程序开发中，Filter和Interceptor是常用的拦截器机制，可以用于对请求和响应进行拦截和处理。它们都可以在请求到达目标资源之前或者离开目标资源之后，对请求和响应进行处理。</p>
+<span id="more"></span>
+
+<p>通常情况下，Filter是一个用于在请求到达<code>Servlet</code>或<code>Controller</code>之前拦截和处理请求和响应的组件。它可以修改请求或响应、执行身份验证或授权检查，或执行其他预处理或后处理任务。<code>Filter</code>可以在web.xml文件中进行配置，也可以在现代框架如Spring中使用注解进行配置；而<code>Interceptor</code>一般用于在框架级别拦截和处理请求和响应。它特定于某些框架，如Spring MVC或Struts。<code>Interceptor</code>用于执行横切关注点，如日志记录、身份验证或事务管理。它们可以在框架的配置文件中进行配置，也可以使用注解进行配置。</p>
+<h3 id="Filter介绍"><a href="#Filter介绍" class="headerlink" title="Filter介绍"></a>Filter介绍</h3><p><code>Filter</code>可以被视为<code>Servlet</code>的一种“增强版”，主要用于在处理请求前对其进行预处理，也可以在处理响应后对<code>HttpServletResponse</code>进行后处理，形成一个典型的处理链。虽然<code>Filter</code>也可以生成响应，与<code>Servlet</code>类似，但实际上很少这样使用<code>Filter</code>。使用<code>Filter</code>的完整流程是：<code>Filter</code>对用户请求进行预处理，然后将其转发给<code>Servlet</code>进行处理和生成响应，最后<code>Filter</code>再对服务器响应进行后处理。</p>
+<p>Filter有如下几个用处：</p>
+<ul>
+<li>在<code>HttpServletRequest</code>到达Servlet之前拦截客户端的<code>HttpServletRequest</code></li>
+<li>检查<code>HttpServletRequest</code>，并可能修改<code>HttpServletRequest</code>请求头和数据</li>
+<li>在<code>HttpServletResponse</code>到达客户端之前，拦截<code>HttpServletResponse</code></li>
+<li>检查<code>HttpServletResponse</code>，也可以修改<code>HttpServletResponse</code>请求头和数据</li>
+</ul>
+<p>Filter有如下几个常见用法：</p>
+<ul>
+<li>用户授权的<code>Filter</code>：<code>Filter</code>负责检查用户请求，根据请求过滤用户非法请求。</li>
+<li>日志<code>Filter</code>：详细记录某些特殊的用户请求。</li>
+<li>负责解码的<code>Filter</code>:包括对非标准编码的请求解码。</li>
+<li>能改变XML内容的<code>XSLT Filter</code>等。</li>
+<li><code>Filter</code>可以负责拦截多个请求或响应；一个请求或响应也可以被多个<code>Filter</code>拦截。</li>
+</ul>
+<h3 id="Filter的配置"><a href="#Filter的配置" class="headerlink" title="Filter的配置"></a>Filter的配置</h3><p>过滤器的配置比较简单，直接实现<code>Filter</code> 接口即可，也可以通过<code>@WebFilter</code>注解实现对特定<code>URL</code>拦截，看到<code>Filter</code> 接口中定义了三个方法。</p>
+<ul>
+<li><code>init()</code> ：该方法在容器启动初始化过滤器时被调用，它在 <code>Filter</code> 的整个生命周期只会被调用一次。<strong>注意</strong>：这个方法必须执行成功，否则过滤器会不起作用。</li>
+<li><code>doFilter()</code> ：容器中的每一次请求都会调用该方法， <code>FilterChain</code> 用来调用下一个过滤器 <code>Filter</code>。</li>
+<li><code>destroy()</code>： 当容器销毁 过滤器实例时调用该方法，一般在方法中销毁或关闭资源，在过滤器 <code>Filter</code> 的整个生命周期也只会被调用一次</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Component</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyFilter</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Filter</span> &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">init</span><span class="hljs-params">(FilterConfig filterConfig)</span> <span class="hljs-keyword">throws</span> ServletException &#123;<br>        <br>      	System.out.println(<span class="hljs-string">&quot;Filter 前置&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilter</span><span class="hljs-params">(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)</span> <span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br>        <br>      	System.out.println(<span class="hljs-string">&quot;Filter 处理中&quot;</span>);<br>        filterChain.doFilter(servletRequest, servletResponse);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">destroy</span><span class="hljs-params">()</span> &#123;<br>        <br>      	System.out.println(<span class="hljs-string">&quot;Filter 后置&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Interceptor介绍"><a href="#Interceptor介绍" class="headerlink" title="Interceptor介绍"></a>Interceptor介绍</h3><p>拦截器<code>Interceptor</code>是一种在Web应用程序中经常使用的组件，它可以在请求到达<code>Controller</code>之前或之后对请求进行拦截和处理。它是基于AOP的思想，在Spring框架中被广泛应用</p>
+<p>与Filter不同，拦截器是在框架级别上实现的，主要用于对请求进行横切关注点<em>cross-cutting concern</em>的处理，如身份验证、权限控制、日志记录、事务管理等。它可以在请求到达<code>Controller</code>之前或之后进行拦截、处理和转发，以实现特定的业务需求</p>
+<p>拦截器在<code>Spring</code>框架中有多种使用方式，可以使用注解或 <code>XML</code> 配置进行定义。在 <em>Spring MVC</em> 中，可以通过实现<code>HandlerInterceptor</code>接口来自定义拦截器。拦截器可以在<code>Controller</code>方法执行之前或之后进行拦截，并可以在请求处理之前或之后进行一些额外的处理，例如：</p>
+<ul>
+<li>身份验证和授权：<code>Interceptor</code>可以拦截请求并检查用户的身份信息或权限信息，以确保只有授权用户才能访问相关资源</li>
+<li>缓存和性能优化：<code>Interceptor</code>可以对请求进行缓存，避免重复的计算或数据查询，提高应用程序的性能</li>
+<li>日志记录：<code>Interceptor</code>可以记录请求和响应的日志信息，用于监控和错误排查</li>
+<li>异常处理：<code>Interceptor</code>可以拦截异常并进行处理，例如对异常进行统一的日志记录和返回错误信息</li>
+<li>参数转换和校验：<code>Interceptor</code>可以对请求参数进行转换和校验，确保请求参数的正确性和合法性</li>
+</ul>
+<h3 id="Interceptor的配置"><a href="#Interceptor的配置" class="headerlink" title="Interceptor的配置"></a>Interceptor的配置</h3><p>拦截器它是链式调用，一个应用中可以同时存在多个拦截器 <code>Interceptor</code>， 一个请求也可以触发多个拦截器 ，而每个拦截器的调用会依据它的声明顺序依次执行</p>
+<p>首先编写一个简单的拦截器处理类，请求的拦截是通过<code>HandlerInterceptor</code> 来实现，看到<code>HandlerInterceptor</code> 接口中也定义了三个方法</p>
+<ul>
+<li><code>preHandle()</code> ：这个方法将在请求处理之前进行调用。<strong>注意</strong>：如果该方法的返回值为<code>false</code> ，将视为当前请求结束，不仅自身的拦截器会失效，还会导致其他的拦截器也不再执行</li>
+<li><code>postHandle()</code>：只有在 <code>preHandle()</code> 方法返回值为<code>true</code> 时才会执行。会在Controller 中的方法调用之后，DispatcherServlet 返回渲染视图之前被调用。 <strong>有意思的是</strong>：<code>postHandle()</code> 方法被调用的顺序跟 <code>preHandle()</code> 是相反的，先声明的拦截器 <code>preHandle()</code> 方法先执行，而<code>postHandle()</code>方法反而会后执行</li>
+<li><code>afterCompletion()</code>：只有在 <code>preHandle()</code> 方法返回值为<code>true</code> 时才会执行。在整个请求结束之后， DispatcherServlet 渲染了对应的视图之后执行</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Component</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">HandlerInterceptor</span> &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">preHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br><br>        System.out.println(<span class="hljs-string">&quot;Interceptor 前置&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">postHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br><br>        System.out.println(<span class="hljs-string">&quot;Interceptor 处理中&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">afterCompletion</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br><br>        System.out.println(<span class="hljs-string">&quot;Interceptor 后置&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>将自定义好的拦截器处理类进行注册，并通过<code>addPathPatterns</code>、<code>excludePathPatterns</code>等属性设置需要拦截或需要排除的 <code>URL</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyMvcConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">WebMvcConfigurer</span> &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addInterceptors</span><span class="hljs-params">(InterceptorRegistry registry)</span> &#123;<br>        registry.addInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyInterceptor</span>()).addPathPatterns(<span class="hljs-string">&quot;/**&quot;</span>);<br>        registry.addInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyInterceptor1</span>()).addPathPatterns(<span class="hljs-string">&quot;/**&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Filter与Interceptor的异同"><a href="#Filter与Interceptor的异同" class="headerlink" title="Filter与Interceptor的异同"></a>Filter与Interceptor的异同</h3><p><code>Filter</code>和<code>Interceptor</code>的相同点在于它们都是在Web应用程序中用于拦截和处理请求和响应的组件。它们都可以用于实现横切关注点的处理，如身份验证、日志记录、性能监控等</p>
+<p>虽然Filter和Interceptor在实现和应用上有一些差异，例如Filter是在Servlet容器层面上实现的，而Interceptor是在应用程序框架层面上实现的，但它们的目的都是为了对请求和响应进行拦截和处理，以实现某些特定的业务需求</p>
+<h4 id="实现原理不同"><a href="#实现原理不同" class="headerlink" title="实现原理不同"></a>实现原理不同</h4><ul>
+<li><code>Filter</code>是基于函数回调实现的：</li>
+</ul>
+<p>每个自定义过滤器都会实现一个<code>doFilter()</code>方法，这个方法有一个关键参数<code>FilterChain</code>。它是一个回调接口，<code>ApplicationFilterChain</code> 是它的具体实现类，该类内部也有一个<code>doFilter()</code>方法，这个方法就是回调方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">FilterChain</span> &#123;<br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilter</span><span class="hljs-params">(ServletRequest var1, ServletResponse var2)</span> <span class="hljs-keyword">throws</span> IOException, ServletException;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>ApplicationFilterChain</code> 里面能拿到我们自定义的<code>xxxFilter</code>类，在其内部回调方法<code>doFilter()</code>里调用各个自定义<code>xxxFilter</code>过滤器，并执行 <code>doFilter()</code> 方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ApplicationFilterChain</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">FilterChain</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilter</span><span class="hljs-params">(ServletRequest request, ServletResponse response)</span> &#123;<br>        ...<span class="hljs-comment">//省略</span><br>        internalDoFilter(request,response);<br>    &#125;<br> <br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">internalDoFilter</span><span class="hljs-params">(ServletRequest request, ServletResponse response)</span>&#123;<br>    		<span class="hljs-keyword">if</span> (pos &lt; n) &#123;<br>            <span class="hljs-comment">//获取第pos个filter    </span><br>            <span class="hljs-type">ApplicationFilterConfig</span> <span class="hljs-variable">filterConfig</span> <span class="hljs-operator">=</span> filters[pos++];        <br>            <span class="hljs-type">Filter</span> <span class="hljs-variable">filter</span> <span class="hljs-operator">=</span> filterConfig.getFilter();<br>            ...<br>            filter.doFilter(request, response, <span class="hljs-built_in">this</span>);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>而每个<code>xxxFilter</code> 会先执行自身的 <code>doFilter()</code> 过滤逻辑，最后在执行结束前会执行<code>filterChain.doFilter(servletRequest, servletResponse)</code>，也就是回调<code>ApplicationFilterChain</code>的<code>doFilter()</code> 方法，以此循环执行实现函数回调</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilter</span><span class="hljs-params">(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)</span> <span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br><br>	filterChain.doFilter(servletRequest, servletResponse);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Interceptor</code> 是基于反射实现的</li>
+</ul>
+<p>自定义过滤器可以直接继承 <code>HandlerInterceptor</code> 这个接口 (<code>HandlerInterceptorAdapter</code>这个抽象类已经在<em>springmvc</em> <em>5.3</em>被废弃)，实现其中任意三个方法 <code>preHandle()</code>， <code>postHandle()</code> 和 <code>afterCompletion()</code>，再使用 <code>addInterceptors()</code> 方法将 <em>interceptor bean</em> 注册到 <code>registry</code> 的 <code>List&lt;interceptor&gt;</code>中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">InterceptorRegistry</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> List&lt;InterceptorRegistration&gt; registrations = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayList</span>&lt;&gt;();<br>    <br>    <span class="hljs-keyword">public</span> InterceptorRegistration <span class="hljs-title function_">addInterceptor</span><span class="hljs-params">(HandlerInterceptor interceptor)</span> &#123;<br>        <span class="hljs-type">InterceptorRegistration</span> <span class="hljs-variable">registration</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">InterceptorRegistration</span>(interceptor);<br>        <span class="hljs-built_in">this</span>.registrations.add(registration);<br>        <span class="hljs-keyword">return</span> registration;<br>    &#125;<br>  	...<span class="hljs-comment">//省略其余代码</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在 <code>WebMvcConfigurationSupport</code> 中创建 <code>RequestMappingHandlerMapping</code> 时将自定义的 <code>interceptor</code> 加入到拦截器列表中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Bean</span><br><span class="hljs-keyword">public</span> RequestMappingHandlerMapping <span class="hljs-title function_">requestMappingHandlerMapping</span><span class="hljs-params">(...)</span> &#123;<br><br>	<span class="hljs-type">RequestMappingHandlerMapping</span> <span class="hljs-variable">mapping</span> <span class="hljs-operator">=</span> createRequestMappingHandlerMapping();<br>	mapping.setOrder(<span class="hljs-number">0</span>);<br>	mapping.setInterceptors(getInterceptors(conversionService, resourceUrlProvider));<br>	<br>   ...<span class="hljs-comment">//省略</span><br>	<span class="hljs-keyword">return</span> mapping;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>拦截器的使用是在 <code>DispatcherServlet</code> 中的 <code>doDispatch()</code> </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java">&#123;<br>    processedRequest = checkMultipart(request);<br>    multipartRequestParsed = (processedRequest != request);<br><br>    <span class="hljs-comment">// Determine handler for the current request.</span><br>    <span class="hljs-comment">// 拿到请求处理器，里面有拦截器的数组HandlerInterceptor[]</span><br>    <span class="hljs-comment">// 根据当前请求，找到可以处理请求的handler以及handler的所有拦截器作为HandlerExecutionChain返回</span><br>    mappedHandler = getHandler(processedRequest);<br>    <span class="hljs-keyword">if</span> (mappedHandler == <span class="hljs-literal">null</span>) &#123;<br>        noHandlerFound(processedRequest, response);<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// Determine handler adapter for the current request.</span><br>    <span class="hljs-type">HandlerAdapter</span> <span class="hljs-variable">ha</span> <span class="hljs-operator">=</span> getHandlerAdapter(mappedHandler.getHandler());<br>				<br>    ...<span class="hljs-comment">// 省略</span><br><br>    <span class="hljs-comment">// 目标方法执行之前，会执行该方法</span><br>    <span class="hljs-comment">// 遍历所有拦截器，执行拦截器的preHandle方法</span><br>    <span class="hljs-keyword">if</span> (!mappedHandler.applyPreHandle(processedRequest, response)) &#123;<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// Actually invoke the handler.</span><br>    <span class="hljs-comment">// 执行目标方法</span><br>    mv = ha.handle(processedRequest, response, mappedHandler.getHandler());<br><br>	...<span class="hljs-comment">// 省略</span><br><br>    <span class="hljs-comment">// 倒叙执行所有拦截器的postHandle方法</span><br>    mappedHandler.applyPostHandle(processedRequest, response, mv);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>所以这里是先调用<code>PreHandle</code>，如果返回了<code>false</code>，则不会执行<code>PostHandle</code>，而<code>afterCompletion</code>的调用这是在<code>catch</code>里和 <code>processDispatchResult</code> 里，先看看 <code>PreHandle</code> 里面的东西：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">boolean</span> <span class="hljs-title function_">applyPreHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>	<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">this</span>.interceptorList.size(); i++) &#123;<br>		<span class="hljs-type">HandlerInterceptor</span> <span class="hljs-variable">interceptor</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.interceptorList.get(i);<br>		<span class="hljs-keyword">if</span> (!interceptor.preHandle(request, response, <span class="hljs-built_in">this</span>.handler)) &#123;<br>			triggerAfterCompletion(request, response, <span class="hljs-literal">null</span>);<br>			<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>		&#125;<br>		<span class="hljs-built_in">this</span>.interceptorIndex = i;<br>	&#125;<br>	<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在有任何一个 <code>preHandle</code> 返回 <code>false</code> 的时候就会触发 <code>triggerAfterCompletion</code> 代码，<code>triggerAfterCompletion</code> 里的代码的for循环 是从 <code>interceptorIndex</code> 开始递减的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">void</span> <span class="hljs-title function_">triggerAfterCompletion</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, <span class="hljs-meta">@Nullable</span> Exception ex)</span> &#123;<br>	<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.interceptorIndex; i &gt;= <span class="hljs-number">0</span>; i--) &#123;<br>		<span class="hljs-type">HandlerInterceptor</span> <span class="hljs-variable">interceptor</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.interceptorList.get(i);<br>		<span class="hljs-keyword">try</span> &#123;<br>			interceptor.afterCompletion(request, response, <span class="hljs-built_in">this</span>.handler, ex);<br>		&#125;<br>		<span class="hljs-keyword">catch</span> (Throwable ex2) &#123;<br>			logger.error(<span class="hljs-string">&quot;HandlerInterceptor.afterCompletion threw exception&quot;</span>, ex2);<br>		&#125;<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>所以执行拦截器的 <code>preHandle</code> 方法的顺序是先来顺序执行所有拦截器的 <code>preHandle</code> 方法</p>
+<ul>
+<li>如果当前拦截器 <code>prehandler</code> 返回为 <code>true</code> ，则执行下一个拦截器的 <code>preHandle</code> 方法</li>
+<li>如果当前拦截器返回为 <code>false</code> ，直接倒序执行所有已经执行了的拦截器的 <code>afterCompletion</code> 方法。</li>
+</ul>
+<p>如果任何一个拦截器返回<code>false</code>。直接跳出不执行目标方法。</p>
+<p>执行拦截器的 <code>postHandle</code> 方法，是倒叙执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">void</span> <span class="hljs-title function_">applyPostHandle</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response, <span class="hljs-meta">@Nullable</span> ModelAndView mv)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br><br>	<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.interceptorList.size() - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;<br>		<span class="hljs-type">HandlerInterceptor</span> <span class="hljs-variable">interceptor</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">this</span>.interceptorList.get(i);<br>		interceptor.postHandle(request, response, <span class="hljs-built_in">this</span>.handler, mv);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>页面成功渲染完成后执行 <code>processDispatchResult()</code>，其中还会倒叙触发 <code>triggerAfterCompletion()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">processDispatchResult</span><span class="hljs-params">(HttpServletRequest request, HttpServletResponse response,<span class="hljs-meta">@Nullable</span> HandlerExecutionChain mappedHandler, <span class="hljs-meta">@Nullable</span> ModelAndView mv,<span class="hljs-meta">@Nullable</span> Exception exception)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br><br>	...<span class="hljs-comment">// 省略</span><br><br>	<span class="hljs-keyword">if</span> (mappedHandler != <span class="hljs-literal">null</span>) &#123;<br>		<span class="hljs-comment">// Exception (if any) is already handled..</span><br>		mappedHandler.triggerAfterCompletion(request, response, <span class="hljs-literal">null</span>);<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><ol>
+<li>根据当前请求，找到 <code>HandlerExecutionChain</code> (可以处理请求的<code>handler</code>以及<code>handler</code>的所有拦截器)</li>
+<li>先来顺序执行所有拦截器的 <code>preHandle</code>方法<ol>
+<li>如果当前拦截器 <code>prehandle</code> 返回为 <code>true</code>，则执行下一个拦截器的 <code>preHandle</code></li>
+<li>如果当前拦截器返回为 <code>false</code>，直接倒序执行所有已经执行了的拦截器的 <code>afterCompletion</code></li>
+</ol>
+</li>
+<li>如果任何一个拦截器返回 <code>false</code>，直接跳出不执行目标方法</li>
+<li>所有拦截器都返回 <code>true</code>，则继续执行目标方法</li>
+<li>目标方法执行完成之后，倒序执行所有拦截器的 <code>postHandle</code> 方法</li>
+<li>前面的步骤有任何异常都会直接倒序触发 <code>afterCompletion</code></li>
+<li>页面成功渲染完成以后，也会倒序触发 <code>afterCompletion</code></li>
+</ol>
+<h4 id="使用范围不同"><a href="#使用范围不同" class="headerlink" title="使用范围不同"></a>使用范围不同</h4><p>过滤器(<code>Filter</code>) 实现的是 <code>javax.servlet.Filter</code> 接口，而这个接口是在<code>Servlet</code>规范中定义的，也就是说过滤器<code>Filter</code> 的使用要依赖于<code>Tomcat</code>等容器，导致它只能在<code>web</code>程序中使用</p>
+<p>而拦截器(<code>Interceptor</code>) 它是一个<code>Spring</code>组件，并由<code>Spring</code>容器管理，并不依赖<code>Tomcat</code>等容器，是可以单独使用的。不仅能应用在<code>web</code>程序中，也可以用于<code>Application</code>、<code>Swing</code>等程序中</p>
+<h4 id="触发时机不同"><a href="#触发时机不同" class="headerlink" title="触发时机不同"></a>触发时机不同</h4><p><img src="/posts/41603/filter-chain.png" srcset="/img/loading.gif" lazyload alt="filter &amp; interceptor"></p>
+<p>过滤器<code>Filter</code>是在请求进入容器后，但在进入<code>servlet</code>之前进行预处理，请求结束是在<code>servlet</code>处理完以后；拦截器 <code>Interceptor</code> 是在请求进入<code>servlet</code>后，在进入<code>Controller</code>之前进行预处理的，<code>Controller</code> 中渲染了对应的视图之后请求结束</p>
+<h4 id="拦截范围不同"><a href="#拦截范围不同" class="headerlink" title="拦截范围不同"></a>拦截范围不同</h4><p>过滤器 <code>Filter</code> 几乎可以拦截所有进入容器的请求</p>
+<p>拦截器 <code>Interceptor</code> 只会对 <code>Controller</code> 请求或访问static目录下的静态资源请求起作用</p>
+<h4 id="初始化时机不同"><a href="#初始化时机不同" class="headerlink" title="初始化时机不同"></a>初始化时机不同</h4><p>过滤器 <code>Filter</code> 是随着 Tomcat 等 web 容器启动时而进行初始化</p>
+<p>拦截器 <code>Interceptor</code> 时随着 spring 启动而进行初始化</p>
+<p>在实际的业务场景中，当使用到过滤器或拦截器时，难免会引入一些依赖的service服务。下面就通过例子进行简要说明：</p>
+<p><strong><code>Filter</code> 中注入<code>service</code></strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Autowired</span><br><span class="hljs-keyword">private</span> TestService testService;<br><br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doFilter</span><span class="hljs-params">(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)</span> <span class="hljs-keyword">throws</span> IOException, ServletException &#123;<br><br>		System.out.println(<span class="hljs-string">&quot;Filter 处理中&quot;</span>);<br>		testService.a();<br>		filterChain.doFilter(servletRequest, servletResponse);<br>  &#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong><code>Interceptor</code> 中注入<code>service</code></strong></p>
+<p>直接采用注解 <code>@Autowired</code>，但是在将拦截器注入到 <code>spring</code> 容器中时，不能自己通过 <code>new</code> 来进行创建。需要将拦截器当做一个普通的 <code>bean</code> 注入到spring容器中</p>
+<p>这是因为加载顺序导致的问题，<code>interceptor </code>加载的时间点在 <code>springcontext</code> 之前，而 <code>Bean </code>又是由 <code>spring</code> 进行管理，所以 <code>interceptor</code> 中的 <code>service</code> 还是 <code>Null</code></p>
+<p>解决方法在注册拦截器之前，先将<code>Interceptor</code> 手动进行注入：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyMvcConfig</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">WebMvcConfigurer</span> &#123;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-keyword">public</span> MyInterceptor <span class="hljs-title function_">getMyInterceptor</span><span class="hljs-params">()</span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MyInterceptor</span>();<br>    &#125;<br>    <br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addInterceptors</span><span class="hljs-params">(InterceptorRegistry registry)</span> &#123;<br>        registry.addInterceptor(getMyInterceptor()).addPathPatterns(<span class="hljs-string">&quot;/**&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="控制执行顺序不同"><a href="#控制执行顺序不同" class="headerlink" title="控制执行顺序不同"></a>控制执行顺序不同</h4><p>实际开发过程中，会出现多个过滤器或拦截器同时存在的情况，不过，有时我们希望某个过滤器或拦截器能优先执行，就涉及到它们的执行顺序</p>
+<p><code>Filter</code> 用<code>@Order</code>注解控制执行顺序，通过<code>@Order</code>控制过滤器的级别，值越小级别越高越先执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Order(Ordered.HIGHEST_PRECEDENCE)</span><br><span class="hljs-meta">@Component</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyFilter2</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Filter</span> &#123;<br></code></pre></td></tr></table></figure>
+
+<p><code>Interceptor</code> 默认的执行顺序，就是它的注册顺序，也可以通过<code>Order</code>手动设置控制，值越小越先执行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">addInterceptors</span><span class="hljs-params">(InterceptorRegistry registry)</span> &#123;<br>    registry.addInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyInterceptor2</span>()).addPathPatterns(<span class="hljs-string">&quot;/**&quot;</span>).order(<span class="hljs-number">2</span>);<br>    registry.addInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyInterceptor1</span>()).addPathPatterns(<span class="hljs-string">&quot;/**&quot;</span>).order(<span class="hljs-number">1</span>);<br>    registry.addInterceptor(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyInterceptor</span>()).addPathPatterns(<span class="hljs-string">&quot;/**&quot;</span>).order(<span class="hljs-number">3</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>看到输出结果发现，先声明的拦截器 <code>preHandle()</code> 方法先执行，而<code>postHandle()</code>方法会后执行</p>
+<p><code>postHandle()</code> 方法被调用的顺序跟 <code>preHandle()</code> 是相反的，这点在<a href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E4%B8%8D%E5%90%8C">实现原理不同</a>中也有解释，<code>postHandle()</code>是根据 <code>preHandle() </code>的顺序倒叙执行</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs text">Interceptor1 前置<br>Interceptor2 前置<br>Interceptor 前置<br>我是controller<br>Interceptor 处理中<br>Interceptor2 处理中<br>Interceptor1 处理中<br>Interceptor 后置<br>Interceptor2 后置<br>Interceptor1 后置<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Java/" class="category-chain-item">Java</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+        <a href="/tags/filter/" class="print-no-link">#filter</a>
+      
+        <a href="/tags/interceptor/" class="print-no-link">#interceptor</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>过滤器 Filter 和拦截器 Interceptor 的异同</div>
+      <div>https://sugayoiya.github.io/posts/41603.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年7月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/9827.html" title="Spring IoC">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Spring IoC</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/60838.html" title="Java 线程（三）">
+                        <span class="hidden-mobile">Java 线程（三）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

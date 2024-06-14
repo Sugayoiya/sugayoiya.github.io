@@ -1,0 +1,874 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/browser.png">
+  <link rel="icon" href="/img/browser.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Sugayoiya">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Be a better developer with these Git good practices#git#github#webdev#beginners If you’re a developer, you probably use the versioning system called Git on a daily basis. The use of this tool is cruci">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git最佳实践">
+<meta property="og:url" content="https://sugayoiya.github.io/posts/61413.html">
+<meta property="og:site_name" content="東方プロジェクト">
+<meta property="og:description" content="Be a better developer with these Git good practices#git#github#webdev#beginners If you’re a developer, you probably use the versioning system called Git on a daily basis. The use of this tool is cruci">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-29T01:48:16.000Z">
+<meta property="article:modified_time" content="2024-06-12T02:12:01.193Z">
+<meta property="article:author" content="Sugayoiya">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>git最佳实践 - 東方プロジェクト</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"sugayoiya.github.io","root":"/","version":"1.9.5-a","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"vggcI4F6j2ISzL56HSxMZF9V-MdYXbMMI","app_key":"yKtFKhuP8rhbpXecJ4jmPFmq","server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google tag (gtag.js) -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript("https://www.googletagmanager.com/gtag/js?id=", function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag('js', new Date());
+          gtag('config', '');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Sugayoiya</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>妖怪の山</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>紅魔館</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>雾之湖</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>人間の里</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>永遠亭</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="git最佳实践"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-29 09:48" pubdate>
+          2024年4月29日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">git最佳实践</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Be-a-better-developer-with-these-Git-good-practices"><a href="#Be-a-better-developer-with-these-Git-good-practices" class="headerlink" title="Be a better developer with these Git good practices"></a>Be a better developer with these Git good practices</h1><p><a target="_blank" rel="noopener" href="https://dev.to/t/git">#git</a><a target="_blank" rel="noopener" href="https://dev.to/t/github">#github</a><a target="_blank" rel="noopener" href="https://dev.to/t/webdev">#webdev</a><a target="_blank" rel="noopener" href="https://dev.to/t/beginners">#beginners</a></p>
+<p>If you’re a developer, you probably use the versioning system called Git on a daily basis. The use of this tool is crucial for the development process of an application, whether working in a team or individually. However, it’s common to encounter messy repositories, commits with unclear messages that don’t convey useful information, and misuse of branches, among other issues. Knowing how to use Git correctly and following good practices is essential for those who want to excel in the job market.</p>
+<hr>
+<h2 id="Table-of-contents"><a href="#Table-of-contents" class="headerlink" title="Table of contents"></a>Table of contents</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://dev.to/basementdevs/be-a-better-developer-with-these-git-good-practices-2dim#naming-conventions">Naming Conventions for Git Branches</a></li>
+<li><a target="_blank" rel="noopener" href="https://dev.to/basementdevs/be-a-better-developer-with-these-git-good-practices-2dim#branch-names">Branch Names Convention Prefixes</a></li>
+<li><a target="_blank" rel="noopener" href="https://dev.to/basementdevs/be-a-better-developer-with-these-git-good-practices-2dim#commit-message">Commit Message</a></li>
+<li><a target="_blank" rel="noopener" href="https://dev.to/basementdevs/be-a-better-developer-with-these-git-good-practices-2dim#conventional-commits">Conventional Commit’s</a></li>
+</ol>
+<hr>
+<h2 id="Naming-Conventions-for-Git-Branches"><a href="#Naming-Conventions-for-Git-Branches" class="headerlink" title="Naming Conventions for Git Branches"></a>Naming Conventions for Git Branches</h2><p>When we’re working with code versioning, one of the main good practices that we should follow is using clear and descriptive names for branches, commits, pull requests, etc. Ensuring a concise workflow for all team members is essential. In addition to gaining productivity, documenting the development process of the project historically simplifies teamwork. By following these practices, you’ll see benefits soon.</p>
+<p>Based on it, the community created a branch naming convention that you can follow in your project. The use of the following items below is optional, but they can help improve your development skills.</p>
+<p><strong>1. Lowercase:</strong> Don’t use uppercase letters in the branch name, stick to lowercase;</p>
+<p><strong>2. Hyphen separated:</strong> If your branch name consists of more than one word, separate them with a hyphen. following the kebab-case convention. Avoid PascalCase, camelCase, or snake_case;</p>
+<p><strong>3. (a-z, 0-9):</strong> Use only alphanumeric characters and hyphens in your branch name. Avoid any non-alphanumeric character;</p>
+<p><strong>4. Please, don’t use continuous hyphens (–).</strong> This practice can be confusing. For example, if you have branch types (such as a feature, bugfix, hotfix, etc.), use a slash (&#x2F;) instead;</p>
+<p><strong>5. Avoid ending your branch name with a hyphen</strong>. It does not make sense because a hyphen separates words, and there’s no word to separate at the end;</p>
+<p><strong>6. This practice is the most important:</strong> Use descriptive, concise, and clear names that explain what was done on the branch;</p>
+<p><strong>Wrong branch names</strong></p>
+<ul>
+<li><code>fixSidebar</code></li>
+<li><code>feature-new-sidebar-</code></li>
+<li><code>FeatureNewSidebar</code></li>
+<li><code>feat_add_sidebar</code></li>
+</ul>
+<p><strong>Good branch names</strong></p>
+<ul>
+<li>feature&#x2F;new-sidebar</li>
+<li>add-new-sidebar</li>
+<li>hotfix&#x2F;interval-query-param-on-get-historical-data</li>
+</ul>
+<hr>
+<h2 id="Branch-Names-Convention-Prefixes"><a href="#Branch-Names-Convention-Prefixes" class="headerlink" title="Branch Names Convention Prefixes"></a>Branch Names Convention Prefixes</h2><p>Sometimes the purpose of a branch isn’t clear. It could be a new feature, a bug fix, documentation updates, or anything else. To address this, it’s a common practice to use a prefix on the branch name to quickly explain the purpose of the branch.</p>
+<ul>
+<li><p><strong>feature:</strong> It conveys a new feature that will be developed. For example, <code>feature/add-filters</code>;</p>
+</li>
+<li><p><strong>release:</strong> Used to prepare a new release. The prefix <code>release/</code> is commonly used to do tasks such as last touched and revisions before merging the new updates from the branch master to create a release. For example, <code>release/v3.3.1-beta</code>;</p>
+</li>
+<li><p><strong>bugfix:</strong> It conveys that you’re solving a bug in the code and it’s usually related to an issue. For instance, <code>bugfix/sign-in-flow</code>;</p>
+</li>
+<li><p><strong>hotfix:</strong> Similar to bugfix, but it is related to fixing a critical bug present in the production environment. For example, <code>hotfix/cors-error</code>;</p>
+</li>
+<li><p><strong>docs:</strong> To write some documentation. For example, <code>docs/quick-start</code>;</p>
+</li>
+</ul>
+<p>If you’re working in a workflow with task management, like Jira, Trello, ClickUp, or any similar tool that can create User Stories, each card has a number associated. So, is commonly use these card numbers on the prefix of branch names. For example:</p>
+<ul>
+<li><code>feature/T-531-add-sidebar</code></li>
+<li><code>docs/T-789-update-readme</code></li>
+<li><code>hotfix/T-142-security-path</code></li>
+</ul>
+<hr>
+<h2 id="Commit-Message"><a href="#Commit-Message" class="headerlink" title="Commit Message"></a>Commit Message</h2><p>Let’s go talk about commit messages. Unfortunately, is so easy to find projects with commit messages like “added a lot of things” or “Pikachu, I choose you”… Yeah, I once found a project where the commit messages were related to a Pokémon fight.</p>
+<p>Commit messages are really important in the development process. Creating a good history will help you a lot of times in your journey. Like branches, commits also have conventions created by the community, which you can learn about below:</p>
+<ul>
+<li><p>A commit message has three important sections: Subject, Description, and Footer. The subject of a commit is required and defines the purpose of a commit. The description (body) is used to provide additional context and explanation for the commit’s purpose. Lastly, there’s the footer, commonly used for metadata like assigning a commit. While utilizing both the description and footer is considered a good practice, it’s not required.</p>
+</li>
+<li><p><strong>Use the imperative mood in the subject line.</strong> For example:</p>
+</li>
+</ul>
+<blockquote>
+<p><code>Add README.md</code> ✅;<br><code>Added README.md</code> ❌;<br><code>Adding README.md</code> ❌;</p>
+</blockquote>
+<ul>
+<li><strong>Capitalize the first letter of the subject line.</strong> For example:</li>
+</ul>
+<blockquote>
+<p><code>Add user authentication</code> ✅;<br><code>add user authentication</code> ❌;</p>
+</blockquote>
+<ul>
+<li><strong>Don’t end the subject line with a period.</strong> For example:</li>
+</ul>
+<blockquote>
+<p><code>Update unit tests</code> ✅;<br><code>Update unit tests.</code> ❌;</p>
+</blockquote>
+<ul>
+<li><p>Limit the subject line to <strong>50 characters</strong>, i.e., be clear and concise;</p>
+</li>
+<li><p>Wrap the body at <strong>72 characters</strong> and separate the subject from a <strong>blank line</strong>;</p>
+</li>
+<li><p>If your body of commit has more than one paragraph, so <strong>use blank lines to separate them</strong>;</p>
+</li>
+<li><p>If necessary, use <strong>bullet points</strong> instead of only paragraphs;</p>
+</li>
+</ul>
+<hr>
+<h2 id="Conventional-Commit’s"><a href="#Conventional-Commit’s" class="headerlink" title="Conventional Commit’s"></a>Conventional Commit’s</h2><blockquote>
+<p>“The Conventional Commits specification is a lightweight convention on top of commit messages. It provides an easy set of rules for creating an explicit commit history.”</p>
+</blockquote>
+<p>The quote below was obtained from the Conventional Commit’s official website. This specification is the most used convention to commit messages in the community.</p>
+<h3 id="Structure"><a href="#Structure" class="headerlink" title="Structure"></a>Structure</h3><figure class="highlight fortran"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs fortran">&lt;<span class="hljs-keyword">type</span>&gt;[<span class="hljs-keyword">optional</span> scope]: &lt;description&gt;<br><br>[<span class="hljs-keyword">optional</span> body]<br><br>[<span class="hljs-keyword">optional</span> footer(s)]<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Commit-Type"><a href="#Commit-Type" class="headerlink" title="Commit Type"></a>Commit Type</h3><p>The first structure that we have to study is the commit type. It provides a clear context about what’s done in this commit. Below you can see the list of commit types and when to use them:</p>
+<ul>
+<li><p><strong>feat:</strong> Introductions of new functionalities;</p>
+</li>
+<li><p><strong>fix:</strong> Rectifications of software bugs;</p>
+</li>
+<li><p><strong>refactor:</strong> Employed for code alterations preserving its overall functionality;</p>
+</li>
+<li><p><strong>chore:</strong> Updates not impacting production code, involving tool, config, or library adjustments;</p>
+</li>
+<li><p><strong>docs:</strong> Additions or modifications to documentation files;</p>
+</li>
+<li><p><strong>perf:</strong> Code changes enhancing performance;</p>
+</li>
+<li><p><strong>style:</strong> Adjustments related to code presentation, like formatting and whitespace;</p>
+</li>
+<li><p><strong>test:</strong> Inclusion or correction of tests;</p>
+</li>
+<li><p><strong>build:</strong> Modifications affecting the build system or external dependencies;</p>
+</li>
+<li><p><strong>ci:</strong> Alterations to CI configuration files and scripts;</p>
+</li>
+<li><p><strong>env:</strong> Describes adjustments or additions to configuration files within CI processes, such as container configuration parameters.</p>
+</li>
+</ul>
+<h3 id="Scope"><a href="#Scope" class="headerlink" title="Scope"></a>Scope</h3><p>A scope is a structure that can be added after the commit’s type to provide additional contextual information:</p>
+<ul>
+<li><code>fix(ui): resolve issue with button alignment</code></li>
+<li><code>feat(auth): implement user authentication</code></li>
+</ul>
+<h3 id="Body"><a href="#Body" class="headerlink" title="Body"></a>Body</h3><p>The body of a commit message provides detailed explanations about the changes introduced by the commit. It’s typically added after a blank line following the subject line.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">Add</span> <span class="hljs-built_in">new</span> functionality <span class="hljs-keyword">to</span> handle <span class="hljs-keyword">user</span> authentication.<br><br>This <span class="hljs-keyword">commit</span> introduces a <span class="hljs-built_in">new</span> module <span class="hljs-keyword">to</span> manage <span class="hljs-keyword">user</span> authentication. It includes<br><span class="hljs-keyword">functions</span> <span class="hljs-keyword">for</span> <span class="hljs-keyword">user</span> <span class="hljs-keyword">login</span>, registration, <span class="hljs-keyword">and</span> <span class="hljs-keyword">password</span> recovery.<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Footer"><a href="#Footer" class="headerlink" title="Footer"></a>Footer</h3><p>The footer of a commit message is used to provide additional information related to the commit. This can include details such as who reviewed or approved the changes.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ceylon">Signed-off-<span class="hljs-meta">by</span>: John &lt;john.doe<span class="hljs-meta">@example</span>.com&gt;<br>Reviewed-<span class="hljs-meta">by</span>: Anthony &lt;anthony<span class="hljs-meta">@example</span>.com&gt;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Breaking-Change"><a href="#Breaking-Change" class="headerlink" title="Breaking Change"></a>Breaking Change</h3><p>Indicate that the commit includes significant changes that may lead to compatibility issues or require modifications in dependent code. You can add a <code>BREAKING CHANGE</code> in the footer or include <code>!</code> after the type&#x2F;scope.</p>
+<h3 id="Examples-of-commits-using-conventional-commits"><a href="#Examples-of-commits-using-conventional-commits" class="headerlink" title="Examples of commits using conventional commits"></a>Examples of commits using conventional commits</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs stylus">chore: add commitlint and husky<br><span class="hljs-function"><span class="hljs-title">chore</span><span class="hljs-params">(eslint)</span></span>: enforce the use of double <span class="hljs-attribute">quotes</span> in JSX<br>refactor: type refactoring<br>feat: add axios and data handling<br><span class="hljs-function"><span class="hljs-title">feat</span><span class="hljs-params">(page/home)</span></span>: create next routing<br>chore!: drop support <span class="hljs-keyword">for</span> Node <span class="hljs-number">18</span><br></code></pre></td></tr></table></figure>
+
+
+
+<p><strong>With subject, body and footer:</strong></p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs vbnet"><span class="hljs-symbol">feat:</span> add <span class="hljs-keyword">function</span> <span class="hljs-keyword">to</span> convert colors <span class="hljs-keyword">in</span> hexadecimal <span class="hljs-keyword">to</span> rgba<br><br>Lorem Ipsum <span class="hljs-built_in">is</span> simply dummy <span class="hljs-keyword">text</span> <span class="hljs-keyword">of</span> the printing <span class="hljs-built_in">and</span> typesetting industry.<br><br>Lorem Ipsum has been the industry<span class="hljs-comment">&#x27;s standard dummy text ever since the 1500s.</span><br><br>Reviewed-<span class="hljs-keyword">by</span>: <span class="hljs-number">2</span><br><span class="hljs-symbol">Refs:</span> #<span class="hljs-number">345</span><br></code></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.conventionalcommits.org/">https://www.conventionalcommits.org</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534">https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534</a></li>
+<li><a target="_blank" rel="noopener" href="https://se-education.org/guides/conventions/git.html">https://se-education.org/guides/conventions/git.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://cbea.ms/git-commit/">https://cbea.ms/git-commit/</a> <a target="_blank" rel="noopener" href="https://blog.geekhunter.com.br/o-que-e-commit-e-como-usar-commits-semanticos/">https://blog.geekhunter.com.br/o-que-e-commit-e-como-usar-commits-semanticos/</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>git最佳实践</div>
+      <div>https://sugayoiya.github.io/posts/61413.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Sugayoiya</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/45405.html" title="事件分析平台设计">
+                        <span class="hidden-mobile">事件分析平台设计</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="waline"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#waline', function() {
+      Fluid.utils.createCssLink('https://cdn.staticfile.org/waline/2.15.5/waline.min.css')
+      Fluid.utils.createScript('https://cdn.staticfile.org/waline/2.15.5/waline.min.js', function() {
+        var options = Object.assign(
+          {"serverURL":"waline-mongo-gamma.vercel.app","path":"window.location.pathname","meta":["nick","mail","link"],"requiredMeta":["nick"],"lang":"zh-CN","emoji":["https://cdn.jsdelivr.net/gh/walinejs/emojis/weibo","https://unpkg.com/@waline/emojis@1.1.0/bilibili"],"dark":"html[data-user-color-scheme=\"dark\"]","wordLimit":0,"pageSize":10},
+          {
+            el: '#waline',
+            path: window.location.pathname
+          }
+        )
+        Waline.init(options);
+        Fluid.utils.waitElementVisible('#waline .vcontent', () => {
+          var imgSelector = '#waline .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
