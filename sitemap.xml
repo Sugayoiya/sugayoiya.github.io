@@ -354,6 +354,13 @@
   </url>
   
   <url>
+    <loc>https://sugayoiya.github.io/tags/BlockingQueue/</loc>
+    <lastmod>2024-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://sugayoiya.github.io/tags/graylog/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
@@ -369,27 +376,6 @@
   
   <url>
     <loc>https://sugayoiya.github.io/tags/es/</loc>
-    <lastmod>2024-06-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/tags/BlockingQueue/</loc>
-    <lastmod>2024-06-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/tags/idea/</loc>
-    <lastmod>2024-06-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/tags/%E5%BF%AB%E6%8D%B7%E9%94%AE/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -431,7 +417,14 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/tags/JVM/</loc>
+    <loc>https://sugayoiya.github.io/tags/idea/</loc>
+    <lastmod>2024-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/tags/%E5%BF%AB%E6%8D%B7%E9%94%AE/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -445,14 +438,7 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/tags/Mysql/</loc>
-    <lastmod>2024-06-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/tags/Transaction/</loc>
+    <loc>https://sugayoiya.github.io/tags/JVM/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -487,7 +473,14 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/tags/bean/</loc>
+    <loc>https://sugayoiya.github.io/tags/Mysql/</loc>
+    <lastmod>2024-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/tags/Transaction/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -501,7 +494,7 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/tags/Mybatis/</loc>
+    <loc>https://sugayoiya.github.io/tags/bean/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -516,6 +509,13 @@
   
   <url>
     <loc>https://sugayoiya.github.io/tags/Spring-Ioc/</loc>
+    <lastmod>2024-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/tags/Mybatis/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -594,14 +594,14 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/Java/AQS/</loc>
+    <loc>https://sugayoiya.github.io/categories/Java/Spring/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/graylog/</loc>
+    <loc>https://sugayoiya.github.io/categories/Java/AQS/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -615,7 +615,7 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/idea/</loc>
+    <loc>https://sugayoiya.github.io/categories/graylog/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -629,13 +629,6 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/Java/Spring/</loc>
-    <lastmod>2024-06-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://sugayoiya.github.io/categories/Java/Map/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
@@ -643,7 +636,7 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/Java/JVM/</loc>
+    <loc>https://sugayoiya.github.io/categories/idea/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -657,14 +650,7 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/Hexo/Fluid/</loc>
-    <lastmod>2024-06-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://sugayoiya.github.io/categories/Mysql/</loc>
+    <loc>https://sugayoiya.github.io/categories/Java/JVM/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -678,7 +664,7 @@
   </url>
   
   <url>
-    <loc>https://sugayoiya.github.io/categories/Mysql/Transaction/</loc>
+    <loc>https://sugayoiya.github.io/categories/Mysql/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -686,6 +672,20 @@
   
   <url>
     <loc>https://sugayoiya.github.io/categories/Redis/</loc>
+    <lastmod>2024-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/categories/Hexo/Fluid/</loc>
+    <lastmod>2024-06-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://sugayoiya.github.io/categories/Mysql/Transaction/</loc>
     <lastmod>2024-06-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
